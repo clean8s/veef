@@ -13,9 +13,6 @@ export default defineConfig({
     lib: {
       formats: ["es"],
       entry: "index.html"
-    },
-    sourcemap: "inline",
-    minify: false,
-
+    }
   }
 })
