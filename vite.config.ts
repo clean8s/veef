@@ -8,10 +8,14 @@ import iconLoader from "./icon-loader"
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [preact(), windicss(), autoimport, iconLoader],
+  base: "./",
   build: {
     lib: {
       formats: ["es"],
-      entry: "showcase.tsx"
-    }
+      entry: "index.html"
+    },
+    sourcemap: "inline",
+    minify: false,
+
   }
 })

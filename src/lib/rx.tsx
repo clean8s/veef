@@ -4,9 +4,6 @@ import {Component, ComponentChild, render, RenderableProps, createRef, RefObject
 import {unsafeHTML} from "lit/directives/unsafe-html.js"
 import virtualCss from 'virtual:windi.css'
 
-type CustomWindow = Window & typeof globalThis &{ domAttrMap: any, domAttr: any }
-let customWin = (window as CustomWindow)
-
 export type BasicConstructor = NumberConstructor|StringConstructor|ObjectConstructor|ArrayConstructor|BooleanConstructor;
 
 export type PropType<O extends {[k: string]: BasicConstructor}> =
@@ -14,9 +11,9 @@ export type PropType<O extends {[k: string]: BasicConstructor}> =
 
 let propConverter = {
     fromAttribute: (val: any, type: any) => {
-        if (val.startsWith(DOMATTR_MARK)) {
-            return (window as CustomWindow).domAttrMap.get(val)
-        }
+        // if (val.startsWith(DOMATTR_MARK)) {
+        //     return (window as CustomWindow).domAttrMap.get(val)
+        // }
         return (defaultConverter as any).fromAttribute(val, type)
     },
     toAttribute: (val: any, type: any) => {
@@ -38,6 +35,7 @@ export abstract class RxComponent<O> extends Component<O & Shadow, any> {
     render(props: RenderableProps<O & Shadow> , state: any, context: any): ComponentChild {
         return this.reactRender(props) as ComponentChild;
     }
+
     static get rootStyle() : string {
         return "";
     }
@@ -50,13 +48,13 @@ export abstract class RxComponent<O> extends Component<O & Shadow, any> {
         }
     }
     isShadowDOM() : boolean {
-        if(typeof this.props.shadowRoot !== 'undefined') {
+        if(typeof this.props.shadowRoot !== 'undefined' && this.props.shadowRoot) {
             return true;
         }
         return false;
     }
     componentDidMount() {
-        (this.base as HTMLElement).setAttribute("style", this.reactStyle)
+        // (this.base as HTMLElement).setAttribute("style", this.reactStyle)
     }
 
     abstract reactRender(props: O) : any;
@@ -65,7 +63,7 @@ interface StyleProvider {
      get rootStyle() : string;
 }
 
-import BASE_CSS from './base.css'
+import { BASE_CSS } from './base-css'
 
 export function Rx(config: Config) : Function {
     return (Constructor: Function) => {
@@ -78,7 +76,8 @@ export function Rx(config: Config) : Function {
             }
 
             static get styles() {
-                return [unsafeCSS(virtualCss), unsafeCSS((Constructor as unknown as StyleProvider).rootStyle), unsafeCSS(BASE_CSS)]
+                const rootS = (Constructor as unknown as StyleProvider).rootStyle;
+                return [unsafeCSS(virtualCss), unsafeCSS(rootS), unsafeCSS(BASE_CSS)]
             }
 
             render() {
@@ -95,28 +94,33 @@ export function Rx(config: Config) : Function {
             }
 
             static get properties() {
-                return Object.fromEntries(Object.entries(config.propTypes || {}).map(([k, v]) => [k, {
+                const Props = Object.fromEntries(Object.entries(config.propTypes || {}).map(([k, v]) => [k, {
                     type: v,
                     converter: propConverter
                 }
                 ]))
+                return Props
             }
         })
-        return
+        return Constructor
     }
 }
 
-const DOMATTR_MARK = "domAttr-val-"
+//
+// type CustomWindow = Window & typeof globalThis &{ domAttrMap: any, domAttr: any }
+// let customWin = (window as CustomWindow)
 
-export const domAttr = (data: any) => {
-    if (typeof customWin.domAttrMap == 'undefined') {
-        customWin.domAttrMap = new Map();
-    }
-    const genID = DOMATTR_MARK + (Math.random() + 1).toString(36).substring(2)
-    customWin.domAttrMap.set(genID, data);
-    return genID;
-}
-
-if (typeof window != 'undefined') {
-    customWin.domAttr = domAttr;
-}
+// const DOMATTR_MARK = "domAttr-val-"
+//
+// export const domAttr = (data: any) => {
+//     if (typeof customWin.domAttrMap == 'undefined') {
+//         customWin.domAttrMap = new Map();
+//     }
+//     const genID = DOMATTR_MARK + (Math.random() + 1).toString(36).substring(2)
+//     customWin.domAttrMap.set(genID, data);
+//     return genID;
+// }
+//
+// if (typeof window != 'undefined') {
+//     customWin.domAttr = domAttr;
+// }

@@ -1,6 +1,6 @@
 import {VNode} from "preact";
 export type Icon = (props: {size: number}) => VNode;
-function sized(icon: any) : VNode {
+function sized(icon: any) {
     let IconComponent = (icon as Icon)
     return <IconComponent size={40} />
 }

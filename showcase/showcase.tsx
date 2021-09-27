@@ -7,8 +7,9 @@ const demos = [];
  * 
  * It contains all components from src/
 */
-   
-import {Demo as Demo0} from "./src/dialog"
+
+import "../src/dialog"
+import {Demo as Demo0} from "../src/dialog"
 demos.push(Demo0)
 
 
@@ -18,11 +19,14 @@ demos.push(Demo0)
  * 
  * It contains all components from src/
 */
-   
-import {Demo as Demo1} from "./src/menu"
+
+import "../src/menu"
+import {Demo as Demo1} from "../src/menu"
 demos.push(Demo1)
 
 import {render} from "preact";
-if(typeof window != 'undefined' && typeof (window as any).showcase != 'undefined') {
-  render(<div>{demos.map(X => (<X/>))}</div>, document.body);
+if(typeof window != 'undefined' && window['showcase']) {
+  document.addEventListener('DOMContentLoaded', () => {
+  render(<div>{demos}</div>, document.body);
+  })
 }

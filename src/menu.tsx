@@ -7,17 +7,14 @@ var PropObject = {
 
 type Props = PropType<typeof PropObject>;
 
-export const Demo = () => {
-    // @ts-ignore
-    return <x-menu/>
-}
+// @ts-ignore
+export const Demo = <x-menu/>
 
 
 @Rx({tagName: "x-menu", propTypes: PropObject})
 export class Menu extends RxComponent<Props> {
     constructor(props: Props) {
         super();
-        this.reactStyle = `position: fixed; inset: 0; right: auto; display: flex; flex-direction: column;`
     }
 
     static get rootStyle(): string {

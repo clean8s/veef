@@ -1,4 +1,4 @@
-export default `
+export const BASE_CSS: string = `
 * {
     --tw-ring-inset: var(--tw-empty,/*!*/ /*!*/);
     --tw-ring-offset-width: 0px;

@@ -5,10 +5,8 @@ var PropObject = {
     open: Boolean
 };
 
-export const Demo = () => {
-    // @ts-ignore
-    return <x-dialog open/>
-}
+// @ts-ignore
+export const Demo = <x-dialog message="some msg" open />;
 
 type Props = PropType<typeof PropObject>;
 
