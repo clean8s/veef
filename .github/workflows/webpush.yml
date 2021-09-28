@@ -7,7 +7,7 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v2
     - run: |
-        mkdir -p /home/runner/web/veef
+        git clone https://github.com/clean8s/foss.clean8s.com.git /home/runner/web/veef
         yarn
         yarn build
         mv -t /home/runner/web/veef dist/*
