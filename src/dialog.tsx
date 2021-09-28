@@ -8,7 +8,7 @@ var PropObject = {
 // @ts-ignore
 export const Demo = <v-dialog message="some msg" open />;
 
-type Props = PropType<typeof PropObject>;
+type Props = {message: string, open: boolean};
 
 @Rx("v-dialog", PropObject)
 export class Dialog extends RxComponent<Props> {
@@ -17,17 +17,33 @@ export class Dialog extends RxComponent<Props> {
         this.state = {open: props.open}
     }
 
+    closeSelf() {
+        this.customElement.dispatchEvent(new MouseEvent("close"))
+    }
+    
+    listener(e: MouseEvent) {
+        // @ts-ignore
+        if (e.target.querySelector(".mainthing")) {
+            this.closeSelf()
+        }
+    }
+    
+    bound?: Function;
+
     componentDidMount() {
         super.componentDidMount()
-        this.customElement.addEventListener("click", (e: MouseEvent) => {
-            // @ts-ignore
-            if (e.target.querySelector(".mainthing"))
-                this.setState({open: false})
-        });
+        console.log((this.props as any).onclose)
+        this.bound = this.listener.bind(this);
+        this.customElement.addEventListener("click", this.bound as any);
+    }
+
+    componentWillUnmount() {
+        super.componentWillUnmount!()
+        this.customElement.removeEventListener("click", this.bound as any)
     }
 
     get mainStyle() : string {
-        if(!this.state.open) {
+        if(!this.props.open) {
             return ``
         }
         return `position: fixed;
@@ -38,7 +54,7 @@ export class Dialog extends RxComponent<Props> {
     }
 
     reactRender(props: Props) {
-        if (!this.state.open)
+        if (!this.props.open)
             return <div/>
         return <div class="inset-0 absolute bg-[rgba(0,0,0,0.5)]">
             <div class="shadow-lg rounded-2xl p-4 bg-white dark:bg-gray-800 w-64 my-10 mx-auto justify-center">
@@ -56,7 +72,7 @@ export class Dialog extends RxComponent<Props> {
                         <p class="text-gray-600 dark:text-gray-400 py-2 px-6">
                             {props.message}
                         </p>
-                        <div onClick={() => this.setState({open: false})}
+                        <div onClick={this.closeSelf}
                              class="flex items-center justify-between gap-4 w-full mt-8">
                             <button type="button"
                                     class="py-2 px-4  bg-indigo-600 hover:bg-indigo-700 focus:ring-indigo-500 focus:ring-offset-indigo-200 text-white w-full transition ease-in duration-200 text-center text-base font-semibold shadow-md focus:outline-none focus:ring-2 focus:ring-offset-2  rounded-lg ">

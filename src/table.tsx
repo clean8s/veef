@@ -1,5 +1,5 @@
 import {PropType, Rx, RxComponent} from "./lib/rx";
-import Icons, {IconKey} from "./lib/icons";
+// import Icons, {IconKey} from "./lib/icons";
 
 var PropObject = {
     col: Boolean,

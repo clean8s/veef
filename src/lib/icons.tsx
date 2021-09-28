@@ -74,3 +74,5 @@ export const ParseSvgString = (svgString: string, wantedProps: RenderableProps<a
 
 export type IconKey = keyof typeof IconLibrary;
 export { IconLibrary };
+
+export default IconLibrary

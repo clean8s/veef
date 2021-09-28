@@ -7,7 +7,20 @@ import iconLoader from "./icon-loader"
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  plugins: [preact(), windicss(), autoimport, iconLoader],
+  plugins: [preact(), windicss({
+    config: {
+      extract: {
+        include: [
+          "src/**/*.{tsx,jsx,js}",
+          "showcase/*.{tsx,jsx,js}"
+        ],
+        exclude: [
+          ".git",
+          "node_modules"
+        ]
+      }
+    }
+  }), autoimport, iconLoader],
   base: "./",
   build: {
     lib: {

@@ -1,11 +1,10 @@
 import {defaultConverter, LitElement, unsafeCSS} from "lit"
+import { ReactiveElement } from "@lit/reactive-element";
 import {Component, ComponentChild, render, RenderableProps, createRef, RefObject, cloneElement, hydrate, createElement, h as preactH, FunctionComponent} from "preact";
 import {unsafeHTML} from "lit/directives/unsafe-html.js"
 import  'virtual:windi.css'
 
-export type BasicConstructor = NumberConstructor|StringConstructor|ObjectConstructor|ArrayConstructor|BooleanConstructor;
-
-export type PropType<O extends {[k: string]: BasicConstructor}> =
+export type PropType<O extends {[k: string]: abstract new (...args: any) => any}> =
     { [k in keyof O]?: InstanceType<O[k]> }
 
 let propConverter = {
@@ -20,7 +19,7 @@ let propConverter = {
     }
 }
 
-export type RxProps = {restyleCallback?: ((style: string, x: string[]) => void), customElement: CustomElement}
+export type RxProps = {customElement: CustomElement}
 
 export abstract class RxComponent<O> extends Component<O & RxProps, any> {
     render(props: RenderableProps<O & RxProps> , state: any, context: any): ComponentChild {
@@ -28,13 +27,11 @@ export abstract class RxComponent<O> extends Component<O & RxProps, any> {
     }
 
     componentDidMount() {
-        if (this.props.restyleCallback)
-            this.props.restyleCallback(this.mainStyle, this.mainClasses)
+        this.customElement.restyle(this.mainStyle, this.mainClasses, true)
     }
 
     componentDidUpdate() {
-        if (this.props.restyleCallback)
-            this.props.restyleCallback(this.mainStyle, this.mainClasses)
+        this.customElement.restyle(this.mainStyle, this.mainClasses, false)
     }
 
     get mainStyle() : string {
@@ -43,10 +40,6 @@ export abstract class RxComponent<O> extends Component<O & RxProps, any> {
 
     get mainClasses() : string[] {
         return []
-    }
-
-    static get rootStyle() : string {
-        return "";
     }
 
     get customElement() : CustomElement {
@@ -73,10 +66,7 @@ export function Rx(tagName: string, propTypes?: Object, disableShadowRoot?: bool
 
 type PreactComponent = FunctionComponent<RxProps>
 
-abstract class CustomElement extends LitElement {
-    static shadowRootOptions = {...LitElement.shadowRootOptions, delegatesFocus: false}
-    private Constructor: PreactComponent;
-
+abstract class CustomElement extends ReactiveElement {
     static create(c: PreactComponent, propType?: Object) {
         return class extends CustomElement {
             get PreactComponent() {
@@ -101,16 +91,15 @@ abstract class CustomElement extends LitElement {
     abstract get PreactComponent() : PreactComponent;
     abstract propTypes() : Object;
 
-    constructor(c: PreactComponent) {
+    constructor() {
         super();
-        this.Constructor = c;
     }
 
     connectedCallback() {
         super.connectedCallback()
         this.reactRoot = this;
         // this.appendChild(this.reactRoot)
-        this.setupStyles();
+        // this.restyle("", []);
         // [...this.children].map(x => {
         //     if(this.tagName === 'V-TABLE' && x.tagName === 'V-TABLE') {
         //         // x.remove()
@@ -119,60 +108,73 @@ abstract class CustomElement extends LitElement {
         //         x.remove()
         //     }
         // })
-
-        const m = new MutationObserver((d) => {
-            console.log(d)
-        })
-        m.observe(this, {childList: true})
     }
 
     public reactRoot : HTMLElement = null as any;
 
-    private mainStyle = "";
-    private mainClasses: string[] = [];
 
-    setupStyles() {
-        // [...this.children].map(x => {
-        //     if(x.tagName !== "OUTPUT")
-        //     this.appendChild(x)
-        // } )
-        // this.setAttribute("style", "display: grid;")
-        this.reactRoot.setAttribute("style", this.mainStyle)
-        this.reactRoot.classList.add(...this.mainClasses)
+    restyle(mainStyle: string, mainClasses: string[], isInitial: boolean) {
+        if(mainStyle === "") {
+            this.reactRoot.removeAttribute("style")
+        } else {
+            this.reactRoot.setAttribute("style", mainStyle)
+        }
+        this.reactRoot.classList.forEach((x) => {
+            if(mainClasses.indexOf(x) === -1) {
+                this.reactRoot.classList.remove(x)
+            }
+        })
+        this.reactRoot.classList.add(...mainClasses)
     }
 
-    restyle(mainStyle: string, mainClasses: string[]) {
-        this.mainStyle = mainStyle;
-        this.mainClasses = mainClasses;
-        this.setupStyles()
+    preactRender() {
+        this.reactActive = true;
+        if(false) {
+            hydrate(<this.PreactComponent customElement={this} {...this.getProps()} />, this.reactRoot)
+            // cloneElement(Constructor as any, {shadowRoot: this.renderRoot, ...this.getProps()})
+        }
+        else {
+            render(<this.PreactComponent customElement={this} {...this.getProps()} />, this.reactRoot)
+            this.hasRendered = true;
+        }
+        this.reactActive = false;
     }
 
-    protected createRenderRoot() {
+    createRenderRoot() {
         return this;
-    }
-
-    static get styles() {
-        return [];
+        const N = this.attachShadow({mode: "open"})
+        N.appendChild(document.createElement("slot"))
+        return N;
     }
 
     private hasRendered = false;
     public oldChildren: HTMLElement[] = [];
 
-    render() {
-        if(this.hasRendered) {
-            hydrate(<this.PreactComponent customElement={this} restyleCallback={(a: any, b: any) => this.restyle(a, b)} {...this.getProps()} />, this.reactRoot)
-            // cloneElement(Constructor as any, {shadowRoot: this.renderRoot, ...this.getProps()})
-        }
-        else {
 
-            render(<this.PreactComponent customElement={this} restyleCallback={(a: any, b: any) => this.restyle(a, b)} {...this.getProps()} />, this.reactRoot)
-            this.hasRendered = true;
-        }
-
-
-        return null;
-        // return unsafeHTML(strRender(<Constructor shadowRoot={this.renderRoot} {...this.getProps()} />))
+    updated() {
+        this.preactRender()
     }
+
+    public reactActive: boolean = false;
+    override appendChild<T extends Node>(x: T) : T {
+        if(x.nodeType == 1 && (x as any).slot == "A") {
+            setTimeout(() => {
+            this.querySelector("jail")?.append(x)
+            }, 1000);
+            return x;
+        }
+        return super.appendChild(x);
+    }
+    // get updateComplete() : Promise<boolean> {
+    //     return new Promise((e) => {
+    //         this.preactRender()
+    //         e(true)
+    //     })
+    // }
+    // performUpdate() {
+    //     super.performUpdate()
+    //     // return unsafeHTML(strRender(<Constructor shadowRoot={this.renderRoot} {...this.getProps()} />))
+    // }
 
     getProps() {
         // @ts-ignore

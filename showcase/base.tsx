@@ -1,16 +1,27 @@
-import {render} from "preact";
+import {Component, render, VNode} from "preact";
 
-if(typeof window != 'undefined' && window['showcase']) {
-    document.addEventListener('DOMContentLoaded', () => {
-        render(
-        <v-navwrap>
+class Showcase extends Component<any, {dialogOpen}> {
+    constructor(props) {
+        super(props)
+        this.state = {
+            dialogOpen: false
+        }
+    }
+    openDialog() {
+        this.setState({dialogOpen: !this.state.dialogOpen})
+    }
+    render(props) : VNode<any> {
+        return (
+    <v-navwrap>
             <v-menu items={{"Home label": "Home", "Other label": "Favorite", "A label with number": {
                 icon: "Search",
                 number: 10
-            }}} />
-            <v-icon name="Warning" />
+            }}} > zdravo <a slot="A">FFF</a> </v-menu>
             <section class="w-full p-4">
+            
+            <v-icon name="Warning" />
             <v-table main>
+                <button class="my-5 inline-block bg-blue-100 font-bold text-blue-500 border-blue-300 border-solid border-1 rounded p-2" onClick={() => this.openDialog()}>Toggle dialog</button>
                     <v-table row head>
                     <v-table col>Some column head</v-table>
                     <v-table col>Some column head</v-table>
@@ -23,7 +34,13 @@ if(typeof window != 'undefined' && window['showcase']) {
                 </v-table>
             </v-table>
             </section>
-        <v-dialog open/></v-navwrap>, document.body);
+        <v-dialog open={this.state.dialogOpen} onClose={() => this.openDialog()}/></v-navwrap>
+        );
+}
+}
+if(typeof window != 'undefined' && window['showcase']) {
+    document.addEventListener('DOMContentLoaded', () => {
+        render(<Showcase/>, document.body);
     })
 }
             
