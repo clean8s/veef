@@ -7,9 +7,9 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v2
     - run: |
-        git clone https://github.com/clean8s/foss.clean8s.com.git /home/runner/web
         yarn
         yarn build
+        git clone https://github.com/clean8s/foss.clean8s.com.git /home/runner/web
         mv -t /home/runner/web/veef dist/*
         cd /home/runner/web
         git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
