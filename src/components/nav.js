@@ -10,7 +10,7 @@ class NavWrap extends LitElement {
         `
     }
     static get config() {
-        return {tagName: "x-nav-wrap"}
+        return {tagName: v-nav-wrap"}
     }
 }
 

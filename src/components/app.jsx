@@ -5,7 +5,7 @@ import {Rx} from "./lib/rx";
 Rx((props) => {
     return <div>another one {JSON.stringify(props.data)}</div>
 }, {
-    tagName: "x-other",
+    tagName: v-other",
     propTypes: {
         data: Object
     }
@@ -16,8 +16,8 @@ Rx((props) => {
         <>
             <Logo/>
             <p className="text-[red]">Hello Vite + Preact!</p>
-            <x-demo domAttr={domAttr({a: 5})}/>
-            <x-other data={{a: 5}}/>
+            <v-demo domAttr={domAttr({a: 5})}/>
+            <v-other data={{a: 5}}/>
             <p>
                 <a
                     class="link"
@@ -31,7 +31,7 @@ Rx((props) => {
         </>
     )
 }, {
-    tagName: "x-app",
+    tagName: v-app",
     propTypes: {
         "age": Number
     }

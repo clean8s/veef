@@ -6,11 +6,11 @@ var PropObject = {
 };
 
 // @ts-ignore
-export const Demo = <x-dialog message="some msg" open />;
+export const Demo = <v-dialog message="some msg" open />;
 
 type Props = PropType<typeof PropObject>;
 
-@Rx({tagName: "x-dialog", propTypes: PropObject})
+@Rx("v-dialog", PropObject)
 export class Dialog extends RxComponent<Props> {
     constructor(props: Props) {
         super();
@@ -25,7 +25,9 @@ export class Dialog extends RxComponent<Props> {
         });
     }
 
-    static get rootStyle(): string {
+    get style(): string {
+        if(!this.state.open)
+            return ""
         return `:host{position: fixed;
                 inset: 0;
                 z-index: 999;

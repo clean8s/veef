@@ -1,6 +1,5 @@
 import {defaultConverter, LitElement, unsafeCSS} from "lit"
-import strRender from 'preact-render-to-string';
-import {Component, ComponentChild, render, RenderableProps, createRef, RefObject} from "preact";
+import {Component, ComponentChild, render, RenderableProps, createRef, RefObject, cloneElement, hydrate} from "preact";
 import {unsafeHTML} from "lit/directives/unsafe-html.js"
 import virtualCss from 'virtual:windi.css'
 
@@ -21,19 +20,15 @@ let propConverter = {
     }
 }
 
-interface Config {
-    tagName: string
-    propTypes?: Object
-}
-
 export type Shadow = {shadowRoot?: HTMLElement}
 
 export abstract class RxComponent<O> extends Component<O & Shadow, any> {
-    private rootRef : RefObject<any> = createRef();
-    protected reactStyle : string = "";
-
     render(props: RenderableProps<O & Shadow> , state: any, context: any): ComponentChild {
-        return this.reactRender(props) as ComponentChild;
+        return <>{this.reactRender(props)}<style dangerouslySetInnerHTML={{__html: this.style }} /></> as ComponentChild;
+    }
+
+    get style() : string {
+        return ""
     }
 
     static get rootStyle() : string {
@@ -44,7 +39,7 @@ export abstract class RxComponent<O> extends Component<O & Shadow, any> {
         if(this.isShadowDOM()) {
             return this.props.shadowRoot as HTMLElement;
         } else {
-            return this.rootRef.current;
+            return this.base as HTMLElement;
         }
     }
     isShadowDOM() : boolean {
@@ -52,9 +47,6 @@ export abstract class RxComponent<O> extends Component<O & Shadow, any> {
             return true;
         }
         return false;
-    }
-    componentDidMount() {
-        // (this.base as HTMLElement).setAttribute("style", this.reactStyle)
     }
 
     abstract reactRender(props: O) : any;
@@ -65,36 +57,45 @@ interface StyleProvider {
 
 import { BASE_CSS } from './base-css'
 
-export function Rx(config: Config) : Function {
+export function Rx(tagName: string, propTypes?: Object) : Function {
     return (Constructor: Function) => {
-        if (customElements.get(config.tagName)) {
+        if (customElements.get(tagName)) {
             return;
         }
-        customElements.define(config.tagName, class extends LitElement {
+        customElements.define(tagName, class extends LitElement {
+            static shadowRootOptions = {...LitElement.shadowRootOptions, delegatesFocus: true}
+
             constructor() {
                 super();
             }
 
             static get styles() {
                 const rootS = (Constructor as unknown as StyleProvider).rootStyle;
-                return [unsafeCSS(virtualCss), unsafeCSS(rootS), unsafeCSS(BASE_CSS)]
+                return [unsafeCSS(virtualCss), unsafeCSS(":host{display: inline-block}"), unsafeCSS(BASE_CSS)]
             }
 
+            private hasRendered = false;
+
             render() {
-                return unsafeHTML(strRender(<Constructor shadowRoot={this.renderRoot} {...this.getProps()} />))
+                if(this.hasRendered) {
+                    hydrate(<Constructor shadowRoot={this.renderRoot} {...this.getProps()} />, this.renderRoot)
+                    // cloneElement(Constructor as any, {shadowRoot: this.renderRoot, ...this.getProps()})
+                }
+                else {
+                    render(<Constructor shadowRoot={this.renderRoot} {...this.getProps()} />, this.renderRoot)
+                    this.hasRendered = true;
+                }
+                return null;
+                // return unsafeHTML(strRender(<Constructor shadowRoot={this.renderRoot} {...this.getProps()} />))
             }
 
             getProps() {
                 // @ts-ignore
-                return Object.fromEntries(Object.keys(config.propTypes || {}).map(x => [x, this[x]]))
-            }
-
-            updated() {
-                render(<Constructor shadowRoot={this.renderRoot} {...this.getProps()} />, this.renderRoot)
+                return Object.fromEntries(Object.keys(propTypes || {}).map(x => [x, this[x]]))
             }
 
             static get properties() {
-                const Props = Object.fromEntries(Object.entries(config.propTypes || {}).map(([k, v]) => [k, {
+                const Props = Object.fromEntries(Object.entries(propTypes || {}).map(([k, v]) => [k, {
                     type: v,
                     converter: propConverter
                 }

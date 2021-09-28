@@ -51,7 +51,7 @@ Rx((props) => {
                 </div></div>
             </div>;
 }, {
-  tagName: "x-dialog",
+  tagName: v-dialog",
   propTypes: {
       open: Boolean
   }

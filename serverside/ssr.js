@@ -1,7 +1,8 @@
+
 import {render} from '@lit-labs/ssr/lib/render-with-global-dom-shim.js';
-import "./dist/veef.es.js"
+
+import "../dist/veef.es.js"
 import {html} from "lit";
-import fs from "fs"
 
 function renderLit(lit) {
     const bufParts = [...render(lit)];

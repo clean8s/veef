@@ -58,7 +58,7 @@ class Item extends LitElement {
     }
 
     data() {
-        const children = [...this.children].filter(x => x.tagName == "X-ITEM");
+        const children = [...this.children].filter(x => x.tagName == v-ITEM");
         const response = {};
         let name = this.name;
 
