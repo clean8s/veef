@@ -1,5 +1,5 @@
 import {PropType, Rx, RxComponent} from "./lib/rx";
-import Icons, {IconKey} from "./lib/icons";
+import {IconKey, IconLibrary} from "./lib/icons";
 
 var PropObject = {
     items: Object
@@ -18,7 +18,13 @@ export const Demo = <v-menu items={items}/>
 
 // import joi from "joi"
 
-import IconObj from "./lib/icons";
+@Rx("v-icon", {name: String})
+export class Icon extends RxComponent<{name: IconKey}> {
+    reactRender() {
+        const SingleIcon = IconLibrary[this.props.name];
+        return <SingleIcon size={20} />
+    }
+}
 
 @Rx("v-menu", PropObject)
 export class Menu extends RxComponent<Props> {
@@ -57,7 +63,7 @@ export class Menu extends RxComponent<Props> {
                                     </span>
                                 </button>);
                             }
-                            let icon = Icons[iconkey as any]({size: 20})
+                            let icon = IconLibrary[iconkey as any]({size: 20})
 
                             return  <a class="hover:text-gray-800 hover:bg-gray-200 flex items-center p-2 my-6 transition-colors dark:hover:text-white dark:hover:bg-gray-600 duration-200  text-gray-600 dark:text-gray-400 rounded-lg " href="#">
                                 {icon}
@@ -90,7 +96,7 @@ class NavWrap extends RxComponent<{}> {
             <div class="md:w-72">
             </div>
             <div class="md:hidden fixed l-10 t-10" onClick={() => this.showMenu()}>
-                <IconObj.Menu size={40} />
+                <IconLibrary.Menu size={40} />
             </div>
         </div>
     }

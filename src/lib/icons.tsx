@@ -1,4 +1,4 @@
-import {FunctionComponent, VNode} from "preact";
+import {Component, FunctionComponent, RenderableProps, VNode} from "preact";
 import Search from "@material-design-icons/svg/filled/search.svg"
 import Settings from "@material-design-icons/svg/filled/settings.svg"
 import Delete from "@material-design-icons/svg/filled/delete.svg"
@@ -24,17 +24,21 @@ import Pin from "@material-design-icons/svg/filled/pin.svg"
 
 import Person from "@material-design-icons/svg/filled/person.svg"
 import Notification from "@material-design-icons/svg/filled/notifications.svg"
+import HeroIcons from "./heroicons";
 
 export type Icon = (props: { size: number, className: string }) => VNode;
 
-function sized(icon: any): IconComponent {
+function sized(icon: string): IconComponent {
     // let IconComponent = (icon as Icon as IconComponent)
-    return icon as any as IconComponent
+    const component = (props: RenderableProps<{size: number, className?: string}>): VNode<any> => {
+        return ParseSvgString(icon, {width: props.size, height: props.size, class: props.className || "fill-current"})
+    }
+    return component
 }
 
 export type IconComponent = FunctionComponent<{size: number, className?: string}>;
 
-const IconObj: {[k: string]: IconComponent} = {
+const IconLibrary: {[k: string]: IconComponent} = {
     "Home": sized(Home),
     "Add": sized(Add),
     "Search": sized(Search),
@@ -56,7 +60,17 @@ const IconObj: {[k: string]: IconComponent} = {
     "List": sized(List),
     "Favorite": sized(Favorite),
     "Settings": sized(Settings),
-    "Delete": sized(Delete)
+    "Delete": sized(Delete),
+    ...HeroIcons
 }
-export type IconKey = keyof typeof IconObj;
-export default IconObj;
+
+export const ParseSvgString = (svgString: string, wantedProps: RenderableProps<any>) : VNode => {
+    const svgStr = svgString.replace(/<svg.*?>(.*?)<\/svg>/gs, (m, match) => {
+     return match;
+    })
+    //@ts-ignore
+    return <svg dangerouslySetInnerHTML={{__html: svgStr}} {...wantedProps} />
+}
+
+export type IconKey = keyof typeof IconLibrary;
+export { IconLibrary };

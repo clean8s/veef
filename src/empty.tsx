@@ -1,5 +1,5 @@
 import {PropType, Rx, RxComponent} from "./lib/rx";
-import Icons, {IconKey} from "./lib/icons";
+import {IconKey, IconLibrary} from "./lib/icons";
 
 var PropObject = {
     text: String
@@ -9,7 +9,7 @@ type Props = {
     text: string
 };
 // @ts-ignore
-export const Demo = <v-empty text="This is a simple span">{<Icons.Search />}</v-empty>
+export const Demo = <v-empty text="This is a simple span">{<IconLibrary.Search />}</v-empty>
 
 @Rx("v-empty", PropObject)
 export class Menu extends RxComponent<Props> {

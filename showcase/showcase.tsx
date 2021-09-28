@@ -58,6 +58,7 @@ if(typeof window != 'undefined' && window['showcase']) {
                 icon: "Search",
                 number: 10
             }}} />
+            <v-icon name="Warning" />
             <section class="w-full p-4">
             <v-table main>
                     <v-table row head>
