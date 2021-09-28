@@ -19,6 +19,7 @@ import Add from "@material-design-icons/svg/filled/add.svg"
 import Bolt from "@material-design-icons/svg/filled/bolt.svg"
 import Edit from "@material-design-icons/svg/filled/create.svg"
 import Save from "@material-design-icons/svg/filled/save.svg"
+import Home from "@material-design-icons/svg/filled/home.svg"
 import Pin from "@material-design-icons/svg/filled/pin.svg"
 
 import Person from "@material-design-icons/svg/filled/person.svg"
@@ -34,6 +35,7 @@ function sized(icon: any): IconComponent {
 export type IconComponent = FunctionComponent<{size: number, className?: string}>;
 
 const IconObj: {[k: string]: IconComponent} = {
+    "Home": sized(Home),
     "Add": sized(Add),
     "Search": sized(Search),
     "Bolt": sized(Bolt),
