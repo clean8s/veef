@@ -17,13 +17,13 @@ export class Menu extends RxComponent<Props> {
         super();
     }
 
-    static get rootStyle(): string {
-        return `:host { display: inline-block; }`
+    static get mainStyle() : string {
+        return "display: inline-block"
     }
 
     reactRender(props: Props) {
         let text = props.text || "";
 
-        return <span>{text} <slot/> </span>
+        return <span class="select-text">{text} <slot/> </span>
     }
 }

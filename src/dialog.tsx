@@ -18,6 +18,7 @@ export class Dialog extends RxComponent<Props> {
     }
 
     componentDidMount() {
+        super.componentDidMount()
         this.rootNode().addEventListener("click", (e: MouseEvent) => {
             // @ts-ignore
             if (e.target.querySelector(".mainthing"))
@@ -25,14 +26,15 @@ export class Dialog extends RxComponent<Props> {
         });
     }
 
-    get style(): string {
-        if(!this.state.open)
-            return ""
-        return `:host{position: fixed;
+    get mainStyle() : string {
+        if(!this.state.open) {
+            return ``
+        }
+        return `position: fixed;
                 inset: 0;
                 z-index: 999;
                 display: flex;
-                flex-direction: column;}`
+                flex-direction: column;`
     }
 
     reactRender(props: Props) {

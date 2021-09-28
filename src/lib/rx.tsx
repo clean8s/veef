@@ -20,15 +20,29 @@ let propConverter = {
     }
 }
 
-export type Shadow = {shadowRoot?: HTMLElement}
+export type Shadow = {shadowRoot?: HTMLElement, restyleCallback?: ((style: string, x: string[]) => void) }
 
 export abstract class RxComponent<O> extends Component<O & Shadow, any> {
     render(props: RenderableProps<O & Shadow> , state: any, context: any): ComponentChild {
-        return <>{this.reactRender(props)}<style dangerouslySetInnerHTML={{__html: this.style }} /></> as ComponentChild;
+        return <>{this.reactRender(props)}</> as ComponentChild;
     }
 
-    get style() : string {
+    componentDidMount() {
+        if (this.props.restyleCallback)
+            this.props.restyleCallback(this.mainStyle, this.mainClasses)
+    }
+
+    componentDidUpdate() {
+        if (this.props.restyleCallback)
+            this.props.restyleCallback(this.mainStyle, this.mainClasses)
+    }
+
+    get mainStyle() : string {
         return ""
+    }
+
+    get mainClasses() : string[] {
+        return []
     }
 
     static get rootStyle() : string {
@@ -57,19 +71,44 @@ interface StyleProvider {
 
 import { BASE_CSS } from './base-css'
 
-export function Rx(tagName: string, propTypes?: Object) : Function {
+export function Rx(tagName: string, propTypes?: Object, disableShadowRoot?: boolean) : Function {
     return (Constructor: Function) => {
         if (customElements.get(tagName)) {
             return;
         }
         customElements.define(tagName, class extends LitElement {
-            static shadowRootOptions = {...LitElement.shadowRootOptions, delegatesFocus: true}
+            static shadowRootOptions = {...LitElement.shadowRootOptions, delegatesFocus: false}
 
             constructor() {
                 super();
             }
 
+            connectedCallback() {
+                super.connectedCallback()
+                this.setupStyles()
+            }
+
+            private mainStyle = "";
+            private mainClasses: string[] = [];
+
+            setupStyles() {
+                this.setAttribute("style", this.mainStyle)
+                this.classList.add(...this.mainClasses)
+            }
+
+            restyle(mainStyle: string, mainClasses: string[]) {
+                console.log("restyle", Constructor)
+                this.mainStyle = mainStyle;
+                this.mainClasses = mainClasses;
+                this.setupStyles()
+            }
+
+            protected createRenderRoot() {
+                return this;
+            }
+
             static get styles() {
+                return [];
                 const rootS = (Constructor as unknown as StyleProvider).rootStyle;
                 return [unsafeCSS(virtualCss), unsafeCSS(":host{display: inline-block}"), unsafeCSS(BASE_CSS)]
             }
@@ -78,13 +117,18 @@ export function Rx(tagName: string, propTypes?: Object) : Function {
 
             render() {
                 if(this.hasRendered) {
-                    hydrate(<Constructor shadowRoot={this.renderRoot} {...this.getProps()} />, this.renderRoot)
+                    hydrate(<Constructor restyleCallback={(a: any, b: any) => this.restyle(a, b)} shadowRoot={this.renderRoot} {...this.getProps()} />, this.renderRoot)
                     // cloneElement(Constructor as any, {shadowRoot: this.renderRoot, ...this.getProps()})
                 }
                 else {
-                    render(<Constructor shadowRoot={this.renderRoot} {...this.getProps()} />, this.renderRoot)
+                    render(<Constructor restyleCallback={(a: any, b: any) => this.restyle(a, b)} shadowRoot={this.renderRoot} {...this.getProps()} />, this.renderRoot)
                     this.hasRendered = true;
                 }
+                [...this.children].map(x => {
+                  if(typeof (x as any).setupStyles  !== 'undefined') {
+                      (x as any).setupStyles()
+                  }
+                })
                 return null;
                 // return unsafeHTML(strRender(<Constructor shadowRoot={this.renderRoot} {...this.getProps()} />))
             }

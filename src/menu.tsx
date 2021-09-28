@@ -24,8 +24,8 @@ export class Menu extends RxComponent<Props> {
         super();
     }
 
-    get style(): string {
-        return `:host { position: fixed; inset: 0; right: auto; display: flex; flex-direction: column; }`
+    get mainStyle() : string {
+        return `position: fixed; inset: 0; right: auto; display: flex; flex-direction: column;`
     }
 
     reactRender(props: Props) {
@@ -71,14 +71,13 @@ export class Menu extends RxComponent<Props> {
 
 @Rx("v-navwrap")
 class NavWrap extends RxComponent<{}> {
-    static get rootStyle() : string {
-        return ""
+    get mainClasses() : string[] {
+        return ("grid grid-cols-[18rem,1fr,min-content]".split(" "))
     }
     reactRender(props: {}) {
-        return <div class="grid grid-cols-[18rem,1fr,min-content]">
+        return <div>
             <div class="w-72">
             </div>
-            <div><slot></slot></div>
         </div>
     }
 }

@@ -52,7 +52,7 @@ demos.push(Demo3)
 
 if(typeof window != 'undefined' && window['showcase']) {
     document.addEventListener('DOMContentLoaded', () => {
-        render(<v-navwrap>{demos}</v-navwrap>, document.body);
+        render(<v-navwrap> <v-menu/> <my-element /> <v-dialog open/></v-navwrap>, document.body);
     })
 }
             
