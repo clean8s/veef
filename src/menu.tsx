@@ -18,20 +18,30 @@ export const Demo = <v-menu items={items}/>
 
 // import joi from "joi"
 
+import IconObj from "./lib/icons";
+
 @Rx("v-menu", PropObject)
 export class Menu extends RxComponent<Props> {
     constructor(props: Props) {
         super();
     }
 
+    get mainClasses() {
+        if((window as any).showMenu !== true) {
+        return [ "flex", "<md:hidden"];
+        }else{ 
+        return [];
+        }
+    }
+
     get mainStyle() : string {
-        return `position: fixed; inset: 0; right: auto; display: flex; flex-direction: column;`
+        return `position: fixed; inset: 0; right: auto; flex-direction: column; transition: 1.3s opacity;`
     }
 
     reactRender(props: Props) {
         let items = props.items || [];
 
-        return <div class="relative flex-grow" style="background: #fafafa">
+        return <div class="menu-big relative flex-grow" style="background: #fafafa">
             <div class="flex flex-col sm:flex-row sm:justify-around">
                 <div class="w-72 h-screen">
                     <nav class="mt-10 px-6 ">
@@ -67,11 +77,20 @@ export class Menu extends RxComponent<Props> {
 @Rx("v-navwrap")
 class NavWrap extends RxComponent<{}> {
     get mainClasses() : string[] {
-        return ("grid grid-cols-[18rem,1fr,min-content]".split(" "))
+        let _ = <div class="md:grid md:grid-cols-[18rem,1fr,min-content]" />
+        return ("md:grid md:grid-cols-[18rem,1fr,min-content]".split(" "))
+    }
+    showMenu () {
+         (window as any).showMenu = true;
+         document.querySelector("v-menu")?.classList.remove("<md:hidden")
+        // this.setState({menu: Math.random()})
     }
     reactRender(props: {}) {
         return <div>
-            <div class="w-72">
+            <div class="md:w-72">
+            </div>
+            <div class="md:hidden fixed l-10 t-10" onClick={() => this.showMenu()}>
+                <IconObj.Menu size={40} />
             </div>
         </div>
     }
