@@ -9,7 +9,11 @@ jobs:
     - run: |
         yarn
         yarn build
+        export RNG=$(python3 -c "import random; print(random.randint(1, 1 << 24))"
+        mv dist/veef.es.js "dist/veef${RNG}.js"
+        sed -i 's/veef.es.js/veef${RNG}.js/g' dist/index.html
         git clone https://github.com/clean8s/foss.clean8s.com.git /home/runner/web
+        rm -rf /home/runner/web/veef/*
         mv -t /home/runner/web/veef dist/*
         cd /home/runner/web
         git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
