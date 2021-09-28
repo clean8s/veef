@@ -6,15 +6,17 @@ jobs:
     steps:
     - name: Checkout
       uses: actions/checkout@v2
-    - run: python3 -c "import random; print(random.randint(1, 1 << 24))" > webhook.txt
-    - name: Notify web
-      uses: fikisipi/copy_file_to_another_repo_action@main
-      env:
-        API_TOKEN_GITHUB: ${{ secrets.GH_SECRET }}
+    - run: |
+        mkdir -p /home/runner/web/veef
+        yarn
+        yarn build
+        mv -t /home/runner/web/veef dist/*
+        cd /home/runner/web
+        git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
+        git config --local user.name "github-actions[bot]"
+        git add -A && git commit -m "[w-update]"
+    - name: Push changes
+      uses: ad-m/github-push-action@master
       with:
-        source_file: 'webhook.txt'
-        destination_repo: 'clean8s/foss.clean8s.com'
-        destination_folder: 'webhook'
-        user_email: '41898282+github-actions[bot]'
-        user_name: 'github-actions[bot]'
-        commit_message: 'Trigger webhook'
+        github_token: ${{ secrets.GH_SECRET }}
+        branch: main
