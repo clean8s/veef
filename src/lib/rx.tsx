@@ -1,7 +1,7 @@
 import {defaultConverter, LitElement, unsafeCSS} from "lit"
-import {Component, ComponentChild, render, RenderableProps, createRef, RefObject, cloneElement, hydrate} from "preact";
+import {Component, ComponentChild, render, RenderableProps, createRef, RefObject, cloneElement, hydrate, createElement, h as preactH, FunctionComponent} from "preact";
 import {unsafeHTML} from "lit/directives/unsafe-html.js"
-import virtualCss from 'virtual:windi.css'
+import  'virtual:windi.css'
 
 export type BasicConstructor = NumberConstructor|StringConstructor|ObjectConstructor|ArrayConstructor|BooleanConstructor;
 
@@ -20,11 +20,11 @@ let propConverter = {
     }
 }
 
-export type Shadow = {shadowRoot?: HTMLElement, restyleCallback?: ((style: string, x: string[]) => void) }
+export type RxProps = {restyleCallback?: ((style: string, x: string[]) => void), customElement: CustomElement}
 
-export abstract class RxComponent<O> extends Component<O & Shadow, any> {
-    render(props: RenderableProps<O & Shadow> , state: any, context: any): ComponentChild {
-        return <>{this.reactRender(props)}</> as ComponentChild;
+export abstract class RxComponent<O> extends Component<O & RxProps, any> {
+    render(props: RenderableProps<O & RxProps> , state: any, context: any): ComponentChild {
+        return this.reactRender(props) as ComponentChild;
     }
 
     componentDidMount() {
@@ -49,18 +49,12 @@ export abstract class RxComponent<O> extends Component<O & Shadow, any> {
         return "";
     }
 
-    rootNode() : HTMLElement {
-        if(this.isShadowDOM()) {
-            return this.props.shadowRoot as HTMLElement;
-        } else {
-            return this.base as HTMLElement;
-        }
+    get customElement() : CustomElement {
+        return this.props.customElement;
     }
-    isShadowDOM() : boolean {
-        if(typeof this.props.shadowRoot !== 'undefined' && this.props.shadowRoot) {
-            return true;
-        }
-        return false;
+
+    getChildren():  HTMLElement[] {
+        return this.customElement.oldChildren;
     }
 
     abstract reactRender(props: O) : any;
@@ -72,84 +66,122 @@ interface StyleProvider {
 import { BASE_CSS } from './base-css'
 
 export function Rx(tagName: string, propTypes?: Object, disableShadowRoot?: boolean) : Function {
-    return (Constructor: Function) => {
-        if (customElements.get(tagName)) {
-            return;
-        }
-        customElements.define(tagName, class extends LitElement {
-            static shadowRootOptions = {...LitElement.shadowRootOptions, delegatesFocus: false}
+    return (Constructor: PreactComponent) => {
+        customElements.define(tagName, CustomElement.create(Constructor, propTypes));
+    }
+}
 
-            constructor() {
-                super();
+type PreactComponent = FunctionComponent<RxProps>
+
+abstract class CustomElement extends LitElement {
+    static shadowRootOptions = {...LitElement.shadowRootOptions, delegatesFocus: false}
+    private Constructor: PreactComponent;
+
+    static create(c: PreactComponent, propType?: Object) {
+        return class extends CustomElement {
+            get PreactComponent() {
+                return c;
             }
 
-            connectedCallback() {
-                super.connectedCallback()
-                this.setupStyles()
-            }
-
-            private mainStyle = "";
-            private mainClasses: string[] = [];
-
-            setupStyles() {
-                this.setAttribute("style", this.mainStyle)
-                this.classList.add(...this.mainClasses)
-            }
-
-            restyle(mainStyle: string, mainClasses: string[]) {
-                console.log("restyle", Constructor)
-                this.mainStyle = mainStyle;
-                this.mainClasses = mainClasses;
-                this.setupStyles()
-            }
-
-            protected createRenderRoot() {
-                return this;
-            }
-
-            static get styles() {
-                return [];
-                const rootS = (Constructor as unknown as StyleProvider).rootStyle;
-                return [unsafeCSS(virtualCss), unsafeCSS(":host{display: inline-block}"), unsafeCSS(BASE_CSS)]
-            }
-
-            private hasRendered = false;
-
-            render() {
-                if(this.hasRendered) {
-                    hydrate(<Constructor restyleCallback={(a: any, b: any) => this.restyle(a, b)} shadowRoot={this.renderRoot} {...this.getProps()} />, this.renderRoot)
-                    // cloneElement(Constructor as any, {shadowRoot: this.renderRoot, ...this.getProps()})
-                }
-                else {
-                    render(<Constructor restyleCallback={(a: any, b: any) => this.restyle(a, b)} shadowRoot={this.renderRoot} {...this.getProps()} />, this.renderRoot)
-                    this.hasRendered = true;
-                }
-                [...this.children].map(x => {
-                  if(typeof (x as any).setupStyles  !== 'undefined') {
-                      (x as any).setupStyles()
-                  }
-                })
-                return null;
-                // return unsafeHTML(strRender(<Constructor shadowRoot={this.renderRoot} {...this.getProps()} />))
-            }
-
-            getProps() {
-                // @ts-ignore
-                return Object.fromEntries(Object.keys(propTypes || {}).map(x => [x, this[x]]))
+            propTypes() : Object {
+                return propType || {};
             }
 
             static get properties() {
-                const Props = Object.fromEntries(Object.entries(propTypes || {}).map(([k, v]) => [k, {
+                const Props = Object.fromEntries(Object.entries(propType || {}).map(([k, v]) => [k, {
                     type: v,
                     converter: propConverter
                 }
                 ]))
                 return Props
             }
+        }
+    }
+
+    abstract get PreactComponent() : PreactComponent;
+    abstract propTypes() : Object;
+
+    constructor(c: PreactComponent) {
+        super();
+        this.Constructor = c;
+    }
+
+    connectedCallback() {
+        super.connectedCallback()
+        this.reactRoot = this;
+        // this.appendChild(this.reactRoot)
+        this.setupStyles();
+        // [...this.children].map(x => {
+        //     if(this.tagName === 'V-TABLE' && x.tagName === 'V-TABLE') {
+        //         // x.remove()
+        //         // this.querySelector(".row-slot")?.appendChild(x.cloneNode(true))
+        //         this.oldChildren.push(x.cloneNode(true) as HTMLElement)
+        //         x.remove()
+        //     }
+        // })
+
+        const m = new MutationObserver((d) => {
+            console.log(d)
         })
-        return Constructor
+        m.observe(this, {childList: true})
+    }
+
+    public reactRoot : HTMLElement = null as any;
+
+    private mainStyle = "";
+    private mainClasses: string[] = [];
+
+    setupStyles() {
+        // [...this.children].map(x => {
+        //     if(x.tagName !== "OUTPUT")
+        //     this.appendChild(x)
+        // } )
+        // this.setAttribute("style", "display: grid;")
+        this.reactRoot.setAttribute("style", this.mainStyle)
+        this.reactRoot.classList.add(...this.mainClasses)
+    }
+
+    restyle(mainStyle: string, mainClasses: string[]) {
+        this.mainStyle = mainStyle;
+        this.mainClasses = mainClasses;
+        this.setupStyles()
+    }
+
+    protected createRenderRoot() {
+        return this;
+    }
+
+    static get styles() {
+        return [];
+    }
+
+    private hasRendered = false;
+    public oldChildren: HTMLElement[] = [];
+
+    render() {
+        if(this.hasRendered) {
+            hydrate(<this.PreactComponent customElement={this} restyleCallback={(a: any, b: any) => this.restyle(a, b)} {...this.getProps()} />, this.reactRoot)
+            // cloneElement(Constructor as any, {shadowRoot: this.renderRoot, ...this.getProps()})
+        }
+        else {
+
+            render(<this.PreactComponent customElement={this} restyleCallback={(a: any, b: any) => this.restyle(a, b)} {...this.getProps()} />, this.reactRoot)
+            this.hasRendered = true;
+        }
+
+
+        return null;
+        // return unsafeHTML(strRender(<Constructor shadowRoot={this.renderRoot} {...this.getProps()} />))
+    }
+
+    getProps() {
+        // @ts-ignore
+        return Object.fromEntries(Object.keys(this.propTypes()).map(x => [x, this[x]]))
     }
 }
+
+import htmH from "htm"
+export const htmBound =  htmH.bind(preactH)
 
 //
 // type CustomWindow = Window & typeof globalThis &{ domAttrMap: any, domAttr: any }

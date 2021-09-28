@@ -19,7 +19,7 @@ export class Dialog extends RxComponent<Props> {
 
     componentDidMount() {
         super.componentDidMount()
-        this.rootNode().addEventListener("click", (e: MouseEvent) => {
+        this.customElement.addEventListener("click", (e: MouseEvent) => {
             // @ts-ignore
             if (e.target.querySelector(".mainthing"))
                 this.setState({open: false})
