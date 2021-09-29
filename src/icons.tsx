@@ -23,7 +23,7 @@ export class Icon extends RxComponent<{name: string, size: number, iconClass?: s
 declare global {
     namespace JSX {
       interface IntrinsicElements {
-        "v-icon": RenderableProps<{name: string, size?: number, iconClass?: string}>;
+        "v-icon": RenderableProps<{name: string, size?: number, iconClass?: string, class?: string}>;
       }
     }
   }
