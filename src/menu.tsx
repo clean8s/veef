@@ -11,7 +11,7 @@ type Props = {
 
 const items : Props["items"] = {
     "Example Item": "Code",
-    "SomeThing": "Favorite"
+    "SomeThing": "Like"
 }
 // @ts-ignore
 export const Demo = <v-menu items={items}/>
