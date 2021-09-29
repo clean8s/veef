@@ -131,7 +131,7 @@ abstract class CustomElement extends ReactiveElement {
 
     static refresh(tagName: string, c: PreactComponent, propType?: Object) {
         this.refreshMap.set(tagName, c);
-        document.querySelectorAll(tagName).forEach(x => {
+        [...document.querySelectorAll(tagName)].map(x => {
             if("preactRender" in x) {
                 (x as any).preactRender();
             }
@@ -156,6 +156,7 @@ abstract class CustomElement extends ReactiveElement {
     connectedCallback() {
         super.connectedCallback()
         this.reactRoot = this;
+        this.setAttribute("data-vid", this.getObjectId())
     }
 
     public reactRoot : HTMLElement = null as any;
@@ -167,8 +168,9 @@ abstract class CustomElement extends ReactiveElement {
         } else {
             this.reactRoot.setAttribute("style", mainStyle)
         }
+        console.log(this.reactRoot, mainClasses)
         if(typeof mainClasses !== 'undefined') {
-            this.reactRoot.classList.forEach((x) => {
+            [...this.reactRoot.classList].map((x) => {
                 if(mainClasses.indexOf(x) === -1) {
                     this.reactRoot.classList.remove(x)
                 }

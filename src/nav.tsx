@@ -19,7 +19,7 @@ export class Menu extends RxComponent<Props> {
     }
 
     get mainClasses() {
-        return `bg-white shadow dark:bg-gray-800 z-50 fixed left-0 right-0`.split(" ")
+        return `block bg-white shadow dark:bg-gray-800 z-40 sticky top-0 left-0 right-0`.split(" ")
     }
     reactRender(props: Props) {
         return (<nav class="bg-white shadow dark:bg-gray-800">

@@ -28,8 +28,8 @@ export class Menu extends RxComponent<PropType<typeof PropObject>> {
     get mainClasses() {
         let add: string[] = [];
         if(!this.props.mobileMenu)
-        add = ["<md:translate-x-[-100%]"]
-        return [...add, "transition-transform", "transform", "duration-300"];
+        add = ["transform", "<md:translate-x-[-100%]", "!<md:hidden"]
+        return [...add, "md:sticky", "<md:fixed"];
         if((window as any).showMenu !== true) {
         return [ "flex", "<md:hidden"];
         }else{ 
@@ -37,8 +37,11 @@ export class Menu extends RxComponent<PropType<typeof PropObject>> {
         }
     }
 
-    get mainStyle() : string {
-        return `position: fixed; inset: 0; z-index: 40; top: 65px; right: auto; flex-direction: column;`
+    get mainStyle() {
+     return `
+     z-index: 45; top: 0px; left: 0; flex-direction: column;
+     display: flex;
+     transition: 300ms transform;`
     }
 
     reactRender(props: Props) {
@@ -80,6 +83,7 @@ export class Menu extends RxComponent<PropType<typeof PropObject>> {
 @Rx("v-navwrap")
 class NavWrap extends RxComponent<{}> {
     get mainClasses() : string[] {
+        return ["flex"];
         let _ = <div class="md:grid md:grid-cols-[18rem,1fr,min-content] block" />
         return ("md:grid md:grid-cols-[18rem,1fr,min-content] block md:pt-[70px] <md:pt-[50px]".split(" "))
     }
@@ -89,9 +93,13 @@ class NavWrap extends RxComponent<{}> {
         this.setState({menu: Math.random()})
     }
     reactRender(props: {}) {
+        // return [];
         let Icon = IconLibrary.RightChevron;
         //@ts-expect-error
         if(document.querySelector("v-menu").mobileMenu) Icon = IconLibrary.LeftChevron;
+        return (<button class="md:hidden fixed z-50 top-[6px] left-1 text-white p-1 bg-blue-600 rounded shadow block" onClick={() => this.showMenu()}>
+        <Icon size={20} />
+    </button>)
         return <div>
             <div class="md:w-72">
             </div>
