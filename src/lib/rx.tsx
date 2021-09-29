@@ -90,9 +90,16 @@ abstract class CustomElement extends ReactiveElement {
 
     abstract get PreactComponent() : PreactComponent;
     abstract propTypes() : Object;
+    private objectId : string;
 
     constructor() {
         super();
+        this.appendQueue = [];
+        this.objectId = Math.random().toString(36).substring(3);
+    }
+
+    public getObjectId() {
+        return this.objectId;
     }
 
     connectedCallback() {
@@ -138,6 +145,9 @@ abstract class CustomElement extends ReactiveElement {
             this.hasRendered = true;
         }
         this.reactActive = false;
+        this.appendQueue?.map(x => {
+            this.querySelector(`object[name="${x.slot}"]`)?.append(x.element)
+        })
     }
 
     createRenderRoot() {
@@ -148,7 +158,7 @@ abstract class CustomElement extends ReactiveElement {
     }
 
     private hasRendered = false;
-    public oldChildren: HTMLElement[] = [];
+    public appendQueue: {element: Node, slot: string}[];
 
 
     updated() {
@@ -156,14 +166,22 @@ abstract class CustomElement extends ReactiveElement {
     }
 
     public reactActive: boolean = false;
-    override appendChild<T extends Node>(x: T) : T {
-        if(x.nodeType == 1 && (x as any).slot == "A") {
-            setTimeout(() => {
-            this.querySelector("jail")?.append(x)
-            }, 1000);
-            return x;
+    override append<T extends Node>(...nodes: T[]) : T[] {
+        return nodes.map(x => {
+        if(x.nodeType == 1) {
+            const el : HTMLElement = x as any as HTMLElement;
+            if(el.hasAttribute("slot")) {
+                this.appendQueue?.push({element: x, slot: el.getAttribute("slot") || ""})
+                return x;
+            }
         }
-        return super.appendChild(x);
+        super.append(x);
+        return x;
+        }) as T[];
+    }
+
+    override appendChild<T extends Node>(node: T) : T {
+        return this.append(node)[0];
     }
     // get updateComplete() : Promise<boolean> {
     //     return new Promise((e) => {

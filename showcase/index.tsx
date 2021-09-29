@@ -12,11 +12,13 @@ class Showcase extends Component<any, {dialogOpen}> {
     }
     render(props) : VNode<any> {
         return (
+            <>
+            <v-nav><a slot="logo">A</a></v-nav>
     <v-navwrap>
             <v-menu items={{"Home label": "Home", "Other label": "Favorite", "A label with number": {
                 icon: "Search",
                 number: 10
-            }}} > zdravo <a slot="A">FFF</a> </v-menu>
+            }}} > zdravo <a slot="number">FFF</a> </v-menu>
             <section class="w-full p-4">
             
             <v-icon name="Warning" />
@@ -34,7 +36,7 @@ class Showcase extends Component<any, {dialogOpen}> {
                 </v-table>
             </v-table>
             </section>
-        <v-dialog open={this.state.dialogOpen} onClose={() => this.openDialog()}/></v-navwrap>
+        <v-dialog open={this.state.dialogOpen} onClose={() => this.openDialog()}/></v-navwrap></>
         );
 }
 }

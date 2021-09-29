@@ -42,7 +42,7 @@ export class Menu extends RxComponent<Props> {
     }
 
     get mainStyle() : string {
-        return `position: fixed; inset: 0; right: auto; flex-direction: column;`
+        return `position: fixed; inset: 0; z-index: 40; top: 70px; right: auto; flex-direction: column;`
     }
 
     reactRender(props: Props) {
@@ -62,7 +62,7 @@ export class Menu extends RxComponent<Props> {
                                 iconkey = v.icon;
                                 right = ( <button type="button" class="w-6 h-6 text-xs  rounded-full text-white bg-red-500">
                                     <span class="p-1">
-                                        {v.number} {j}
+                                        {v.number} <slot name="number" />
                                     </span>
                                 </button>);
                             }
@@ -87,7 +87,7 @@ export class Menu extends RxComponent<Props> {
 class NavWrap extends RxComponent<{}> {
     get mainClasses() : string[] {
         let _ = <div class="md:grid md:grid-cols-[18rem,1fr,min-content]" />
-        return ("md:grid md:grid-cols-[18rem,1fr,min-content]".split(" "))
+        return ("md:grid md:grid-cols-[18rem,1fr,min-content] md:pt-[70px] <md:pt-[200px]".split(" "))
     }
     showMenu () {
          document.querySelector("v-menu")?.classList.add("!translate-x-[0]")
