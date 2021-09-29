@@ -31,10 +31,7 @@ export default {
                 return x.endsWith(".tsx")
             }).map(SHOWCASE_CODE)
             const baseCode = fs.readFileSync(`${thisDir}/${BASE}`, {encoding: "utf8"})
-            const code = `
-            ${files.join("\n")}
-            ${baseCode}
-            `
+            const code = files.join("\n") + baseCode
             if(code === this.lastCode) {
                 return;
             }

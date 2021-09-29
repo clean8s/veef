@@ -46,14 +46,7 @@ export abstract class RxComponent<O> extends Component<O & RxProps, any> {
         return this.props.customElement;
     }
 
-    getChildren():  HTMLElement[] {
-        return this.customElement.oldChildren;
-    }
-
     abstract reactRender(props: O) : any;
-}
-interface StyleProvider {
-     get rootStyle() : string;
 }
 
 import { BASE_CSS } from './base-css'
