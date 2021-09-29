@@ -10,9 +10,9 @@ class Showcase extends Component<any, {dialogOpen, counter: number}> {
         }
     }
     componentDidMount() {
-        setInterval(() => {
-        this.setState({counter : this.state.counter + 1})
-        }, 500)
+        // setInterval(() => {
+        // this.setState({counter : this.state.counter + 1})
+        // }, 500)
     }
     openDialog() {
         this.setState({dialogOpen: !this.state.dialogOpen})
@@ -34,10 +34,10 @@ class Showcase extends Component<any, {dialogOpen, counter: number}> {
                 The menu on the left is <code>{"<v-menu />"}</code>, the topbar is {"<v-nav />"}.
 
                 <v-grid></v-grid>
-                
+
                 <TagName name="v-loader"/>
                 <v-loader class="w-60 block my-5"/>
-
+                <v-loader spinner class="text-green-300 ml-4" />
                 <TagName name="v-search"/>
                 <v-search class="my-4" />
 

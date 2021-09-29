@@ -23,7 +23,7 @@ export class Menu extends RxComponent<Props> {
     }
     reactRender(props: Props) {
         return (<nav class="bg-white shadow dark:bg-gray-800">
-        <div class="w-full max-w-320 px-6 py-3 mx-auto md:flex">
+        <div class="w-[95%] max-w-320 px-6 py-2 mx-auto md:flex">
             <div class="flex items-center justify-between">
                 <div>
                     <object name="logo" />

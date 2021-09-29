@@ -2,7 +2,8 @@ import {PropHints, PropType, Rx, RxComponent} from "./lib/rx";
 import {IconKey, IconLibrary} from "./lib/icons";
 
 var PropObject: PropHints = {
-    items: {type: Array, default: []}
+    items: {type: Array, default: []},
+    mobileMenu: {type: Boolean, default: false}
 };
 
 type Props = {
@@ -19,13 +20,16 @@ export const Demo = <v-menu items={items}/>
 // import joi from "joi"
 
 @Rx("v-menu", PropObject)
-export class Menu extends RxComponent<Props> {
+export class Menu extends RxComponent<PropType<typeof PropObject>> {
     constructor(props: Props) {
         super();
     }
 
     get mainClasses() {
-        return ["<md:translate-x-[-100%]", "transition-transform", "transform", "duration-300"];
+        let add: string[] = [];
+        if(!this.props.mobileMenu)
+        add = ["<md:translate-x-[-100%]"]
+        return [...add, "transition-transform", "transform", "duration-300"];
         if((window as any).showMenu !== true) {
         return [ "flex", "<md:hidden"];
         }else{ 
@@ -34,14 +38,14 @@ export class Menu extends RxComponent<Props> {
     }
 
     get mainStyle() : string {
-        return `position: fixed; inset: 0; z-index: 40; top: 70px; right: auto; flex-direction: column;`
+        return `position: fixed; inset: 0; z-index: 40; top: 65px; right: auto; flex-direction: column;`
     }
 
     reactRender(props: Props) {
-        return <div class="menu-big relative flex-grow" style="background: #fafafa">
+        return <div class="menu-big relative flex-grow bg-gray-100">
             <div class="flex flex-col sm:flex-row sm:justify-around">
                 <div class="w-72 h-screen">
-                    <nav class="mt-10 px-6 ">
+                    <nav class="mt-5 px-6 ">
 
                         {Object.entries(props.items).map(([k, v]) => {
                             let right = <></>;
@@ -58,7 +62,7 @@ export class Menu extends RxComponent<Props> {
                             }
                             let icon = IconLibrary[iconkey as any as IconKey]({size: 20})
 
-                            return  <a class="hover:text-gray-800 hover:bg-gray-200 flex items-center p-2 my-6 transition-colors dark:hover:text-white dark:hover:bg-gray-600 duration-200  text-gray-600 dark:text-gray-400 rounded-lg " href="#">
+                            return  <a class="hover:text-gray-800 hover:bg-gray-200 flex items-center p-2 my-4 transition-colors dark:hover:text-white dark:hover:bg-gray-600 duration-200  text-gray-600 dark:text-gray-400 rounded-lg " href="#">
                                 {icon}
                                 <span class="mx-4 text-lg font-normal">
                                     {k}</span>
@@ -76,20 +80,24 @@ export class Menu extends RxComponent<Props> {
 @Rx("v-navwrap")
 class NavWrap extends RxComponent<{}> {
     get mainClasses() : string[] {
-        let _ = <div class="md:grid md:grid-cols-[18rem,1fr,min-content]" />
-        return ("md:grid md:grid-cols-[18rem,1fr,min-content] md:pt-[70px] <md:pt-[200px]".split(" "))
+        let _ = <div class="md:grid md:grid-cols-[18rem,1fr,min-content] block" />
+        return ("md:grid md:grid-cols-[18rem,1fr,min-content] block md:pt-[70px] <md:pt-[50px]".split(" "))
     }
     showMenu () {
-         document.querySelector("v-menu")?.classList.add("!translate-x-[0]")
-        // this.setState({menu: Math.random()})
+        //@ts-expect-error
+        document.querySelector("v-menu").mobileMenu = !document.querySelector("v-menu").mobileMenu;
+        this.setState({menu: Math.random()})
     }
     reactRender(props: {}) {
+        let Icon = IconLibrary.RightChevron;
+        //@ts-expect-error
+        if(document.querySelector("v-menu").mobileMenu) Icon = IconLibrary.LeftChevron;
         return <div>
             <div class="md:w-72">
             </div>
-            <div class="md:hidden fixed l-10 t-10" onClick={() => this.showMenu()}>
-                <IconLibrary.Menu size={40} />
-            </div>
+            <button class="md:hidden fixed z-50 top-[10px] left-1 text-white p-1 bg-blue-900 rounded shadow block" onClick={() => this.showMenu()}>
+                <Icon size={20} />
+            </button>
         </div>
     }
 }
