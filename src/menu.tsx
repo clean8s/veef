@@ -29,7 +29,7 @@ export class Menu extends RxComponent<PropType<typeof PropObject>> {
         let add: string[] = [];
         if(!this.props.mobileMenu)
         add = ["transform", "<md:translate-x-[-100%]", "!<md:hidden"]
-        return [...add, "md:sticky", "<md:fixed"];
+        return [...add, "md:sticky", "<md:fixed", "<md:z-50", "z-35"];
         if((window as any).showMenu !== true) {
         return [ "flex", "<md:hidden"];
         }else{ 
@@ -39,7 +39,7 @@ export class Menu extends RxComponent<PropType<typeof PropObject>> {
 
     get mainStyle() {
      return `
-     z-index: 45; top: 0px; left: 0; flex-direction: column;
+     top: 0px; left: 0; flex-direction: column;
      display: flex;
      transition: 300ms transform;`
     }
