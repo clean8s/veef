@@ -10,6 +10,7 @@
   "type": "module",
   "dependencies": {
     "@material-design-icons/svg": "^0.5.0",
+    "daisyui": "^1.14.1",
     "htm": "^3.1.0",
     "lit": "^2.0.0",
     "preact": "^10.5.13"

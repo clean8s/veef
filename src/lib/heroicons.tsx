@@ -18,16 +18,4 @@ const HeroIconStrings = {
 </svg>`
 }
 
-function makeSized(key: keyof typeof HeroIconStrings) : IconComponent {
-    const ComponentFunction : IconComponent = (props: RenderableProps<{size: number, className?: string}>): VNode<any> => {
-      const node = ParseSvgString(HeroIconStrings[key], {width: props.size, height: props.size, class: props.className || ""})
-      return node;
-    }
-    return ComponentFunction
-}
-
-const HeroIcons = Object.fromEntries(Object.keys(HeroIconStrings).map((key: string) => {
-    return [key, makeSized(key as any)]
-}));
-
-export default HeroIcons;
+export default HeroIconStrings;

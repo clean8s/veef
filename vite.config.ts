@@ -5,14 +5,17 @@ import windicss from "vite-plugin-windicss"
 import autoimport from "./autoimport"
 import iconLoader from "./icon-loader"
 import plugin from 'windicss/plugin'
+import { transform } from 'windicss/helpers'
 import { Style } from "windicss/utils/style"
 
 // https://vitejs.dev/config/
 
+import daisyui from "daisyui"
 export default defineConfig({
   plugins: [preact(), windicss({
     config: {
       plugins: [
+        transform('daisyui'),
         plugin((utils) => {
           utils.addBase({
             ".peer-checked:checked ~ *": {

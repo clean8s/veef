@@ -25,20 +25,25 @@ import Pin from "@material-design-icons/svg/filled/pin.svg"
 import Person from "@material-design-icons/svg/filled/person.svg"
 import Notification from "@material-design-icons/svg/filled/notifications.svg"
 import HeroIcons from "./heroicons";
+import HeroIconStrings from "./heroicons";
 
 export type Icon = (props: { size: number, className: string }) => VNode;
 
 function sized(icon: string): IconComponent {
     // let IconComponent = (icon as Icon as IconComponent)
-    const component = (props: RenderableProps<{size: number, className?: string}>): VNode<any> => {
-        return ParseSvgString(icon, {width: props.size, height: props.size, class: props.className || "fill-current"})
+    const component = (props: RenderableProps<{size?: number, className?: string}>): VNode<any> => {
+        let sizes: {width: number, height: number} | {} = {};
+        if(typeof props.size === 'number') {
+            sizes = {width: props.size, height: props.size}
+        }
+        return ParseSvgString(icon, {class: props.className || "fill-current", ...sizes})
     }
     return component
 }
 
-export type IconComponent = FunctionComponent<{size: number, className?: string}>;
+export type IconComponent = FunctionComponent<{size?: number, className?: string}>;
 
-const IconLibrary: {[k: string]: IconComponent} = {
+const IconLibrary = {
     "Home": sized(Home),
     "Add": sized(Add),
     "Search": sized(Search),
@@ -61,7 +66,10 @@ const IconLibrary: {[k: string]: IconComponent} = {
     "Favorite": sized(Favorite),
     "Settings": sized(Settings),
     "Delete": sized(Delete),
-    ...HeroIcons
+    "Info": sized(HeroIconStrings.Info),
+    "Refresh": sized(HeroIconStrings.Refresh),
+    "Success": sized(HeroIconStrings.Success),
+    "Warning": sized(HeroIconStrings.Warning),
 }
 
 export const ParseSvgString = (svgString: string, wantedProps: RenderableProps<any>) : VNode => {
@@ -69,7 +77,7 @@ export const ParseSvgString = (svgString: string, wantedProps: RenderableProps<a
      return match;
     })
     //@ts-ignore
-    return <svg dangerouslySetInnerHTML={{__html: svgStr}} {...wantedProps} />
+    return <svg dangerouslySetInnerHTML={{__html: svgStr}} {...wantedProps} viewBox="0 0 24 24" />
 }
 
 export type IconKey = keyof typeof IconLibrary;

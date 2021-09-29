@@ -38,8 +38,8 @@ export abstract class RxComponent<O> extends Component<O & RxProps, any> {
         return ""
     }
 
-    get mainClasses() : string[] {
-        return []
+    get mainClasses() : string[] | undefined {
+        return undefined;
     }
 
     get customElement() : CustomElement {
@@ -113,18 +113,20 @@ abstract class CustomElement extends ReactiveElement {
     public reactRoot : HTMLElement = null as any;
 
 
-    restyle(mainStyle: string, mainClasses: string[], isInitial: boolean) {
+    restyle(mainStyle: string, mainClasses: string[] | undefined, isInitial: boolean) {
         if(mainStyle === "") {
             this.reactRoot.removeAttribute("style")
         } else {
             this.reactRoot.setAttribute("style", mainStyle)
         }
-        this.reactRoot.classList.forEach((x) => {
-            if(mainClasses.indexOf(x) === -1) {
-                this.reactRoot.classList.remove(x)
-            }
-        })
-        this.reactRoot.classList.add(...mainClasses)
+        if(typeof mainClasses !== 'undefined') {
+            this.reactRoot.classList.forEach((x) => {
+                if(mainClasses.indexOf(x) === -1) {
+                    this.reactRoot.classList.remove(x)
+                }
+            })
+            this.reactRoot.classList.add(...mainClasses)
+        }
     }
 
     preactRender() {
@@ -160,7 +162,7 @@ abstract class CustomElement extends ReactiveElement {
 
     public reactActive: boolean = false;
     override append<T extends Node>(...nodes: T[]) : T[] {
-        return nodes.map(x => {
+        const out = nodes.map(x => {
         if(x.nodeType == 1) {
             const el : HTMLElement = x as any as HTMLElement;
             if(el.hasAttribute("slot")) {
@@ -171,6 +173,8 @@ abstract class CustomElement extends ReactiveElement {
         super.append(x);
         return x;
         }) as T[];
+        this.requestUpdate()
+        return out;
     }
 
     override appendChild<T extends Node>(node: T) : T {

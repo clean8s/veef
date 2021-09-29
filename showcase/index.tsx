@@ -21,7 +21,14 @@ class Showcase extends Component<any, {dialogOpen}> {
             }}} > zdravo <a slot="number">FFF</a> </v-menu>
             <section class="w-full p-4">
             
-            <v-icon name="Warning" />
+            <v-icon name="Home" class="inline-block"        iconClass="w-10 h-10  fill-current text-purple-500" />
+            <v-icon name="Login" class="inline-block mx-3"  iconClass="w-10 h-10  fill-current text-red-500" />
+            <v-icon name="Logout" class="inline-block mx-3" iconClass="w-10 h-10  fill-current text-green-500" />
+            <v-icon name="Add" class="inline-block"         iconClass="w-10 h-10  fill-current text-pink-500" />
+
+            <v-infobox text="Some warning text" />
+            <v-infobox status="info" text="Some info text" class="mt-5 block"/>
+
             <v-table main>
                 <button class="my-5 inline-block bg-blue-100 font-bold text-blue-500 border-blue-300 border-solid border-1 rounded p-2" onClick={() => this.openDialog()}>Toggle dialog</button>
                     <v-table row head>

@@ -18,14 +18,6 @@ export const Demo = <v-menu items={items}/>
 
 // import joi from "joi"
 
-@Rx("v-icon", {name: String})
-export class Icon extends RxComponent<{name: IconKey}> {
-    reactRender() {
-        const SingleIcon = IconLibrary[this.props.name];
-        return <SingleIcon size={20} />
-    }
-}
-
 @Rx("v-menu", PropObject)
 export class Menu extends RxComponent<Props> {
     constructor(props: Props) {
@@ -66,7 +58,7 @@ export class Menu extends RxComponent<Props> {
                                     </span>
                                 </button>);
                             }
-                            let icon = IconLibrary[iconkey as any]({size: 20})
+                            let icon = IconLibrary[iconkey as any as IconKey]({size: 20})
 
                             return  <a class="hover:text-gray-800 hover:bg-gray-200 flex items-center p-2 my-6 transition-colors dark:hover:text-white dark:hover:bg-gray-600 duration-200  text-gray-600 dark:text-gray-400 rounded-lg " href="#">
                                 {icon}
