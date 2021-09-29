@@ -23,7 +23,8 @@ export type RxProps = {customElement: CustomElement}
 
 export abstract class RxComponent<O> extends Component<O & RxProps, any> {
     render(props: RenderableProps<O & RxProps> , state: any, context: any): ComponentChild {
-        return this.reactRender(props) as ComponentChild;
+        const C =  this.reactRender(props) as ComponentChild;
+        return C
     }
 
     componentDidMount() {
@@ -53,16 +54,36 @@ import { BASE_CSS } from './base-css'
 
 export function Rx(tagName: string, propTypes?: Object, disableShadowRoot?: boolean) : Function {
     return (Constructor: PreactComponent) => {
-        customElements.define(tagName, CustomElement.create(Constructor, propTypes));
+        if(customElements.get(tagName)) {
+            CustomElement.refresh(tagName, Constructor, propTypes)
+        }
+        customElements.define(tagName, CustomElement.create(tagName, Constructor, propTypes));
     }
 }
 
 type PreactComponent = FunctionComponent<RxProps>
 
+import { VNode } from "preact";
+// import renderStr from 'preact-render-to-string';
+
+import { toChildArray } from "preact";
+const ComponentMarker = ({children} : {children: VNode<any>}) => {
+    return children;
+}
+
 abstract class CustomElement extends ReactiveElement {
-    static create(c: PreactComponent, propType?: Object) {
-        return class extends CustomElement {
+    static create(name: string, c: PreactComponent, propType?: Object) {
+        const newClass = class extends CustomElement {
+            constructor() {
+                super();
+            }
+
             get PreactComponent() {
+                const refC = CustomElement.refreshMap.get(name);
+                if(refC) {
+                    return refC;
+                } 
+
                 return c;
             }
 
@@ -78,7 +99,22 @@ abstract class CustomElement extends ReactiveElement {
                 ]))
                 return Props
             }
-        }
+        };
+        CustomElement.tagHandler.set(name, newClass);
+        return newClass;
+    }
+
+
+    static refreshMap = new Map();
+    static tagHandler = new Map();
+
+    static refresh(tagName: string, c: PreactComponent, propType?: Object) {
+        this.refreshMap.set(tagName, c);
+        document.querySelectorAll(tagName).forEach(x => {
+            if("preactRender" in x) {
+                (x as any).preactRender();
+            }
+        })
     }
 
     abstract get PreactComponent() : PreactComponent;
@@ -98,16 +134,6 @@ abstract class CustomElement extends ReactiveElement {
     connectedCallback() {
         super.connectedCallback()
         this.reactRoot = this;
-        // this.appendChild(this.reactRoot)
-        // this.restyle("", []);
-        // [...this.children].map(x => {
-        //     if(this.tagName === 'V-TABLE' && x.tagName === 'V-TABLE') {
-        //         // x.remove()
-        //         // this.querySelector(".row-slot")?.appendChild(x.cloneNode(true))
-        //         this.oldChildren.push(x.cloneNode(true) as HTMLElement)
-        //         x.remove()
-        //     }
-        // })
     }
 
     public reactRoot : HTMLElement = null as any;
@@ -131,25 +157,17 @@ abstract class CustomElement extends ReactiveElement {
 
     preactRender() {
         this.reactActive = true;
-        if(false) {
-            hydrate(<this.PreactComponent customElement={this} {...this.getProps()} />, this.reactRoot)
-            // cloneElement(Constructor as any, {shadowRoot: this.renderRoot, ...this.getProps()})
-        }
-        else {
-            render(<this.PreactComponent customElement={this} {...this.getProps()} />, this.reactRoot)
-            this.hasRendered = true;
-        }
+        render(<ComponentMarker><this.PreactComponent customElement={this} {...this.getProps()}/></ComponentMarker>, this.reactRoot)
         this.reactActive = false;
         this.appendQueue?.map(x => {
+            if(x !== null && typeof x !== 'undefined')
             this.querySelector(`object[name="${x.slot}"]`)?.append(x.element)
         })
+        return;
     }
 
     createRenderRoot() {
         return this;
-        const N = this.attachShadow({mode: "open"})
-        N.appendChild(document.createElement("slot"))
-        return N;
     }
 
     private hasRendered = false;
@@ -167,7 +185,7 @@ abstract class CustomElement extends ReactiveElement {
             const el : HTMLElement = x as any as HTMLElement;
             if(el.hasAttribute("slot")) {
                 this.appendQueue?.push({element: x, slot: el.getAttribute("slot") || ""})
-                return x;
+                // return x;
             }
         }
         super.append(x);
@@ -180,16 +198,7 @@ abstract class CustomElement extends ReactiveElement {
     override appendChild<T extends Node>(node: T) : T {
         return this.append(node)[0];
     }
-    // get updateComplete() : Promise<boolean> {
-    //     return new Promise((e) => {
-    //         this.preactRender()
-    //         e(true)
-    //     })
-    // }
-    // performUpdate() {
-    //     super.performUpdate()
-    //     // return unsafeHTML(strRender(<Constructor shadowRoot={this.renderRoot} {...this.getProps()} />))
-    // }
+
 
     getProps() {
         // @ts-ignore

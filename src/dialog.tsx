@@ -38,7 +38,6 @@ export class Dialog extends RxComponent<Props> {
     }
 
     componentWillUnmount() {
-        super.componentWillUnmount!()
         this.customElement.removeEventListener("click", this.bound as any)
     }
 

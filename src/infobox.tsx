@@ -19,8 +19,8 @@ export class Menu extends RxComponent<Props> {
         super();
     }
 
-    static get mainStyle() : string {
-        return "display: inline-block"
+    get mainStyle() : string {
+        return "display: block"
     }
 
     reactRender(props: Props) {
@@ -30,16 +30,16 @@ export class Menu extends RxComponent<Props> {
             statusPair.iconName = "Info"
             statusPair.alertClass = "alert-info"
         }
-        if(props.status === "error") {
+        if(props.status === "success") {
             statusPair.iconName = "Success"
-            statusPair.alertClass = "alert-error"
+            statusPair.alertClass = "alert-success"
         }
 
         let text = props.text || "";
 
         return <div class={["alert", statusPair.alertClass].join(" ")}>
         <div class="flex-1">
-            <v-icon name={statusPair.iconName} iconClass="w-6 h-6 pt-1 mx-w fill-current" />
+            <v-icon name={statusPair.iconName} iconClass="w-6 h-6 mx-2 fill-current" />
           <label>{text}</label>
         </div>
       </div>      

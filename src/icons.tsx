@@ -4,6 +4,9 @@ import { RenderableProps } from "preact";
 
 @Rx("v-icon", {name: String, size: Number, iconClass: String})
 export class Icon extends RxComponent<{name: string, size: number, iconClass?: string}> {
+    get mainStyle() {
+        return "display: inline-block;"
+    }
     reactRender() {
         let SingleIcon: IconComponent;
         if(this.props.name in IconLibrary) {
@@ -12,7 +15,7 @@ export class Icon extends RxComponent<{name: string, size: number, iconClass?: s
         } else {
             SingleIcon = IconLibrary.Bolt;
         }
-        return <SingleIcon size={this.props.size || undefined} className={this.props.iconClass || undefined}/>
+        return <SingleIcon size={this.props.size || 20} className={this.props.iconClass || "w-5 h-5 fill-current"}/>
     }
 }
 

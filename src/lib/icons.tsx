@@ -26,6 +26,7 @@ import Person from "@material-design-icons/svg/filled/person.svg"
 import Notification from "@material-design-icons/svg/filled/notifications.svg"
 import HeroIcons from "./heroicons";
 import HeroIconStrings from "./heroicons";
+import BrandSvgStrings from "./brands";
 
 export type Icon = (props: { size: number, className: string }) => VNode;
 
@@ -49,7 +50,6 @@ const IconLibrary = {
     "Search": sized(Search),
     "Bolt": sized(Bolt),
     "Code": sized(Code),
-    "Collapse": sized(Collapse),
     "Edit": sized(Edit),
     "Save": sized(Save),
     "Pin": sized(Pin),
@@ -58,26 +58,50 @@ const IconLibrary = {
     "Close": sized(Close),
     "Menu": sized(Menu),
     "Expand": sized(Expand),
+    "Collapse": sized(Collapse),
     "LeftChevron": sized(LeftChevron),
     "RightChevron": sized(RightChevron),
     "Logout": sized(Logout),
     "Login": sized(Login),
     "List": sized(List),
-    "Favorite": sized(Favorite),
-    "Settings": sized(Settings),
+    "Like": sized(Favorite),
     "Delete": sized(Delete),
+
+
+    "Warning": sized(HeroIconStrings.Warning),
+    "Success": sized(HeroIconStrings.Success),
     "Info": sized(HeroIconStrings.Info),
     "Refresh": sized(HeroIconStrings.Refresh),
-    "Success": sized(HeroIconStrings.Success),
-    "Warning": sized(HeroIconStrings.Warning),
+    "Left": sized(HeroIconStrings.Left),
+    "Right": sized(HeroIconStrings.Right),
+    "Down": sized(HeroIconStrings.Down),
+    "Up": sized(HeroIconStrings.Up),
+    "Upload": sized(HeroIconStrings.Upload),
+    "Wifi": sized(HeroIconStrings.Wifi),
+    "Settings": sized(HeroIconStrings.Settings),
+    "Chart": sized(HeroIconStrings.Chart),
+    "Time": sized(HeroIconStrings.Time),
+    "Storage": sized(HeroIconStrings.Storage),
+    "Zoomin": sized(HeroIconStrings.Zoomin),
+    "Zoomout": sized(HeroIconStrings.Zoomout),
+    "Link": sized(HeroIconStrings.Link),
+    "Copy": sized(HeroIconStrings.Copy),
+    "Lock": sized(HeroIconStrings.Lock),
+    "Discord": sized(BrandSvgStrings.Discord),
+    "Slack": sized(BrandSvgStrings.Slack),
+    "Messenger": sized(BrandSvgStrings.Messenger),
+    "Facebook": sized(BrandSvgStrings.Facebook),
+    "Whatsapp": sized(BrandSvgStrings.Whatsapp),
+    "Youtube": sized(BrandSvgStrings.Youtube),
+    "Instagram": sized(BrandSvgStrings.Instagram),
+    "Twitter": sized(BrandSvgStrings.Twitter),
+    "Tiktok": sized(BrandSvgStrings.Tiktok)
 }
 
 export const ParseSvgString = (svgString: string, wantedProps: RenderableProps<any>) : VNode => {
-    const svgStr = svgString.replace(/<svg.*?>(.*?)<\/svg>/gs, (m, match) => {
-     return match;
-    })
+    const [_, viewBox, svgStr] = svgString.match(/<svg.*?viewBox="(.*?)".*?>(.*?)<\/svg>/s) as string[];
     //@ts-ignore
-    return <svg dangerouslySetInnerHTML={{__html: svgStr}} {...wantedProps} viewBox="0 0 24 24" />
+    return <svg dangerouslySetInnerHTML={{__html: svgStr}} {...wantedProps} viewBox={viewBox} />
 }
 
 export type IconKey = keyof typeof IconLibrary;
