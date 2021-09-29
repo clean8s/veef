@@ -96,18 +96,18 @@ abstract class CustomElement extends ReactiveElement {
                 return c;
             }
 
-            propTypes() : Object {
+            propTypes() : PropHints {
                 return propTypes || {};
             }
 
-            getPropsFromAttributes() {
+            getPropsFromAttributes() : {[k in string]: InstanceType<any>} {
                 const propValEntries = Object.entries(this.propTypes()).map(([propName, propHint]: [string, PropHint<any>]) => {
                     const defaultVal = propHint.default;
                     const val = Reflect.get(this, propName)
-                    if(val) {
-                        return val;
+                    if(typeof val !== undefined && val !== null) {
+                        return [propName, val];
                     }
-                    return defaultVal;
+                    return [propName, defaultVal];
                 });
                 return Object.fromEntries(propValEntries);
             }
