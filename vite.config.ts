@@ -25,29 +25,6 @@ export default defineConfig({
           utils.addVariant("peer-checked", (x) => {
             return x.pseudoClass("checked").child("~ *");
           })
-          // utils.addVariant('peer-checked', (x) => {
-          //   x.pseudoClass("checked")
-          //   return utils.addBase({
-          //     "": {
-          //       background: "red"
-          //     }
-          //   })[0];
-          //   return x.modifySelectors(({className}) => {
-          //     return "bg-red-500";
-          //   });
-
-          //   return utils.addUtilities({
-          //     "input:checked": {
-          //       "background": "red"
-          //     }
-          //   })[0];
-          //   return x.style;
-          // })
-          // utils.addBase({
-          //   "input:checked ~ .peer-checked": {
-          //     "display": "block"
-          //   }
-          // })
         })
       ],
       extract: {

@@ -1,8 +1,8 @@
-import {PropType, Rx, RxComponent} from "./lib/rx";
+import {PropType, Rx, RxComponent, PropHints} from "./lib/rx";
 import {IconKey, IconLibrary} from "./lib/icons";
 
-var PropObject = {
-    text: String
+var PropObject: PropHints = {
+    text: {type: String, default: "empty"}
 };
 
 type Props = {

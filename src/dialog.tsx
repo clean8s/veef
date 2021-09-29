@@ -1,8 +1,8 @@
-import {PropType, Rx, RxComponent} from "./lib/rx";
+import {PropHints, PropType, Rx, RxComponent} from "./lib/rx";
 
-var PropObject = {
-    message: String,
-    open: Boolean
+var PropObject: PropHints = {
+    message: {type: String, default: ""},
+    open: {type: Boolean, default: ""}
 };
 
 // @ts-ignore

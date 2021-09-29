@@ -10,7 +10,7 @@ type Props = {
 };
 
 @Rx("v-loader", PropObject)
-export class Menu extends RxComponent<Props> {
+export class Menu extends RxComponent<PropType<typeof PropObject>> {
     constructor(props: Props) {
         super();
     }

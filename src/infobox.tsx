@@ -1,9 +1,9 @@
-import {PropType, Rx, RxComponent} from "./lib/rx";
+import {PropHints, PropType, Rx, RxComponent} from "./lib/rx";
 import {IconKey, IconLibrary} from "./lib/icons";
 
-var PropObject = {
-    status: String,
-    text: String
+var PropObject: PropHints = {
+    status: {type: String, default: "success"},
+    text: {type: String, default: ""}
 };
 
 type Props = {

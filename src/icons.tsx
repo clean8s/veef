@@ -1,9 +1,15 @@
-import { Rx, RxComponent } from "./lib/rx";
+import { PropHints, PropType, Rx, RxComponent } from "./lib/rx";
 import IconLibrary, { IconComponent } from "./lib/icons";
 import { RenderableProps } from "preact";
 
-@Rx("v-icon", {name: String, size: Number, iconClass: String})
-export class Icon extends RxComponent<{name: string, size: number, iconClass?: string}> {
+const Props: PropHints = {
+    name: {type: String, default: "Bolt"},
+    size: {type: Number, default: 20},
+    iconClass: {type: String, default: "w-5 h-5 fill-current"}
+}
+
+@Rx("v-icon", Props)
+export class Icon extends RxComponent<PropType<typeof Props>> {
     get mainStyle() {
         return "display: inline-block;"
     }
@@ -19,11 +25,10 @@ export class Icon extends RxComponent<{name: string, size: number, iconClass?: s
     }
 }
 
-
 declare global {
     namespace JSX {
       interface IntrinsicElements {
-        "v-icon": RenderableProps<{name: string, size?: number, iconClass?: string, class?: string}>;
+        "v-icon": RenderableProps<{name: string, size?: number, iconClass?: string} | HTMLAttributes>;
       }
     }
   }

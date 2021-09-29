@@ -1,11 +1,20 @@
 import {defaultConverter, LitElement, unsafeCSS} from "lit"
-import { ReactiveElement } from "@lit/reactive-element";
+import { PropertyDeclaration, ReactiveElement } from "@lit/reactive-element";
 import {Component, ComponentChild, render, RenderableProps, createRef, RefObject, cloneElement, hydrate, createElement, h as preactH, FunctionComponent} from "preact";
 import {unsafeHTML} from "lit/directives/unsafe-html.js"
 import  'virtual:windi.css'
 
-export type PropType<O extends {[k: string]: abstract new (...args: any) => any}> =
-    { [k in keyof O]?: InstanceType<O[k]> }
+// any type describing a class constructor for a (sub)type, i.e. NumberConstructor for <T extends number>
+type PropTypeConstructor = abstract new (...args: any) => any
+// A hint for props describes the type of the prop and its default value
+type PropHint<T extends PropTypeConstructor> = {type: T, default: InstanceType<T>}
+// Prop hints is an object of many prop type (hints)
+export type PropHints= {[name in string]: PropHint<any>}
+// Convert a hint to an instance type (i.e. {type: Number} to number)
+type PropHintToConstructor<T extends PropHint<any>> = InstanceType<T["type"]>
+// Convert hints to Preact prop types
+export type PropType<O extends {[k: string]: PropHint<any>}> =
+    { [k in keyof O]: PropHintToConstructor<O[k]> }
 
 let propConverter = {
     fromAttribute: (val: any, type: any) => {
@@ -52,7 +61,7 @@ export abstract class RxComponent<O> extends Component<O & RxProps, any> {
 
 import { BASE_CSS } from './base-css'
 
-export function Rx(tagName: string, propTypes?: Object, disableShadowRoot?: boolean) : Function {
+export function Rx(tagName: string, propTypes?: PropHints, disableShadowRoot?: boolean) : Function {
     return (Constructor: PreactComponent) => {
         if(customElements.get(tagName)) {
             CustomElement.refresh(tagName, Constructor, propTypes)
@@ -72,7 +81,7 @@ const ComponentMarker = ({children} : {children: VNode<any>}) => {
 }
 
 abstract class CustomElement extends ReactiveElement {
-    static create(name: string, c: PreactComponent, propType?: Object) {
+    static create(name: string, c: PreactComponent, propTypes?: PropHints) {
         const newClass = class extends CustomElement {
             constructor() {
                 super();
@@ -88,11 +97,23 @@ abstract class CustomElement extends ReactiveElement {
             }
 
             propTypes() : Object {
-                return propType || {};
+                return propTypes || {};
             }
 
-            static get properties() {
-                const Props = Object.fromEntries(Object.entries(propType || {}).map(([k, v]) => [k, {
+            getPropsFromAttributes() {
+                const propValEntries = Object.entries(this.propTypes()).map(([propName, propHint]: [string, PropHint<any>]) => {
+                    const defaultVal = propHint.default;
+                    const val = Reflect.get(this, propName)
+                    if(val) {
+                        return val;
+                    }
+                    return defaultVal;
+                });
+                return Object.fromEntries(propValEntries);
+            }
+
+            static get properties() : {[k in string]: PropertyDeclaration} {
+                const Props = Object.fromEntries(Object.entries(propTypes || {}).map(([k, v]) => [k, {
                     type: v,
                     converter: propConverter
                 }
@@ -120,6 +141,7 @@ abstract class CustomElement extends ReactiveElement {
     abstract get PreactComponent() : PreactComponent;
     abstract propTypes() : Object;
     private objectId : string;
+    abstract getPropsFromAttributes() : any;
 
     constructor() {
         super();
@@ -157,7 +179,7 @@ abstract class CustomElement extends ReactiveElement {
 
     preactRender() {
         this.reactActive = true;
-        render(<ComponentMarker><this.PreactComponent customElement={this} {...this.getProps()}/></ComponentMarker>, this.reactRoot)
+        render(<ComponentMarker><this.PreactComponent customElement={this} {...this.getPropsFromAttributes()}/></ComponentMarker>, this.reactRoot)
         this.reactActive = false;
         this.appendQueue?.map(x => {
             if(x !== null && typeof x !== 'undefined')
@@ -197,12 +219,6 @@ abstract class CustomElement extends ReactiveElement {
 
     override appendChild<T extends Node>(node: T) : T {
         return this.append(node)[0];
-    }
-
-
-    getProps() {
-        // @ts-ignore
-        return Object.fromEntries(Object.keys(this.propTypes()).map(x => [x, this[x]]))
     }
 }
 

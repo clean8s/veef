@@ -1,8 +1,8 @@
-import {PropType, Rx, RxComponent} from "./lib/rx";
+import {PropHints, PropType, Rx, RxComponent} from "./lib/rx";
 import {IconKey, IconLibrary} from "./lib/icons";
 
-var PropObject = {
-    items: Object
+var PropObject: PropHints = {
+    items: {type: Array, default: []}
 };
 
 type Props = {
@@ -38,14 +38,12 @@ export class Menu extends RxComponent<Props> {
     }
 
     reactRender(props: Props) {
-        let items = props.items || [];
-
         return <div class="menu-big relative flex-grow" style="background: #fafafa">
             <div class="flex flex-col sm:flex-row sm:justify-around">
                 <div class="w-72 h-screen">
                     <nav class="mt-10 px-6 ">
 
-                        {Object.entries(items).map(([k, v]) => {
+                        {Object.entries(props.items).map(([k, v]) => {
                             let right = <></>;
                             let iconkey = v;
                             //@ts-ignore
