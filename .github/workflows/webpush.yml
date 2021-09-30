@@ -25,6 +25,6 @@ jobs:
       uses: ad-m/github-push-action@master
       with:
         github_token: ${{ secrets.GH_SECRET }}
-        repository: clean8s/foss.clean8s.com
-        branch: main
+        repository: clean8s/veef
+        branch: web
         directory: /home/runner/web
