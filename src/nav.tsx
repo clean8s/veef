@@ -26,7 +26,7 @@ export class Menu extends RxComponent<Props> {
         <div class="w-[95%] max-w-320 px-6 py-2 mx-auto md:flex">
             <div class="flex items-center justify-between">
                 <div>
-                    <object name="logo" />
+                    <slot name="logo" />
                 </div>
             
                 <div class="flex md:hidden relative">
@@ -41,11 +41,11 @@ export class Menu extends RxComponent<Props> {
             <input type="checkbox" id={"menu-checkbox-" + this.customElement.getObjectId()} class="absolute hidden <md:peer-checked:block" />
             <div class="w-full md:flex md:items-center md:justify-between <md:hidden">
                 <div class="flex flex-col px-2 py-3 -mx-4 md:flex-row md:mx-0 md:py-0">
-                    <object name="left" class="inline" />
+                    <slot name="left" class="inline" />
                 </div>
                 
                 <div class="relative">
-                    <object name="right" />
+                    <slot name="right" />
                 </div>
             </div>
         </div>

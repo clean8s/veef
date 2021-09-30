@@ -1,3 +1,4 @@
+import { createRef, Ref, RefObject } from "preact";
 import {PropType, Rx, RxComponent} from "./lib/rx";
 
 var PropObject = {
@@ -15,15 +16,19 @@ export class Dialog extends RxComponent<Props> {
     constructor(props: Props) {
         super();
         this.state = {open: props.open}
+        this.R = createRef();
     }
+
+    private R: RefObject<any>;
 
     closeSelf() {
         this.customElement.dispatchEvent(new MouseEvent("close"))
     }
     
     listener(e: MouseEvent) {
-        // @ts-ignore
-        if (e.target.querySelector(".mainthing")) {
+        console.log(e.target, e.currentTarget)
+        const clickedEl = (e.target as HTMLElement);
+        if (clickedEl.classList.contains("inset-0")) {
             this.closeSelf()
         }
     }
@@ -33,7 +38,20 @@ export class Dialog extends RxComponent<Props> {
     componentDidMount() {
         super.componentDidMount()
         this.bound = this.listener.bind(this);
-        this.customElement.addEventListener("click", this.bound as any);
+
+        if(this.R.current)
+        this.R.current.addEventListener("click", this.bound as any);
+        document.addEventListener("keydown", (e) => {
+            if(e.key === 'Escape') {
+                this.closeSelf()
+            }
+        })
+    }
+
+    componentDidUpdate() {
+        super.componentDidUpdate()
+        if(this.R.current)
+        this.R.current.addEventListener("click", this.bound as any);
     }
 
     componentWillUnmount() {
@@ -49,7 +67,7 @@ export class Dialog extends RxComponent<Props> {
     reactRender(props: Props) {
         if (!this.props.open)
             return <div/>
-        return <div class="inset-0 absolute bg-[rgba(0,0,0,0.5)] z-50">
+        return <div ref={this.R} class="inset-0 absolute bg-[rgba(0,0,0,0.5)] z-50">
             <div class="shadow-lg rounded-2xl p-4 bg-white dark:bg-gray-800 w-64 my-10 mx-auto justify-center">
                 <div class="w-full h-full text-center mainthing">
                     <div class="flex h-full flex-col justify-between">
