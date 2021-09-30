@@ -129,6 +129,9 @@ import "../src/table"
 import "../src/tasks"
 import {Component, render, VNode} from "preact";
 import {IconLibrary} from "../src/lib/icons"
+import r from "preact-render-to-string"
+import css1 from "../src/lib/comp.css"
+import css2 from 'virtual:windi.css'
 
 class Showcase extends Component<any, {dialogOpen, counter: number}> {
     constructor(props) {
@@ -222,7 +225,14 @@ class Showcase extends Component<any, {dialogOpen, counter: number}> {
             );
         }
     }
+    document.addEventListener('DOMContentLoaded', () => {
+        const style = document.createElement('style');
+        style.textContent = css1 + css2;
+        document.body.append(style)
+        document.body.classList.add("loaded")
+    })
     if(typeof window != 'undefined' && window['showcase']) {
+        console.log(r(<Showcase/>))
         document.addEventListener('DOMContentLoaded', () => {
             render(<Showcase/>, document.body);
         })
