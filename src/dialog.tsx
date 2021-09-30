@@ -1,8 +1,8 @@
-import {PropHints, PropType, Rx, RxComponent} from "./lib/rx";
+import {PropType, Rx, RxComponent} from "./lib/rx";
 
-var PropObject: PropHints = {
+var PropObject = {
     message: {type: String, default: ""},
-    open: {type: Boolean, default: ""}
+    open: {type: Boolean, default: false}
 };
 
 // @ts-ignore
@@ -32,7 +32,6 @@ export class Dialog extends RxComponent<Props> {
 
     componentDidMount() {
         super.componentDidMount()
-        console.log((this.props as any).onclose)
         this.bound = this.listener.bind(this);
         this.customElement.addEventListener("click", this.bound as any);
     }
@@ -41,21 +40,16 @@ export class Dialog extends RxComponent<Props> {
         this.customElement.removeEventListener("click", this.bound as any)
     }
 
-    get mainStyle() : string {
-        if(!this.props.open) {
-            return ``
-        }
-        return `position: fixed;
-                inset: 0;
-                z-index: 999;
-                display: flex;
-                flex-direction: column;`
+    get mainClasses() {
+        if(!this.props.open)
+        return ["hidden"]
+        return []
     }
 
     reactRender(props: Props) {
         if (!this.props.open)
             return <div/>
-        return <div class="inset-0 absolute bg-[rgba(0,0,0,0.5)]">
+        return <div class="inset-0 absolute bg-[rgba(0,0,0,0.5)] z-50">
             <div class="shadow-lg rounded-2xl p-4 bg-white dark:bg-gray-800 w-64 my-10 mx-auto justify-center">
                 <div class="w-full h-full text-center mainthing">
                     <div class="flex h-full flex-col justify-between">

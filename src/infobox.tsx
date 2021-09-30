@@ -1,7 +1,7 @@
-import {PropHints, PropType, Rx, RxComponent} from "./lib/rx";
+import { PropType, Rx, RxComponent} from "./lib/rx";
 import {IconKey, IconLibrary} from "./lib/icons";
 
-var PropObject: PropHints = {
+var PropObject = {
     status: {type: String, default: "success"},
     text: {type: String, default: ""}
 };
@@ -19,10 +19,6 @@ export class Menu extends RxComponent<Props> {
         super();
     }
 
-    get mainStyle() : string {
-        return "display: block"
-    }
-
     reactRender(props: Props) {
         let statusPair : {iconName: IconKey, alertClass: AlertClasses} = { iconName: "Warning", alertClass: "alert-warning" }
 
@@ -34,13 +30,17 @@ export class Menu extends RxComponent<Props> {
             statusPair.iconName = "Success"
             statusPair.alertClass = "alert-success"
         }
+        if(props.status === "error") {
+            statusPair.iconName = "Error"
+            statusPair.alertClass = "alert-error"
+        }
 
         let text = props.text || "";
 
         return <div class={["alert", statusPair.alertClass].join(" ")}>
         <div class="flex-1">
             <v-icon name={statusPair.iconName} iconClass="w-6 h-6 mx-2 fill-current" />
-          <label>{text}</label>
+            <object name="message" />
         </div>
       </div>      
     }

@@ -64,8 +64,13 @@ const HeroIconStrings = {
 <path d="M3 8a2 2 0 012-2v10h8a2 2 0 01-2 2H5a2 2 0 01-2-2V8z" />
 </svg>`,
 "Lock": `<svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-<path fillRule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clipRule="evenodd" />
-</svg>` 
+  <path fillRule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clipRule="evenodd" />
+</svg>`,
+"Loadbalancer": `<svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 61 81" fill="currentColor">
+<path fillRule="evenodd" d="M57.418 37.921c-1.3 0-2.431 1.118-2.431 2.405v8.968L32.186 26.567V14.878c3.072-.969 5.333-3.841 5.333-7.197C37.519 3.524 34.127 0 29.755 0c-4.202 0-7.764 3.356-7.764 7.681 0 3.356 2.261 6.246 5.333 7.197v11.689L4.862 48.641v-8.315c0-1.286-1.131-2.405-2.431-2.405S0 39.04 0 40.326v16.649h16.828c1.3 0 2.431-1.119 2.431-2.405s-1.131-2.405-2.431-2.405H8.254l19.089-18.886v37.604L21.2 64.805c-.98-.97-2.431-.97-3.392 0-.49.485-.641 1.119-.641 1.752s.17 1.286.641 1.752L29.623 80l11.815-11.69c.98-.969.98-2.405 0-3.356s-2.431-.969-3.392 0l-5.861 5.78V33.279l18.92 18.718h-7.933c-1.3 0-2.431 1.119-2.431 2.405s1.131 2.405 2.431 2.405H60V40.326c-.151-1.435-1.281-2.405-2.582-2.405z" clipRule="evenodd" />
+</svg>`
 }
+
+console.log(Object.keys(HeroIconStrings).map(x => `    "${x}": sized(HeroIconStrings.${x}),`).join("\n"))
 
 export default HeroIconStrings;

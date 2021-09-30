@@ -1,14 +1,12 @@
-import {PropHints, PropType, Rx, RxComponent} from "./lib/rx";
+import {PropType, Rx, RxComponent} from "./lib/rx";
 import {IconKey, IconLibrary} from "./lib/icons";
 
-var PropObject: PropHints = {
-    items: {type: Array, default: []},
+var PropObject = {
+    items: {type: Object, default: {}},
     mobileMenu: {type: Boolean, default: false}
 };
 
-type Props = {
-    items: {[key: string]: (IconKey | {icon: IconKey, number: number})}
-};
+type Props = PropType<typeof PropObject>;
 
 const items : Props["items"] = {
     "Example Item": "Code",
@@ -35,13 +33,6 @@ export class Menu extends RxComponent<PropType<typeof PropObject>> {
         }else{ 
         return [];
         }
-    }
-
-    get mainStyle() {
-     return `
-     top: 0px; left: 0; flex-direction: column;
-     display: flex;
-     transition: 300ms transform;`
     }
 
     reactRender(props: Props) {

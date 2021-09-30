@@ -1,8 +1,8 @@
-import { PropHints, PropType, Rx, RxComponent } from "./lib/rx";
+import { PropType, Rx, RxComponent } from "./lib/rx";
 import IconLibrary, { IconComponent } from "./lib/icons";
 import { RenderableProps } from "preact";
 
-const Props: PropHints = {
+const Props = {
     name: {type: String, default: "Bolt"},
     size: {type: Number, default: 20},
     iconClass: {type: String, default: "w-5 h-5 fill-current"}
@@ -10,9 +10,6 @@ const Props: PropHints = {
 
 @Rx("v-icon", Props)
 export class Icon extends RxComponent<PropType<typeof Props>> {
-    get mainStyle() {
-        return "display: inline-block;"
-    }
     reactRender() {
         let SingleIcon: IconComponent;
         if(this.props.name in IconLibrary) {

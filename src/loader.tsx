@@ -10,10 +10,7 @@ type Props = PropType<typeof PropObject>;
 export class Menu extends RxComponent<PropType<typeof PropObject>> {
     constructor(props: Props) {
         super();
-    }
-
-    get mainStyle() : string {
-        return "display: inline-block"
+        
     }
 
     reactRender(props: Props) {

@@ -1,7 +1,7 @@
-import {PropHints, PropType, Rx, RxComponent} from "./lib/rx";
+import {PropType, Rx, RxComponent} from "./lib/rx";
 import {IconKey, IconLibrary} from "./lib/icons";
 
-var PropObject: PropHints = {
+var PropObject = {
     text: {type: String, default: ""}
 };
 
@@ -13,10 +13,6 @@ type Props = {
 export class Menu extends RxComponent<Props> {
     constructor(props: Props) {
         super();
-    }
-
-    get mainStyle() : string {
-        return "display: inline-block"
     }
 
     reactRender(props: Props) {

@@ -2,7 +2,8 @@ import {PropType, Rx, RxComponent} from "./lib/rx";
 import {IconKey, IconLibrary} from "./lib/icons";
 
 var PropObject = {
-    x: {type: Number, default: 0}
+    x: {type: Number, default: 0},
+    cols: {type: Number, default: 1}
 };
 
 type Props = PropType<typeof PropObject>;
@@ -11,14 +12,13 @@ type Props = PropType<typeof PropObject>;
 export class Grid extends RxComponent<Props> {
     constructor(props: Props) {
         super();
-        console.log(props)
-    }
-
-    get mainStyle() : string {
-        return "display: grid"
     }
 
     reactRender(props: Props) {
         return <></>
+    }
+
+    get mainClasses() : string[] {
+        return [`gridn`, `n-${this.props.cols}`]
     }
 }

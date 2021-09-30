@@ -1,7 +1,7 @@
-import {PropHints, PropType, Rx, RxComponent} from "./lib/rx";
+import {PropType, Rx, RxComponent} from "./lib/rx";
 // import Icons, {IconKey} from "./lib/icons";
 
-var PropObject: PropHints = {
+var PropObject = {
     col: {type: Boolean, default: false},
     row: {type: Boolean, default: false},
     head: {type: Boolean, default: false},

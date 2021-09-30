@@ -20,11 +20,20 @@ import Bolt from "@material-design-icons/svg/filled/bolt.svg"
 import Edit from "@material-design-icons/svg/filled/create.svg"
 import Save from "@material-design-icons/svg/filled/save.svg"
 import Home from "@material-design-icons/svg/filled/home.svg"
-import Pin from "@material-design-icons/svg/filled/pin.svg"
+import Pin from "@material-design-icons/svg/filled/place.svg"
+import Bold from "@material-design-icons/svg/filled/format_bold.svg"
+import Italic from "@material-design-icons/svg/filled/format_italic.svg"
+import Circle from "@material-design-icons/svg/filled/radio_button_unchecked.svg"
+import CircleFilled from "@material-design-icons/svg/filled/circle.svg"
+import Pause from "@material-design-icons/svg/filled/pause.svg"
+import Stop from "@material-design-icons/svg/filled/stop.svg"
+import Start from "@material-design-icons/svg/filled/play_arrow.svg"
+import Help from "@material-design-icons/svg/filled/help.svg"
 
 import Person from "@material-design-icons/svg/filled/person.svg"
 import Notification from "@material-design-icons/svg/filled/notifications.svg"
-import HeroIcons from "./heroicons";
+import Error from "@material-design-icons/svg/filled/error.svg"
+
 import HeroIconStrings from "./heroicons";
 import BrandSvgStrings from "./brands";
 
@@ -65,8 +74,16 @@ const IconLibrary = {
     "Login": sized(Login),
     "List": sized(List),
     "Like": sized(Favorite),
+    "Bold": sized(Bold),
+    "Italic": sized(Italic),
+    "Circle": sized(Circle),
+    "CircleFilled": sized(CircleFilled),
+    "Pause": sized(Pause),
+    "Stop": sized(Stop),
+    "Start": sized(Start),
     "Delete": sized(Delete),
-
+    "Help": sized(Help),
+    "Error": sized(Error),
 
     "Warning": sized(HeroIconStrings.Warning),
     "Success": sized(HeroIconStrings.Success),
@@ -87,6 +104,10 @@ const IconLibrary = {
     "Link": sized(HeroIconStrings.Link),
     "Copy": sized(HeroIconStrings.Copy),
     "Lock": sized(HeroIconStrings.Lock),
+    "Loadbalancer": sized(HeroIconStrings.Loadbalancer),
+
+    "Github": sized(BrandSvgStrings.Github),
+    "Twitter": sized(BrandSvgStrings.Twitter),
     "Discord": sized(BrandSvgStrings.Discord),
     "Slack": sized(BrandSvgStrings.Slack),
     "Messenger": sized(BrandSvgStrings.Messenger),
@@ -94,8 +115,7 @@ const IconLibrary = {
     "Whatsapp": sized(BrandSvgStrings.Whatsapp),
     "Youtube": sized(BrandSvgStrings.Youtube),
     "Instagram": sized(BrandSvgStrings.Instagram),
-    "Twitter": sized(BrandSvgStrings.Twitter),
-    "Tiktok": sized(BrandSvgStrings.Tiktok)
+    "Tiktok": sized(BrandSvgStrings.Tiktok),
 }
 
 export const ParseSvgString = (svgString: string, wantedProps: RenderableProps<any>) : VNode => {

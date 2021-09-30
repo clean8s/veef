@@ -4,6 +4,7 @@ import preact from '@preact/preset-vite'
 import windicss from "vite-plugin-windicss"
 import autoimport from "./autoimport"
 import iconLoader from "./icon-loader"
+import cssProcess from "./css-process"
 import plugin from 'windicss/plugin'
 import { transform } from 'windicss/helpers'
 import { Style } from "windicss/utils/style"
@@ -15,7 +16,7 @@ export default defineConfig({
   plugins: [preact(), windicss({
     config: {
       plugins: [
-        transform('daisyui'),
+        // transform('daisyui'),
         plugin((utils) => {
           utils.addBase({
             ".peer-checked:checked ~ *": {
@@ -38,7 +39,7 @@ export default defineConfig({
         ]
       }
     }
-  }), autoimport, iconLoader],
+  }), autoimport, iconLoader, cssProcess],
   base: "./",
   build: {
     lib: {
