@@ -15,6 +15,7 @@ jobs:
         sed -i "s/veef.es.js/veef${RNG}.js/g" dist/index.html
         sed -i "s/style.css/style${RNG}.css/g" dist/index.html
         git clone -b web https://github.com/clean8s/veef.git /home/runner/web
+        cp /home/runner/web/CNAME dist
         rm -rf /home/runner/web/*
         mv -t /home/runner/web/ dist/*
         cd /home/runner/web
