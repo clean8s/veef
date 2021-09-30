@@ -1,0 +1,26 @@
+{
+  "name": "veef",
+  "version": "0.0.0",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "serve": "vite preview",
+    "ssr": "vite build && node serverside/ssr.js"
+  },
+  "type": "module",
+  "dependencies": {
+    "@material-design-icons/svg": "^0.5.0",
+    "daisyui": "^1.14.1",
+    "htm": "^3.1.0",
+    "lit": "^2.0.0",
+    "preact": "^10.5.13",
+    "preact-render-to-string": "^5.1.19"
+  },
+  "devDependencies": {
+    "@lit-labs/ssr": "^1.0.0",
+    "@preact/preset-vite": "^2.0.0",
+    "typescript": "^4.3.2",
+    "vite": "^2.5.4",
+    "vite-plugin-windicss": "^1.4.7"
+  }
+}
