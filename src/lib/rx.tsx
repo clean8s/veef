@@ -62,11 +62,14 @@ import { BASE_CSS } from './base-css'
 
 export function Rx(tagName: string, propTypes?: PropObj, disableShadowRoot?: boolean) : Function {
     return (Constructor: PreactComponent) => {
-        if(customElements.get(tagName)) {
-            CustomElement.refresh(tagName, Constructor, propTypes)
-        } else {
-            customElements.define(tagName, CustomElement.create(tagName, Constructor, propTypes));
-        }
+        customElements.define(tagName, CustomElement.create(tagName, Constructor, propTypes));
+        // Do we want refresh logic? [in case element is already defined / hot reloading]
+        //
+        // if(customElements.get(tagName)) {
+        //     CustomElement.refresh(tagName, Constructor, propTypes)
+        // } else {
+        //     customElements.define(tagName, CustomElement.create(tagName, Constructor, propTypes));
+        // }
     }
 }
 
@@ -76,10 +79,13 @@ import { VNode } from "preact";
 // import renderStr from 'preact-render-to-string';
 
 import { toChildArray } from "preact";
-const ComponentMarker = (props : {children: VNode<any>, disconnected?: boolean}) => {
-    // if(props.disconnected === true) {
-    //     return <></>;
-    // }
+const ComponentMarker = (props : {children: VNode<any>, disconnect?: boolean, shadowDom: boolean}) => {
+    if(props.disconnect === true) {
+        return <></>;
+    }
+    if(props.shadowDom) {
+        return <>{props.children}<slot/></>;
+    }
     return props.children;
 }
 
@@ -157,7 +163,7 @@ abstract class CustomElement extends ReactiveElement {
     }
 
     connectedCallback() {
-        if(this.isConnected) return;
+        // if(this.isConnected) return;
 
         super.connectedCallback()
         this.reactRoot = this;
@@ -183,9 +189,9 @@ abstract class CustomElement extends ReactiveElement {
         }
     }
 
-    preactRender() {
+    preactRender(disconnect?: boolean) {
         this.reactActive = true;
-        render(<ComponentMarker><this.PreactComponent customElement={this} {...this.getPropsFromAttributes()}/></ComponentMarker>, this.reactRoot)
+        render(<ComponentMarker {...{disconnect, shadowDom: !this.useLightDOM}}><this.PreactComponent customElement={this} {...this.getPropsFromAttributes()}/></ComponentMarker>, this.reactRoot)
         this.reactActive = false;
 
         if(this.useLightDOM) {
@@ -217,7 +223,6 @@ abstract class CustomElement extends ReactiveElement {
         this.preactRender()
         if(!this.useLightDOM && !this.shadowRoot?.querySelector("style")) {
             this.shadowRoot?.append(createCssNode())
-            this.shadowRoot?.append(document.createElement("slot"))
         }
     }
 
@@ -250,6 +255,7 @@ import css1 from "./comp.css"
 import css2 from 'virtual:windi.css'
 
 export function createCssNode() {
+    new StyleSheet
     const style = document.createElement('style');
     style.textContent = css1 + css2;
     return style;
