@@ -255,7 +255,6 @@ import css1 from "./comp.css"
 import css2 from 'virtual:windi.css'
 
 export function createCssNode() {
-    new StyleSheet
     const style = document.createElement('style');
     style.textContent = css1 + css2;
     return style;
