@@ -42,11 +42,9 @@ class Showcase extends Component<any, {dialogOpen, counter: number}> {
             <v-menu items={{"Home label": "Home", "Other label": "Like", "A label with number": {
                 icon: "Search",
                 number: 10
-            }}} > zdravo <a slot="number">FFF</a> </v-menu>
+            }}} > </v-menu>
             <section class="w-full p-4">
             The menu on the left is <code>{"<v-menu />"}</code>, the topbar is {"<v-nav />"}.
-            
-            <v-grid></v-grid>
             
             <TagName name="v-loader"/>
             <v-loader class="w-60 block my-5"/>
