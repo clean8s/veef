@@ -97,9 +97,7 @@ class Showcase extends Component<any, {dialogOpen, counter: number}> {
         }
     }
     document.addEventListener('DOMContentLoaded', () => {
-        const style = document.createElement('style');
-        style.textContent = css1 + css2;
-        document.body.append(style)
+        document.body.append(createCssNode())
         document.body.classList.add("loaded")
     })
     if(typeof window != 'undefined' && window['showcase']) {
@@ -109,3 +107,4 @@ class Showcase extends Component<any, {dialogOpen, counter: number}> {
         })
     }
     
+    import {createCssNode} from "../src/lib/rx"

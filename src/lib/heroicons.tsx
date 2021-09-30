@@ -71,6 +71,4 @@ const HeroIconStrings = {
 </svg>`
 }
 
-console.log(Object.keys(HeroIconStrings).map(x => `    "${x}": sized(HeroIconStrings.${x}),`).join("\n"))
-
 export default HeroIconStrings;

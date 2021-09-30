@@ -40,7 +40,7 @@ export class Menu extends RxComponent<Props> {
         return <div class={["alert", statusPair.alertClass].join(" ")}>
         <div class="flex-1">
             <v-icon name={statusPair.iconName} iconClass="w-6 h-6 mx-2 fill-current" />
-            <object name="message" />
+            <slot name="message" /> 
         </div>
       </div>      
     }

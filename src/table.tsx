@@ -28,6 +28,10 @@ export class Menu extends RxComponent<Props> {
     renderRow() {
         return <td class="px-4 py-3 border"></td>
     }
+
+    componentWillUnmount() {
+        console.log("A")
+    }
     get mainClasses() : string[] {
         if(this.props.main)
         return `w-full mb-8 overflow-hidden rounded-lg shadow-lg table`.split(" ")

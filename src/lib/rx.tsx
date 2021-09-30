@@ -64,8 +64,9 @@ export function Rx(tagName: string, propTypes?: PropObj, disableShadowRoot?: boo
     return (Constructor: PreactComponent) => {
         if(customElements.get(tagName)) {
             CustomElement.refresh(tagName, Constructor, propTypes)
+        } else {
+            customElements.define(tagName, CustomElement.create(tagName, Constructor, propTypes));
         }
-        customElements.define(tagName, CustomElement.create(tagName, Constructor, propTypes));
     }
 }
 
@@ -75,8 +76,11 @@ import { VNode } from "preact";
 // import renderStr from 'preact-render-to-string';
 
 import { toChildArray } from "preact";
-const ComponentMarker = ({children} : {children: VNode<any>}) => {
-    return children;
+const ComponentMarker = (props : {children: VNode<any>, disconnected?: boolean}) => {
+    // if(props.disconnected === true) {
+    //     return <></>;
+    // }
+    return props.children;
 }
 
 abstract class CustomElement extends ReactiveElement {
@@ -145,7 +149,6 @@ abstract class CustomElement extends ReactiveElement {
 
     constructor() {
         super();
-        this.appendQueue = [];
         this.objectId = Math.random().toString(36).substring(3);
     }
 
@@ -154,9 +157,16 @@ abstract class CustomElement extends ReactiveElement {
     }
 
     connectedCallback() {
+        if(this.isConnected) return;
+
         super.connectedCallback()
         this.reactRoot = this;
-        this.setAttribute("data-vid", this.getObjectId())
+        // this.preactRender(true)
+    }
+
+    disconnectedCallback() {
+        super.disconnectedCallback()
+        this.preactRender(true)
     }
 
     public reactRoot : HTMLElement = null as any;
@@ -164,66 +174,54 @@ abstract class CustomElement extends ReactiveElement {
 
     restyle( mainClasses: string[] | undefined, isInitial: boolean) {
         if(typeof mainClasses !== 'undefined') {
-            [...this.reactRoot.classList].map((x) => {
+            [...this.classList].map((x) => {
                 if(mainClasses.indexOf(x) === -1) {
-                    this.reactRoot.classList.remove(x)
+                    this.classList.remove(x)
                 }
             })
-            this.reactRoot.classList.add(...mainClasses)
+            this.classList.add(...mainClasses)
         }
     }
 
     preactRender() {
-        if(this.hasRendered) {
-            hydrate(<ComponentMarker><this.PreactComponent customElement={this} {...this.getPropsFromAttributes()}/></ComponentMarker>, this.reactRoot)
-        } else {
-            this.reactActive = true;
-            render(<ComponentMarker><this.PreactComponent customElement={this} {...this.getPropsFromAttributes()}/></ComponentMarker>, this.reactRoot)
-            this.reactActive = false;
-            // this.hasRendered = true;
+        this.reactActive = true;
+        render(<ComponentMarker><this.PreactComponent customElement={this} {...this.getPropsFromAttributes()}/></ComponentMarker>, this.reactRoot)
+        this.reactActive = false;
+
+        if(this.useLightDOM) {
+            [...this.querySelectorAll("*[slot]")].map(x => {
+                if(x !== null && typeof x !== 'undefined') {
+                    if(x.parentElement?.tagName !== "SLOT")
+                    this.querySelector(`slot[name="${x.slot}"]`)?.append(x)
+                }
+            })
         }
-        [...this.querySelectorAll("*[slot]")].map(x => {
-            if(x !== null && typeof x !== 'undefined') {
-                if(x.parentElement?.tagName !== "OBJECT")
-                this.querySelector(`object[name="${x.slot}"]`)?.append(x)
-            }
-        })
         return;
     }
 
     createRenderRoot() {
-        return this;
+        if(this.useLightDOM) {
+            return this;
+        }
+        return this.attachShadow({mode: 'open'});
     }
 
+    private useLightDOM = false;
     private hasRendered = false;
-    public appendQueue: {element: Node, slot: string}[];
 
 
     updated() {
+        if(!this.useLightDOM) {
+            this.reactRoot = this.shadowRoot as any;
+        }
         this.preactRender()
+        if(!this.useLightDOM && !this.shadowRoot?.querySelector("style")) {
+            this.shadowRoot?.append(createCssNode())
+            this.shadowRoot?.append(document.createElement("slot"))
+        }
     }
 
     public reactActive: boolean = false;
-    override append<T extends Node>(...nodes: T[]) {
-        // const out = nodes.map(x => {
-        // if(x.nodeType == 1) {
-        //     const el : HTMLElement = x as any as HTMLElement;
-        //     if(el.hasAttribute("slot")) {
-        //         this.appendQueue?.push({element: x, slot: el.getAttribute("slot") || ""})
-        //         // return x;
-        //     }
-        // }
-        // super.append(x);
-        // return x;
-        // }) as T[];
-        this.requestUpdate()
-        return super.append(...nodes);
-    }
-
-    override appendChild<T extends Node>(node: T) : T {
-        this.requestUpdate()
-        return super.appendChild(node)
-    }
 }
 
 import htmH from "htm"
@@ -247,3 +245,12 @@ export const htmBound =  htmH.bind(preactH)
 // if (typeof window != 'undefined') {
 //     customWin.domAttr = domAttr;
 // }
+
+import css1 from "./comp.css"
+import css2 from 'virtual:windi.css'
+
+export function createCssNode() {
+    const style = document.createElement('style');
+    style.textContent = css1 + css2;
+    return style;
+}
