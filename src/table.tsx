@@ -30,7 +30,7 @@ export class Menu extends RxComponent<Props> {
     }
 
     componentWillUnmount() {
-        console.log("A")
+        console.log("Table has been unmounted [TODO]")
     }
     
     get mainClasses() : string[] {
