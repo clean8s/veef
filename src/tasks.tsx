@@ -1,15 +1,12 @@
 import { PropType, Rx, RxComponent} from "./lib/rx";
 import {IconKey, IconLibrary} from "./lib/icons";
+import {RenderableProps} from "preact";
 
 var PropObject = {
     text: {type: String, default: ""}
 };
 
-type Props = {
-    text: string
-};
-// @ts-ignore
-export const Demo = <v-empty text="This is a simple span">{<IconLibrary.Search />}</v-empty>
+type Props = PropType<typeof PropObject>;
 
 @Rx("v-tasks", PropObject)
 export class Menu extends RxComponent<Props> {
@@ -91,5 +88,12 @@ export class Menu extends RxComponent<Props> {
             </ul>
         </div>
         
+    }
+}
+declare global {
+    namespace JSX {
+        interface IntrinsicElements {
+            "v-tasks": RenderableProps<Props | HTMLAttributes>;
+        }
     }
 }

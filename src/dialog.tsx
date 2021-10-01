@@ -1,4 +1,4 @@
-import { createRef, Ref, RefObject } from "preact";
+import {createRef, Ref, RefObject, RenderableProps} from "preact";
 import {PropType, Rx, RxComponent} from "./lib/rx";
 
 var PropObject = {
@@ -98,5 +98,13 @@ export class Dialog extends RxComponent<Props> {
                 </div>
             </div>
         </div>;
+    }
+}
+
+declare global {
+    namespace JSX {
+        interface IntrinsicElements {
+            "v-dialog": RenderableProps<Props | HTMLAttributes | {onClose: EventListener }>;
+        }
     }
 }

@@ -1,8 +1,10 @@
 import { PropType, Rx, RxComponent} from "./lib/rx";
 import {IconKey, IconLibrary} from "./lib/icons";
+import {RenderableProps} from "preact";
 
 var PropObject = {
     text: {type: String, default: ""},
+    inset: {type: Boolean, default: false},
 };
 
 type Props = PropType<typeof PropObject>;
@@ -26,5 +28,13 @@ export class Menu extends RxComponent<Props> {
             <v-icon name="Search" />
         </button>
     </div>
+    }
+}
+
+declare global {
+    namespace JSX {
+        interface IntrinsicElements {
+            "v-search": RenderableProps<Props | HTMLAttributes>;
+        }
     }
 }

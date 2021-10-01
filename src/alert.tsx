@@ -1,19 +1,17 @@
 import { PropType, Rx, RxComponent} from "./lib/rx";
 import {IconKey, IconLibrary} from "./lib/icons";
+import {RenderableProps} from "preact";
 
 var PropObject = {
     status: {type: String, default: "success"},
     text: {type: String, default: ""}
 };
 
-type Props = {
-    status: string,
-    text: string
-};
-
 type AlertClasses = "alert-info" | "alert-success" | "alert-warning" | "alert-error"
 
-@Rx("v-infobox", PropObject)
+type Props = PropType<typeof PropObject>
+
+@Rx("v-alert", PropObject)
 export class Menu extends RxComponent<Props> {
     constructor(props: Props) {
         super();
@@ -43,5 +41,14 @@ export class Menu extends RxComponent<Props> {
             <slot name="message" /> 
         </div>
       </div>      
+    }
+}
+
+
+declare global {
+    namespace JSX {
+        interface IntrinsicElements {
+            "v-alert": RenderableProps<Props | HTMLAttributes>;
+        }
     }
 }

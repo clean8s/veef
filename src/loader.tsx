@@ -1,5 +1,6 @@
 import {PropType, Rx, RxComponent} from "./lib/rx";
 import {IconKey, IconLibrary} from "./lib/icons";
+import {RenderableProps} from "preact";
 
 var PropObject = {
     spinner: {type: Boolean, default: false}
@@ -7,7 +8,7 @@ var PropObject = {
 
 type Props = PropType<typeof PropObject>;
 @Rx("v-loader", PropObject)
-export class Menu extends RxComponent<PropType<typeof PropObject>> {
+export class Loader extends RxComponent<PropType<typeof PropObject>> {
     constructor(props: Props) {
         super();
         
@@ -21,5 +22,13 @@ export class Menu extends RxComponent<PropType<typeof PropObject>> {
         <div class="w-3/4 h-full text-center text-xs text-white bg-green-500 rounded-full">
         </div>
     </div>)
+    }
+}
+
+declare global {
+    namespace JSX {
+        interface IntrinsicElements {
+            "v-loader": RenderableProps<Partial<Props> | HTMLAttributes>;
+        }
     }
 }

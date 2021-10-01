@@ -2,7 +2,7 @@
   "compilerOptions": {
     "experimentalDecorators": true,
     "target": "ESNext",
-    "useDefineForClassFields": false,
+    "useDefineForClassFields": true,
     "lib": ["DOM", "DOM.Iterable", "ESNext"],
     "allowJs": false,
     "skipLibCheck": false,
@@ -17,8 +17,7 @@
     "noEmit": true,
     "jsx": "preserve",
     "jsxFactory": "h",
-    "jsxFragmentFactory": "Fragment",
-    "emitDeclarationOnly": false
+    "jsxFragmentFactory": "Fragment"
   },
   "include": ["src"]
 }

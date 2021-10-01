@@ -1,5 +1,6 @@
 import {PropType, Rx, RxComponent} from "./lib/rx";
 import {IconKey, IconLibrary} from "./lib/icons";
+import {RenderableProps} from "preact";
 
 var PropObject = {
     text: {type: String, default: ""}
@@ -53,5 +54,13 @@ export class Menu extends RxComponent<Props> {
         let text = props.text || "";
 
         return <span class="select-text">{text} <slot/> </span>
+    }
+}
+
+declare global {
+    namespace JSX {
+        interface IntrinsicElements {
+            "v-nav": RenderableProps<Props | HTMLAttributes>;
+        }
     }
 }

@@ -1,5 +1,6 @@
 import {PropType, Rx, RxComponent} from "./lib/rx";
 import {IconKey, IconLibrary} from "./lib/icons";
+import {RenderableProps} from "preact";
 
 var PropObject = {
     x: {type: Number, default: 0},
@@ -20,5 +21,14 @@ export class Grid extends RxComponent<Props> {
 
     get mainClasses() : string[] {
         return [`gridn`, `n-${this.props.cols}`]
+    }
+}
+
+
+declare global {
+    namespace JSX {
+        interface IntrinsicElements {
+            "v-grid": RenderableProps<Props | HTMLAttributes>;
+        }
     }
 }

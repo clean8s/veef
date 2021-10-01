@@ -1,5 +1,6 @@
 import {PropType, Rx, RxComponent} from "./lib/rx";
 import {IconKey, IconLibrary} from "./lib/icons";
+import {RenderableProps} from "preact";
 
 var PropObject = {
     items: {type: Object, default: {}},
@@ -12,12 +13,8 @@ const items : Props["items"] = {
     "Example Item": "Code",
     "SomeThing": "Like"
 }
-// @ts-ignore
-export const Demo = <v-menu items={items}/>
 
-// import joi from "joi"
-
-@Rx("v-menu", PropObject)
+@Rx("v-sidebar", PropObject)
 export class Menu extends RxComponent<PropType<typeof PropObject>> {
     constructor(props: Props) {
         super();
@@ -98,5 +95,14 @@ class NavWrap extends RxComponent<{}> {
                 <Icon size={20} />
             </button>
         </div>
+    }
+}
+
+
+declare global {
+    namespace JSX {
+        interface IntrinsicElements {
+            "v-sidebar": RenderableProps<Partial<Props> | HTMLAttributes>;
+        }
     }
 }

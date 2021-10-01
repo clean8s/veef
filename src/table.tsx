@@ -18,6 +18,7 @@ type Props = {
 export const Demo = <v-table><v-table col>asdfasdfsadf</v-table><v-table col>asdsaf</v-table></v-table>
 
 import {htmBound} from "./lib/rx"
+import {RenderableProps} from "preact";
 
 @Rx("v-table", PropObject)
 export class Menu extends RxComponent<Props> {
@@ -57,5 +58,13 @@ export class Menu extends RxComponent<Props> {
             return <></>
         }
         return <></>
+    }
+}
+
+declare global {
+    namespace JSX {
+        interface IntrinsicElements {
+            "v-table": RenderableProps<Props | HTMLAttributes>;
+        }
     }
 }

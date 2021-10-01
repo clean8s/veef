@@ -1,5 +1,6 @@
 import {PropType, Rx, RxComponent} from "./lib/rx";
 import {IconKey, IconLibrary} from "./lib/icons";
+import {RenderableProps} from "preact";
 
 var PropObject = {
     text: {type: String, default: "empty"},
@@ -21,5 +22,13 @@ export class Menu extends RxComponent<Props> {
             <v-icon name="Success" class="mt-[2px] pr-2" />
             <span class="flex-grow">{text}</span>
         </button>
+    }
+}
+
+declare global {
+    namespace JSX {
+        interface IntrinsicElements {
+            "v-button": RenderableProps<Props | HTMLAttributes>;
+        }
     }
 }
