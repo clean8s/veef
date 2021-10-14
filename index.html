@@ -4,12 +4,18 @@
   <meta charset="UTF-8" />
   <link rel="icon" type="image/svg+xml" href="data:image/x-icon;base64,AAABAAEAEBAQAAEABAAoAQAAFgAAACgAAAAQAAAAIAAAAAEABAAAAAAAgAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAA2f8AAP///wAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEREAAiIiIiIREQAAIiIiIhERAAACIiIiEREAAAAiIiIREQAAAAIiIhERAAAAACIiEREAAAAAAiIREQAAAAAAIhERAAAAAAAiEREAAAAAAiIREQAAAAAiIhERAAAAAiIiEREAAAAiIiIREQAAAiIiIhERAAAiIiIiEREAAiIiIiIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <script>
-    window.showcase = true;
-  </script>
   <title>Veef demo</title>
 </head>
 <body>
-  <script type="module" src="./src/showcase/index.tsx"></script>
+<section id="styles"></section>
+  <script type="module">
+    import {ShowcaseNode, CSSNode} from "./src/showcase.tsx"
+    import {render} from "preact"
+    document.addEventListener("DOMContentLoaded", () => {
+      render(ShowcaseNode, app)
+      render(CSSNode, styles)
+    })
+    </script>
+  <div id="app"></div>
 </body>
 </html>

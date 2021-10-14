@@ -22,21 +22,14 @@ export class Menu extends RxComponent<PropType<typeof PropObject>> {
 
     get mainClasses() {
         let add: string[] = [];
-        if(!this.props.mobileMenu)
-        add = ["transform", "<md:translate-x-[-100%]", "!<md:hidden"]
-        return [...add, "md:sticky", "<md:fixed", "<md:z-50", "z-35"];
-        if((window as any).showMenu !== true) {
-        return [ "flex", "<md:hidden"];
-        }else{ 
-        return [];
-        }
+        add = ["md:sticky", "<md:fixed", "up-box-shadow", "<md:border-t-1", "border-[#bbb]", "border-solid", "left-0", "md:w-150", "flex-grow", "flex", "top-0", "bottom-0", "h-screen", "<md:top-[80%]", "<md:w-full"] // "<md:translate-x-[-100%]"
+        return [...add, "z-35"];
     }
 
     reactRender(props: Props) {
         return <div class="menu-big relative flex-grow bg-gray-100">
             <div class="flex flex-col sm:flex-row sm:justify-around">
-                <div class="w-72 h-screen">
-                    <nav class="mt-5 px-6 ">
+                    <nav class="mt-5 px-6 <md:flex <md:flex-row">
 
                         {Object.entries(props.items).map(([k, v]) => {
                             let right = <></>;
@@ -63,41 +56,9 @@ export class Menu extends RxComponent<PropType<typeof PropObject>> {
 
                     </nav>
                 </div>
-            </div>
         </div>;
     }
 }
-
-@Rx("v-navwrap")
-class NavWrap extends RxComponent<{}> {
-    get mainClasses() : string[] {
-        return ["flex"];
-        let _ = <div class="md:grid md:grid-cols-[18rem,1fr,min-content] block" />
-        return ("md:grid md:grid-cols-[18rem,1fr,min-content] block md:pt-[70px] <md:pt-[50px]".split(" "))
-    }
-    showMenu () {
-        //@ts-expect-error
-        document.querySelector("v-menu").mobileMenu = !document.querySelector("v-menu").mobileMenu;
-        this.setState({menu: Math.random()})
-    }
-    reactRender(props: {}) {
-        // return [];
-        let Icon = IconLibrary.RightChevron;
-        //@ts-expect-error
-        if(document.querySelector("v-menu").mobileMenu) Icon = IconLibrary.LeftChevron;
-        return (<button class="md:hidden fixed z-50 top-[6px] left-1 text-white p-1 bg-blue-600 rounded shadow block" onClick={() => this.showMenu()}>
-        <Icon size={20} />
-    </button>)
-        return <div>
-            <div class="md:w-72">
-            </div>
-            <button class="md:hidden fixed z-50 top-[10px] left-1 text-white p-1 bg-blue-900 rounded shadow block" onClick={() => this.showMenu()}>
-                <Icon size={20} />
-            </button>
-        </div>
-    }
-}
-
 
 declare global {
     namespace JSX {

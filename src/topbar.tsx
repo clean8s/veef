@@ -16,8 +16,8 @@ export const Demo = <v-empty text="This is a simple span">{<IconLibrary.Search /
 export class Menu extends RxComponent<Props> {
     constructor(props: Props) {
         super();
-    
     }
+
 
     get mainClasses() {
         return `block bg-white shadow dark:bg-gray-800 z-40 sticky top-0 left-0 right-0`.split(" ")

@@ -2,9 +2,8 @@ import { defineConfig } from 'vite'
 // @ts-ignore
 import preact from '@preact/preset-vite'
 import windicss from "vite-plugin-windicss"
-import autoimport from "./autoimport"
 import iconLoader from "./icon-loader"
-import cssProcess from "./css-process"
+import htmlFormat from "./html-output-formatter"
 import plugin from 'windicss/plugin'
 
 // https://vitejs.dev/config/
@@ -35,7 +34,7 @@ export default defineConfig({
         ]
       }
     }
-  }), autoimport, iconLoader, cssProcess],
+  }), iconLoader, htmlFormat],
   base: "./",
   build: {
     lib: {

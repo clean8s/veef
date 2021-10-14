@@ -2,11 +2,12 @@ import fs from "fs"
 import { getThisDir, pathJoin } from "./autoimport"
 
 export default {
-    name: 'css-process',
+    name: 'html-output-formatter',
+
     transformIndexHtml(html, ctx, bundle) {
         return html.replace(/<link (.*?)>/gs, (all, src) => {
             return ``
-        })
+        }).replace(/type="module" crossorigin/gs, "")
     },
     transform(code, file) {
         if(!pathJoin(file,"").startsWith(pathJoin(getThisDir(), "src")))

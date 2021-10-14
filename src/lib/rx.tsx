@@ -163,11 +163,8 @@ abstract class CustomElement extends ReactiveElement {
     }
 
     connectedCallback() {
-        // if(this.isConnected) return;
-
         super.connectedCallback()
         this.reactRoot = this;
-        // this.preactRender(true)
     }
 
     disconnectedCallback() {
@@ -212,8 +209,7 @@ abstract class CustomElement extends ReactiveElement {
         return this.attachShadow({mode: 'open'});
     }
 
-    private useLightDOM = false;
-    private hasRendered = false;
+    private useLightDOM = true;
 
 
     updated() {
@@ -258,4 +254,8 @@ export function createCssNode() {
     const style = document.createElement('style');
     style.textContent = css1 + css2;
     return style;
+}
+
+export function createCssVnode() {
+    return <style>{css1 + css2}</style>
 }

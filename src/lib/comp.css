@@ -6,9 +6,14 @@ v-tasks {
     display: inline-block;
 }
 v-sidebar {
-    top: 0px; left: 0; flex-direction: column;
-    display: flex;
-    transition: 300ms transform;
+    /*top: 0px; left: 0; flex-direction: column;*/
+    /*display: flex;*/
+    /*transition: 300ms transform;*/
+}
+@media (max-width: 640px) {
+    .up-box-shadow {
+        box-shadow: 0px 0px 3px rgba(0, 0, 0, 0.4);
+    }
 }
 v-drop {
     display: inline-block;
