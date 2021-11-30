@@ -37,9 +37,3 @@ jobs:
         git add -A
         git commit -m "Deploy {{ env.hash }}"
         git push -u --force origin gh-pages 
-
-      with:
-        github_token: ${{ secrets.GITHUB_TOKEN }}
-        cname: veef.clean8s.com
-        publish_dir: ./gh-dist
-        force_orphan: true
