@@ -1,9 +1,10 @@
 {
   "name": "veef",
   "version": "1.0.0",
-  "main": "dist/index.js",
+  "description": "A Web Components Kit",
+  "main": "dist/index.mjs",
   "files": [
-    "dist"
+    "dist/index.mjs"
   ],
   "license": "MIT",
   "dependencies": {
@@ -14,6 +15,7 @@
     "htm": "^3.1.0",
     "preact": "^10.6.1",
     "preact-render-to-string": "^5.1.19",
+    "prism-es6": "^1.2.0",
     "prop-types": "^15.7.2",
     "react-fuzzy-highlighter": "^1.0.0",
     "react-json-tree": "^0.15.1",
@@ -30,5 +32,11 @@
     "@types/react-dom": "^17.0.11",
     "esbuild": "^0.13.15",
     "terser": "^5.10.0"
+  },
+  "author": "Filip Dimitrovski",
+  "homepage": "https://github.com/clean8s/veef",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/clean8s/veef"
   }
 }

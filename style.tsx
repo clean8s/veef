@@ -42,7 +42,7 @@ v-icon {
 v-icon[all] {
 	width: auto;
 	height: auto;
-	color: #CC3366;
+	color: #FB5012;
 }
 
 v-icon[data-intent="message"] {

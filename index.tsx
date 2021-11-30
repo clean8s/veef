@@ -35,14 +35,18 @@ class SearchField extends TmSlot {
 
   private _rowFn = (o: any, highlight: VNode) => {
     // by default just render the label
-    return <>{this.optionstring(o)}</>
+    return <>{this.objToString(o)}</>
   }
 
-  private optionstring(o: any) {
+  public objToString(o: any) {
     if (o != null && typeof o == 'object' && 'label' in o) {
       return o.label
     }
     return '[missing label key]'
+  }
+
+  public set objtostring(fnStr: string) {
+    this.objToString = (o: any) => fnCall(fnStr, o)
   }
 
   // public fuzzyResults: Fuse.FuseResult<any>[] = []
@@ -113,7 +117,7 @@ class SearchField extends TmSlot {
   }
 
   static get observedAttributes() {
-    return ['options', 'rowrender', 'autofuzz']
+    return ['options', 'rowrender', 'autofuzz', 'objtostring']
   }
 
   set rowrender(fn: string) {
@@ -167,7 +171,7 @@ class SearchField extends TmSlot {
   private accept(idx: number, skipRender?: boolean) {
     if (idx <= -1) return
     if (idx >= this.suggestions.length) return
-    this.value = this.optionstring(this.suggestions[idx])
+    this.value = this.objToString(this.suggestions[idx])
     this._lastRealValue = this.value
     this._hideCompleteBox = true
     this.dispatchEvent(
@@ -202,7 +206,7 @@ class SearchField extends TmSlot {
     if (this.selectedIndex == this.suggestions.length || this.selectedIndex == -1) {
       this.value = this._lastRealValue
     } else {
-      this.value = this.optionstring(this.suggestions[this.selectedIndex])
+      this.value = this.objToString(this.suggestions[this.selectedIndex])
     }
     this.render()
   }
@@ -213,7 +217,7 @@ class SearchField extends TmSlot {
   private _lastRealValue = ''
 
   public get value(): string {
-    return this._lastValue
+    return this._lastRealValue
   }
 
   public set value(s: string) {
@@ -271,10 +275,6 @@ class SearchField extends TmSlot {
   private _hideCompleteBox = false
 
   private autocomplete() {
-    // const hover = (idx: number) => {
-    //   this.selectedIndex = idx
-    //   this.render()
-    // }
     const click = (idx: number) => {
       this.accept(idx)
     }
@@ -283,7 +283,7 @@ class SearchField extends TmSlot {
       const active = this.selectedIndex === props.idx
       let extraCls = active ? 'bg-indigo-500 !text-white' : 'hover:bg-[#3366CC20]'
       return <li
-        onPointerUp={e => click(props.idx)}
+        onMouseDown={e => click(props.idx)}
         id='listbox-item-1'
         role='option'
         class={'cursor-pointer text-gray-900 select-none relative py-2 pr-9 ' + extraCls}
@@ -298,12 +298,13 @@ class SearchField extends TmSlot {
 
     let optList: any[] = []
     if (this.autofuzz !== null) {
+      if(this.suggestions.length == 0) return <></>
       optList = this.fuzzyRenderer(WindiItem)
       if (this._hideCompleteBox) return <></>
     } else {
       if (!this.suggestions || !this.suggestions.length || this._hideCompleteBox) return <></>
       optList = this.suggestions.map((x, idx) => {
-        return <WindiItem idx={idx}>{this._rowFn(x, this.optionstring(x))}</WindiItem>
+        return <WindiItem idx={idx}>{this._rowFn(x, this.objToString(x))}</WindiItem>
       })
     }
 
@@ -334,7 +335,7 @@ const vn = document.createElement('style')
 vn.textContent = mainCss
 document.head.append(vn)
 
-import { Alert } from './alert'
+import { Alert, Code } from './alert'
 import { Dialog } from './dialog'
 import { Table } from './table'
 import { Tree } from './tree'
@@ -344,6 +345,7 @@ customElements.define('v-search', SearchField)
 customElements.define('v-dialog', Dialog)
 customElements.define('v-table', Table)
 customElements.define('v-alert', Alert)
+customElements.define('v-code', Code)
 
 declare global {
  namespace JSX {

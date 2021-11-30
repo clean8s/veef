@@ -5,48 +5,96 @@
     <!--script-->
     <script src="dist/index.js"></script>
     <style>
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; padding: 0;
-        }
-        header { background: #000; position: sticky; inset: 0; bottom: auto; color: #fff; z-index: 40; padding: 20px 0; }
-        .container { width: min(1000px, 80vw); margin: 0 auto; }
-        .showcase h2 { margin: 30px 0; font-weight: 400; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;
+            margin: 0; padding: 0; } * { box-sizing: border-box; }
+        p { margin: 10px 0 30px;} aside { background: #eaeaea; padding: 20px; }
+        code { font-family: ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace;}
+        header { background: #FB5012; position: sticky; inset: 0; bottom: auto; color: #fff; z-index: 40; padding: 20px 0; font-weight: 600; letter-spacing: 0.05em;}
+        .container { width: min(1000px, 80vw); margin: 0 auto; } .showcase { clear: both; }
+        .showcase h2 { font-size: 2em; margin: 60px 0 15px; font-weight: 400; }
+        .showcase h3 { border-left: 4px solid #555; padding-left: 0.5em; font-size: 1.1em;font-weight: 500; margin: 5px 0 15px; color: #555; }
+        main { align-items: center; display: grid; grid-template-columns: 50% 50%; grid-gap: 20px; }
+        main>div:before,.demo:before { content: "DEMO"; font-weight: 500; color: #fff; background:#FB5012; border-radius: 20px; padding: 3px 10px;}
+        h2>code{ color: #996699;  } h2>code:before{content:"<";}h2>code:after{content:">";}
+        nav { position: fixed; top: 50px; left: 0px; padding: 20px; background: #fff; } nav>a{display: block; color: #FB5012; font-weight: 500; padding: 5px 0; }
+        header v-icon { display: none; float: right; }
+        @media screen and (max-width: 600px) { nav{height: 90vh;} .nav>nav{display:none;} header v-icon { display: inline-block; } main { grid-template-columns: 100%; } }
     </style>
+    <title>veef Web Component kit</title>
 </head>
-<body>
-    <header><div class="container">veef Web Component Kit</div></header>
-    <div class="container showcase">
-        <h2>v-tree</h2>
+<body class="nav">
+    <header><div class="container">veef Web Component Kit <v-icon onclick="document.body.classList.toggle('nav')" name="Menu"></v-icon></div></header>
 
-        <v-tree dark id="tree" labelrender='(p) => p.length == 1 ? "joke.json" : p[0]' inforender='(t) => h`has typeof: ${t}`'>
+    <nav>
+        &raquo; Contents
+        <a href="#v-tree">v-tree</a>
+        <a href="#v-search">v-search</a>
+        <a href="#v-search">v-table</a>
+        <a href="#v-search">v-dialog</a>
+        <a href="#v-alert">v-alert</a>
+        <a href="#v-alert">v-icon</a>
+    </nav>
+
+    <div class="container showcase">
+        <h2>Setup</h2>
+        <v-code lang="html">
+            ~script type="module"~
+            import "https://unpkg.com/veef";
+            // you have now loaded every ~v-component~ and its styles.
+            ~/script~
+        </v-code>
+        <h2 id="v-tree"><b>v-tree</b>: instant JSON object preview</h2>
+
+        <main>
+        
+        <div>
+        <p>
+        Explore this API response:
+        </p>
+
+        <v-tree dark id="tree">
         </v-tree>
+        </div>
+
+        <v-code lang="html">
+            ~v-tree id="tree"~~/v-tree~
+
+            ~script~
+            fetch("https://run.mocky.io/v3/7b1ccde5-01bf-4e12-9a23-d87ff910a0cd")
+            .then(x => x.json()).then(resp => {
+                tree.data = resp;
+            });
+            ~/script~
+        </v-code>
+
+        </main>
 
         <script>
-            fetch("https://v2.jokeapi.dev/joke/Programming").then(x => x.json()).then(resp => {
+            fetch("https://run.mocky.io/v3/7b1ccde5-01bf-4e12-9a23-d87ff910a0cd").then(x => x.json()).then(resp => {
                 tree.data = resp;
             });
         </script>
 
-        <h2>v-search with custom logic</h2>
+        <aside>
+        <h3>You can pass JSON directly too:</h3>
+        The data property can also be set using
+        HTML attributes, like this:
+        <v-code lang="html">
+            ~v-tree id="tree" data='{"some":"json"}'~~/v-tree~
+        </v-code>
+        </aside>
 
 
-    <v-search id="s">
-        <script slot="setup">
-            (h) => {
-                this.rowRender = (row) => h`${row.label}`
-                this.addEventListener('input', (x) => {
-                    if(x.target.value.trim().length == 0) return;
-                    let q = x.target.value.trim();
-                    this.suggestions = new Array(5).fill(0).map((_, value) => ({value, label: `Item ${value}; you typed ${q}`}))
-                })
-            }
-        </script>
-    </v-search>
+        <h2 id="v-search"><b>v-search</b>: instant fuzzy search</h2>
 
-    <h2>v-search with automatic fuzzy search</h2>
-
-    <v-search autofuzz="label"
+        <main>
+        <div>
+            <p>
+        Search Queen songs: (look at the page HTML to see the dataset)
+            </p>
+        <v-search autofuzz="label"
         rowrender="(row, highlight) => h`<v-icon name='Headset' style='color: red' /> ${highlight} <small style='margin: 0 10px; color:#999'>${row.value}</span>`">
-
         <data value="song0">'39</data>
         <data value="song1">Action This Day</data>
         <data value="song2">All Dead, All Dead</data>
@@ -99,40 +147,82 @@
         <data value="song49">Fun It</data>
         <data value="song50">Funny How Love Is</data>
     </v-search>
+    </div>
+    <v-code lang="html">
+        ~v-search autofuzz="label"~
+        ~data value="id-1"~
+          Some label that can be matched against
+        ~/data~
+        ~data value="id-2"~
+          List all your documents here
+        ~/data~
+        ~/v-search~
+        </v-code>
+    </main>
 
-    <h2>v-icon</h2>
+    <aside>
 
-    <v-icon all></v-icon>
+    <h3>JSX-like search result customization and a custom matcher</h3>
 
-    <h2>v-dialog</h2>
-    <v-dialog id="d1">
-        <v-icon name="Delete" data-intent="message"></v-icon>
+    <p>
+    Custom elements can use slot="" names which attach tells the component where to place it or what it does.
+    </p>
+    <p>
+    The v-search tag has a slot="setup" that can be used for a setup script which must be a function
+    taking a single argument. <strong>We suggest you name it h</strong> because it is the 'h' from
+    <a href="https://github.com/developit/htm">Jason Miller's htm project</a> and is used for HTM expressions:
+    </p>
 
-        <div>
-        <h1>Some title</h1>
-        <h3>Arbitrary HTML</h3>
-        </div>
-        
-        <section data-intent="actions">
-            <button data-intent="primary" onclick="d1.open = false">Okay</button>
-            <button data-intent="secondary" onclick="d1.open = false">Meh</button>
-        </section>
-    </v-dialog>
+    <v-code lang="html">
+    ~v-search id="s"~
+     ~script slot="setup"~
+            (h) =&gt; {
+                const suggestList = new Array(5).fill(0);
+                this.rowRender = (row) =&gt; h`${row.label}`
+                this.addEventListener('input', (x) =&gt; {
+                    if(x.target.value.trim().length == 0) return;
+                    let q = x.target.value.trim();
+                    this.suggestions = suggestList.map((_, value) =&gt; (
+                        {value, label: h`&lt;small&gt;Item ${value};&lt;/small&gt; you typed &lt;b&gt;${q}&lt;/i&gt;`}
+                    ))
+                    this.objToString = (x) =&gt; `Item ${x.value}: ${this.value}`;
+                })
+            }
+     ~/script~
+    ~/v-search~
+    </v-code>
+    <p>
+        veef will make sure that:
+        <ul>
+            <li>the anonymous function will be called when the component is ready</li>
+            <li>'this' inside refers to the particular element.</li>
+            <li>the namespace isn't polluted by anything by using Function objects instead of eval</li>
+        </ul>
+    </p>
+    </aside>
 
-    <button data-intent="primary" onclick="d1.open = true">
-        <v-icon name="Edit"></v-icon>
-        Open dialog
-    </button>
+    <v-search id="s">
+        <script slot="setup">
+            (h) => {
+                this.rowRender = (row) => h`${row.label}`
+                this.addEventListener('input', (x) => {
+                    if(x.target.value.trim().length == 0) return;
+                    let q = x.target.value.trim();
+                    this.suggestions = new Array(5).fill(0).map((_, value) => (
+                        {value, label: h`<small>Item ${value};</small> you typed <b>${q}</i>`}
+                    ))
+                    this.objToString = (x) => `Item ${x.value}: ${this.value}`;
+                })
+            }
+        </script>
+    </v-search>
 
-    <h2>v-alert</h2>
-    <v-alert error>This is an error message. You can put <strong>whatever HTML</strong> you like.</v-alert>
-    <v-alert warning>This is a warning. It means something, I think ...</v-alert>
-    <v-alert success>This is a success!</v-alert>
-    <v-alert info>This is an alert, a classic.</v-alert>
-
-
-    <h2>v-table</h2>
-
+    <br/>
+    <h2 id="v-table"><b>v-table</b>: just put &lt;table&gt; inside</h2>
+    <p>
+    You get some styling, sorting and checkboxes for free!
+    </p>
+    <div class="demo"></div>
     <v-table selectable>
         <table>
         <tr>
@@ -146,17 +236,110 @@
             <td>Zed</td>
         </tr>
         <tr>
-            <td>5</td>
+            <td>537</td>
             <td>10/01/2020</td>
             <td>Ann</td>
         </tr>
         <tr>
-            <td>5</td>
+            <td>21</td>
             <td>5/05/2022</td>
             <td>George</td>
         </tr>
         </table>
     </v-table>
+
+    <br/>
+
+    <h2 id="v-dialog"><b>v-dialog</b>: a full screen dialog</h2>
+    <main>
+        <div>
+        <v-dialog id="d1">
+        <v-icon name="Delete" data-intent="message"></v-icon>
+
+        <div>
+        <h1>Some title</h1>
+        <h3>Arbitrary HTML (note that it  </h3>
+        </div>
+        
+        <section data-intent="actions">
+            <button data-intent="primary" onclick="d1.open = false">Okay</button>
+            <button data-intent="secondary" onclick="d1.open = false">Meh</button>
+        </section>
+    </v-dialog>
+
+
+    <p>
+
+        <button data-intent="primary" onclick="d1.open = true">
+            <v-icon name="Edit"></v-icon>
+            Open dialog
+        </button>
+
+    </p>
+
+        </div>  
+        <v-code lang="html">
+        ~v-dialog id="dlg1"~
+          Some HTML
+        ~/v-dialog~
+        ~script~
+          dlg1.open = true;
+        ~/script~
+        </v-code>
+    </main>
+
+    <aside>
+    <h3>The style of icons/buttons in the example</h3>
+    The actual example has styled buttons, but that depends on your own CSS.
+    <p>
+    <strong>Web Components aren't supposed to touch your site's styles</strong>, but we provide
+    some nice defaults with data-intent:
+    </p>
+    <v-code lang="html">
+        ~v-dialog~
+          ~v-icon name="Delete" data-intent="message"~~/v-icon~
+
+          ~div~
+            ~h1~Some title~/h1~
+            ~h3~Arbitrary HTML~/h3~
+          ~/div~
+        
+          ~section data-intent="actions"~
+              ~button data-intent="primary" onclick="d1.open = false"~Okay~/button~
+              ~button data-intent="secondary" onclick="d1.open = false"~Meh~/button~
+          ~/section~
+        ~/v-dialog~
+    </v-code>
+    </aside>
+
+    <h2 id="v-alert"><b>v-alert</b>: styled message boxes</h2>
+    <main>
+        <div>
+    <v-alert error>This is an error message. You can put <strong>whatever HTML</strong> you like.</v-alert>
+    <v-alert warning>This is a warning. It means something, I think ...</v-alert>
+    <v-alert success>This is a success!</v-alert>
+    <v-alert info>This is an alert, a classic.</v-alert>
+    </div>
+        <v-code lang="html">
+            ~v-alert success~Put any HTML here.~/v-alert~
+            ~v-alert warning~Put any HTML here.~/v-alert~
+            ~v-alert error~Put any HTML here.~/v-alert~
+            ~v-alert info~Put any HTML here.~/v-alert~
+        </v-code>
+    </main>
+
+    <h2 id="v-icon"><b>v-icon</b>: a few useful svg icons</h2>
+    The syntax is just <code>&lt;v-icon name="IconName"&gt;</code>. <br/>
+    <ul>
+        <li>The color comes from the text color of the parent.</li>
+            <li>The size comes from the CSS width/height of the element. </li>
+    </ul>
+    <p>
+    And if you forget the names, you can just use <code>&lt;v-icon all&gt;</code> and it will show all the icons like this:
+    </p>
+    <div class="demo">
+    <v-icon all></v-icon>
+    </div>
 
     <style>
         .big-blue {

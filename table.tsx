@@ -104,8 +104,6 @@ export class Table extends TmSlot {
             }
             if(selectAll === true) {
               [...this.querySelectorAll('td.vf-checkbox input')].map((x) => x.checked = c.checked)
-            } else {
-              c.click()
             }
           });
           return checkCol;
