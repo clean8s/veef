@@ -29,6 +29,7 @@ jobs:
         git remote set-url --push origin https://fikisipi:$GITHUB_TOKEN@github.com/clean8s/veef
         git checkout -b gh-pages
         ls | grep -v -E "(git|CNAME)" | xargs rm -rf
+        mv -t . git-dist/*
         git add -A
         git commit -m "Deploy web"
         git push -u --force origin gh-pages 
