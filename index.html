@@ -10,14 +10,14 @@
             margin: 0; padding: 0; } * { box-sizing: border-box; }
         p { margin: 10px 0 30px;} aside { background: #eaeaea; padding: 20px; }
         code { font-family: ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace;}
-        header { background: #FB5012; position: sticky; inset: 0; bottom: auto; color: #fff; z-index: 40; padding: 20px 0; font-weight: 600; letter-spacing: 0.05em;}
+        header { background: #FB5012; position: fixed; inset: 0; bottom: auto; color: #fff; z-index: 40; padding: 20px 0; font-weight: 600; letter-spacing: 0.05em;}
         .container { width: min(1000px, 80vw); margin: 0 auto; } .showcase { clear: both; }
         .showcase h2 { font-size: 2em; margin: 60px 0 15px; font-weight: 400; }
         .showcase h3 { border-left: 4px solid #555; padding-left: 0.5em; font-size: 1.1em;font-weight: 500; margin: 5px 0 15px; color: #555; }
         main { align-items: center; display: grid; grid-template-columns: 50% 50%; grid-gap: 20px; }
         main>div:before,.demo:before { content: "DEMO"; font-weight: 500; color: #fff; background:#FB5012; border-radius: 20px; padding: 3px 10px;}
         h2>code{ color: #996699;  } h2>code:before{content:"<";}h2>code:after{content:">";}
-        nav { position: fixed; top: 50px; left: 0px; padding: 20px; background: #fff; } nav>a{display: block; color: #FB5012; font-weight: 500; padding: 5px 0; }
+        nav { position: fixed; top: 50px; left: 0px; padding: 20px; z-index: 40; background: #fff; } nav>a{display: block; color: #FB5012; font-weight: 500; padding: 5px 0; }
         header v-icon { display: none; float: right; }
         @media screen and (max-width: 600px) { nav{height: 90vh;} .nav>nav{display:none;} header v-icon { display: inline-block; } main { grid-template-columns: 100%; } }
     </style>
