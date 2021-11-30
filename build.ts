@@ -91,5 +91,13 @@ require('esbuild').build({
   ...opts,
 }).catch(() => process.exit(1))
 
-const r = fs.readFileSync('dist/index.js', 'utf8')
-fs.writeFileSync('index.out.js', r);
+const distjs = fs.readFileSync('dist/index.js', 'utf8')
+const indexh = fs.readFileSync('index.html', 'utf8')
+
+if(process.argv.length > 1 && process.argv[2] === 'git') {
+  const nonce = Math.random().toString(36).substring(2, 15);
+  // create directory recursively if it doesn't exist
+  fs.mkdirSync('dist', { recursive: true }, () => void 0); 
+  fs.writeFileSync('git-dist/index.js', distjs)
+  fs.writeFileSync('git-dist/index.html', indexh.replace("<!--script-->", `<script src="index.js?${nonce}"></script>`));
+}
