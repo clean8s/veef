@@ -1,21 +1,143 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <link rel="icon" type="image/svg+xml" href="data:image/x-icon;base64,AAABAAEAEBAQAAEABAAoAQAAFgAAACgAAAAQAAAAIAAAAAEABAAAAAAAgAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAA2f8AAP///wAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEREAAiIiIiIREQAAIiIiIhERAAACIiIiEREAAAAiIiIREQAAAAIiIhERAAAAACIiEREAAAAAAiIREQAAAAAAIhERAAAAAAAiEREAAAAAAiIREQAAAAAiIhERAAAAAiIiEREAAAAiIiIREQAAAiIiIhERAAAiIiIiEREAAiIiIiIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Veef demo</title>
+    <script src="dist/index.js"></script>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; padding: 0;
+        }
+        header { background: #000; position: sticky; inset: 0; bottom: auto; color: #fff; z-index: 40; padding: 20px 0; }
+        .container { width: min(1000px, 80vw); margin: 0 auto; }
+    </style>
 </head>
 <body>
-<section id="styles"></section>
-  <script type="module">
-    import {ShowcaseNode, CSSNode} from "./src/showcase.tsx"
-    import {render} from "preact"
-    document.addEventListener("DOMContentLoaded", () => {
-      render(ShowcaseNode, app)
-      render(CSSNode, styles)
-    })
-    </script>
-  <div id="app"></div>
+    <header><div class="container">veef Web Component Kit</div></header>
+    <div class="container">
+
+        <v-tree dark id="tree" labelrender='(p) => p.length == 1 ? "joke.json" : p[0]' inforender='(t) => h`has typeof: ${t}`'>
+        </v-tree>
+
+        <script>
+            fetch("https://v2.jokeapi.dev/joke/Programming").then(x => x.json()).then(resp => {
+                tree.data = resp;
+            });
+        </script>
+
+    <v-search autofuzz="label"
+        rowrender="(row, highlight) => h`<v-icon name='LikeAnim' style='color: red' /> ${highlight} <small style='margin: 0 10px; color:#999'>${row.value}</span>`">
+
+        <data value="song0">"'39"</data>
+        <data value="song1">"Action This Day"</data>
+        <data value="song2">"All Dead, All Dead"</data>
+        <data value="song3">"All God's People"</data>
+        <data value="song4">"Another One Bites the Dust" </data>
+        <data value="song5">"Arboria (Planet of the Tree Men)"</data>
+        <data value="song6">"Back Chat" </data>
+        <data value="song7">"Battle Theme"</data>
+        <data value="song8">"Bicycle Race" </data>
+        <data value="song9">"Bijou"</data>
+        <data value="song10">"Blurred Vision"</data>
+        <data value="song11">"Body Language" </data>
+        <data value="song12">"Bohemian Rhapsody" </data>
+        <data value="song13">"Breakthru" </data>
+        <data value="song14">"Brighton Rock"</data>
+        <data value="song15">"Bring Back That Leroy Brown"</data>
+        <data value="song16">"Calling All Girls" </data>
+        <data value="song17">"Chinese Torture"</data>
+        <data value="song18">"Coming Soon"</data>
+        <data value="song19">"Cool Cat"</data>
+        <data value="song20">"Crash Dive On Mingo City"</data>
+        <data value="song21">"Crazy Little Thing Called Love" </data>
+        <data value="song22">"Dancer"</data>
+        <data value="song23">"Dead On Time"</data>
+        <data value="song24">"Dear Friends"</data>
+        <data value="song25">"Death on Two Legs (Dedicated to...)"</data>
+        <data value="song26">"Delilah"</data>
+        <data value="song27">"Doing All Right"</data>
+        <data value="song28">"Don't Lose Your Head"</data>
+        <data value="song29">"Don't Stop Me Now" </data>
+        <data value="song30">"Don't Try So Hard"</data>
+        <data value="song31">"Don't Try Suicide"</data>
+        <data value="song32">"A Dozen Red Roses For My Darling"</data>
+        <data value="song33">"Dragon Attack"</data>
+        <data value="song34">"Dreamer's Ball"</data>
+        <data value="song35">"Drowse"</data>
+        <data value="song36">"Escape from the Swamp"</data>
+        <data value="song37">"Execution of Flash"</data>
+        <data value="song38">"The Fairy Feller's Master-Stroke"</data>
+        <data value="song39">"Fat Bottomed Girls" </data>
+        <data value="song40">"Father to Son"</data>
+        <data value="song41">"Feelings, Feelings"</data>
+        <data value="song42">"Fight from the Inside"</data>
+        <data value="song43">"Flash's Theme" </data>
+        <data value="song44">"Flash to the Rescue"</data>
+        <data value="song45">"Flash's Theme Reprise (Victory Celebrations)"</data>
+        <data value="song46">"Flick of the Wrist"</data>
+        <data value="song47">"Football Fight"</data>
+        <data value="song48">"Friends Will Be Friends" </data>
+        <data value="song49">"Fun It"</data>
+        <data value="song50">"Funny How Love Is"</data>
+    </v-search>
+
+    <v-icon all></v-icon>
+
+    <v-dialog id="d1">
+        <v-icon name="Delete" data-intent="message"></v-icon>
+
+        <div>
+        <h1>Some title</h1>
+        <h3>Arbitrary HTML</h3>
+        </div>
+        
+        <section data-intent="actions">
+            <button data-intent="primary" onclick="d1.open = false">Okay</button>
+            <button data-intent="secondary" onclick="d1.open = false">Meh</button>
+        </section>
+    </v-dialog>
+
+    <button data-intent="primary" onclick="d1.open = true">
+        <v-icon name="Edit"></v-icon>
+        Open dialog
+    </button>
+
+    <v-alert error>This is an error message. You can put <strong>whatever HTML</strong> you like.</v-alert>
+    <v-alert warning>This is a warning. It means something, I think ...</v-alert>
+    <v-alert success>This is a success!</v-alert>
+    <v-alert info>This is an alert, a classic.</v-alert>
+
+
+    <v-table>
+        <dl>
+            <dt>Col 1</dt>
+            <dt>Col 2</dt>
+            <dt>Col 3</dt>
+        </dl>
+        <dl>
+            <dt>3</dt>
+            <dt>1</dt>
+            <dt>2</dt>
+        </dl>
+        <dl>
+            <dt>5</dt>
+            <dt>0</dt>
+            <dt>-2</dt>
+        </dl>
+        <dl>
+            <dt>5</dt>
+            <dt>5</dt>
+            <dt>-8</dt>
+        </dl>
+    </v-table>
+
+    <style>
+        .big-blue {
+            width: 64px;
+            height: 64px;
+            color: #0066FF;
+            display: block;
+            margin: 0 auto;
+        }
+    </style>
+
+    </div>
 </body>
 </html>
