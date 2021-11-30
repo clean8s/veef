@@ -25,4 +25,6 @@ jobs:
       uses: peaceiris/actions-gh-pages@v3
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
+        cname: veef.clean8s.com
         publish_dir: ./gh-dist
+        force_orphan: true
