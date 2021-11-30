@@ -8,23 +8,23 @@ async function generateStyles(html: string) {
   let K = createUtils()
   await K.ensureInit()
   let out = await K.applyExtractors(html)
-
+  
   // Get windi processor
   const processor = new Processor()
-
+  
   const htmlClasses = (out.classes as string[]).join(' ')
-
+  
   // Generate preflight based on the html we input
   const preflightSheet = processor.preflight(html)
-
+  
   // Process the html classes to an interpreted style sheet
   const interpretedSheet = processor.interpret(htmlClasses).styleSheet
-
+  
   // Build styles
   const APPEND = false
   const MINIFY = false
   const styles = interpretedSheet.extend(preflightSheet, APPEND).build(MINIFY)
-
+  
   return styles
 }
 
@@ -35,13 +35,13 @@ let preactAlias = {
   name: 'preact-alias',
   setup(build: any) {
     let path = require('path')
-
+    
     let jsfiles = globSync('**/*.tsx', {
       dot: false,
       nodir: true,
       ignore: ['.git/*', 'node_modules/**/*'],
     })
-
+    
     build.onResolve({ filter: /^virtual:windi$/ }, (args: { importer: any }) => {
       return {
         path: args.importer,
@@ -89,15 +89,17 @@ require('esbuild').build({
   outfile: 'dist/index.js',
   plugins: [preactAlias],
   ...opts,
-}).catch(() => process.exit(1))
-
-const distjs = fs.readFileSync('dist/index.js', 'utf8')
-const indexh = fs.readFileSync('index.html', 'utf8')
-
-if(process.argv.length > 1 && process.argv[2] === 'git') {
-  const nonce = Math.random().toString(36).substring(2, 15);
-  // create directory recursively if it doesn't exist
-  fs.mkdirSync('dist', { recursive: true }, () => void 0); 
-  fs.writeFileSync('git-dist/index.js', distjs)
-  fs.writeFileSync('git-dist/index.html', indexh.replace("<!--script-->", `<script src="index.js?${nonce}"></script>`));
-}
+}).catch(() => process.exit(1)).then(() => {
+  
+  const distjs = fs.readFileSync('dist/index.js', 'utf8')
+  const indexh = fs.readFileSync('index.html', 'utf8')
+  
+  if(process.argv.length > 1 && process.argv[2] === 'git') {
+    const nonce = Math.random().toString(36).substring(2, 15);
+    // create directory recursively if it doesn't exist
+    fs.mkdirSync('dist', { recursive: true }, () => void 0); 
+    fs.writeFileSync('git-dist/index.js', distjs)
+    fs.writeFileSync('git-dist/index.html', indexh.replace("<!--script-->", `<script src="index.js?${nonce}"></script>`));
+  }
+  
+})
