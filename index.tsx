@@ -4,11 +4,13 @@ import FuzzyHighlighter, { Highlighter } from 'react-fuzzy-highlighter'
 import { render, mainCss } from './style'
 import { fnCall, TmSlot } from './slottable'
 
+
 export type Component<T> = React.ReactElement<T>
 export type VNode = React.ReactNode
 
 
-function fuzzy(data: any[], keys: any, query: string) {
+/** Returns the best N fuzzy results of a list of documents.  */
+function fuzzy(data: object[], keys: any, query: string, maxResults?: number) {
   const fuse = new Fuse(data, {
     shouldSort: true,
     includeMatches: true,
@@ -18,19 +20,22 @@ function fuzzy(data: any[], keys: any, query: string) {
     minMatchCharLength: 1,
     keys: keys,
   });
-  return fuse.search(query).slice(0, 5)
+  return fuse.search(query).slice(0, maxResults || 5);
 }
 
 class SearchField extends TmSlot {
   private root: HTMLElement
+
   constructor() {
     super()
     this.root = this.attachShadow({ mode: 'open' }) as any as HTMLElement
   }
+
   connectedCallback() {
     this.render()
     this.slotSetup(this.root, () => this.render())
   }
+
   private _suggestionList: any[] = []
 
   private _rowFn = (o: any, highlight: VNode) => {
@@ -48,8 +53,6 @@ class SearchField extends TmSlot {
   public set objtostring(fnStr: string) {
     this.objToString = (o: any) => fnCall(fnStr, o)
   }
-
-  // public fuzzyResults: Fuse.FuseResult<any>[] = []
 
   private fuzzyRenderer(WindiItem: Component<WindiProps>): any {
     if (this.autofuzz == null) return
@@ -123,7 +126,6 @@ class SearchField extends TmSlot {
   private handleNativeInput(e: Event) {
     const curVal = this.input.value
     if (e.type == 'input' && this._lastRealValue != curVal) {
-      this.fuzzyCursor = -1
       this._lastRealValue = curVal
       this._lastValue = curVal
       this.dispatchEvent(new Event(e.type))
@@ -180,23 +182,7 @@ class SearchField extends TmSlot {
     }
   }
 
-  // private fuzzyCursor = -1
   public moveSelect(delta: number) {
-    // if (this.autofuzz !== null) {
-    //   this.fuzzyCursor += delta
-    //   this.fuzzyCursor = (this.fuzzyCursor % (this.fuzzyResults.length + 1))
-    //   if (this.fuzzyCursor < -1) this.fuzzyCursor = this.fuzzyResults.length - 1
-    //   if (this.fuzzyCursor == -1 || this.fuzzyCursor == this.fuzzyResults.length) {
-    //     this.value = this._lastRealValue
-    //     this.selectedIndex = -1
-    //   } else {
-    //     this.selectedIndex = this.fuzzyResults[this.fuzzyCursor].refIndex
-    //     this.value = this.optionstring(this.completelist[this.selectedIndex])
-    //   }
-    //   this.render()
-    //   return
-    // }
-
     this.selectedIndex += delta
     this.selectedIndex = (this.selectedIndex % (this.suggestions.length + 1))
     if (this.selectedIndex == this.suggestions.length || this.selectedIndex == -1) {
@@ -208,8 +194,9 @@ class SearchField extends TmSlot {
   }
 
   public selectedIndex = -1
-
-  private _lastValue = ''
+  /** Holds the last value typed by the user, rather than the one
+   *  that's shown, which can be an autocomplete suggestion.
+   */
   private _lastRealValue = ''
 
   public get value(): string {
@@ -335,12 +322,18 @@ import { Dialog } from './dialog'
 import { Table } from './table'
 import { Tree } from './tree'
 
-customElements.define('v-tree', Tree)
-customElements.define('v-search', SearchField)
-customElements.define('v-dialog', Dialog)
-customElements.define('v-table', Table)
-customElements.define('v-alert', Alert)
-customElements.define('v-code', Code)
+export function loadComponents() {
+  customElements.define('v-tree', Tree)
+  customElements.define('v-search', SearchField)
+  customElements.define('v-dialog', Dialog)
+  customElements.define('v-table', Table)
+  customElements.define('v-alert', Alert)
+  customElements.define('v-code', Code)
+}
+
+// TODO: Make different versions of the library
+// one of which doesn't auto-load the components.
+loadComponents()
 
 declare global {
  namespace JSX {

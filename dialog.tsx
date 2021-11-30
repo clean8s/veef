@@ -4,20 +4,25 @@ import { TmSlot } from './slottable'
 
 export class Dialog extends TmSlot {
   root: HTMLElement
+
   constructor() {
     super()
     this.root = this.attachShadow({ mode: 'open', delegatesFocus: 'true' }) as any as HTMLElement
   }
+
   static get observedAttributes() {
     return ['open']
   }
+
   get open(): boolean {
     return this._open
   }
+
   set open(b: boolean) {
     this._open = b
     this.render()
   }
+
   private _open = false
 
   connectedCallback() {
@@ -29,7 +34,6 @@ export class Dialog extends TmSlot {
     })
   }
   render() {
-    let props = {}
     if (!this.open) {
       render(<></>, this.root)
       return

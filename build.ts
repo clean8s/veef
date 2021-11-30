@@ -58,7 +58,6 @@ let preactAlias = {
         contents: f,
       }
     })
-    // Load ".txt" files and return an array of words
     build.onResolve({ filter: /^react$/ }, (args: any) => {
       let f = path.resolve('node_modules/preact/dist/preact.min.js')
       return {

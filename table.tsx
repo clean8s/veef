@@ -60,7 +60,10 @@ export class Table extends TmSlot {
 
       const getCellValue = (tr: El, idx: number) => tr.children[idx].textContent.trim()
 
-      const comparer = (idx: number, asc: boolean) =>
+      type Comparer<T> = (a: T, b: T) => number
+
+      // does a locale compare of two cells. can be plugged into .sort()
+      const comparer: ((idx: number, asc: boolean) => Comparer<any>) = (idx: number, asc: boolean) =>
         (a, b) =>
           ((v1: any, v2: any) =>
             v1 !== '' && v2 !== '' && !isNaN(v1) && !isNaN(v2) ? v1 - v2 : v1.toString().localeCompare(v2))(

@@ -9,6 +9,10 @@ import { render as preactRender } from 'preact'
 
 
 export const objCss = windiCss + mainCss
+
+/**Renders a component together with a stylesheet.
+ * TODO: Use the Stylesheet API to prevent duplication. 
+ */
 export const render: typeof preactRender = (x, y) => {
   preactRender(
     <>

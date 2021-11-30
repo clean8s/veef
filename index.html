@@ -53,7 +53,8 @@
         <v-code lang="html">
             ~script type="module"~
             import "https://unpkg.com/veef";
-            // you have now loaded every ~v-component~ and its styles.
+            // you have now loaded every ~v-component~
+            // and its styles!
             ~/script~
         </v-code>
         <h2 id="v-tree"><b>v-tree</b>: instant JSON object preview</h2>
@@ -62,7 +63,7 @@
         
         <div>
         <p>
-        Explore this API response:
+        Explore an API response by passing it to a &lt;v-tree&gt; .data:
         </p>
 
         <v-tree dark id="tree">
@@ -177,16 +178,20 @@
     <h3>JSX-like search result customization and a custom matcher</h3>
 
     <p>
-    Custom elements can use slot="" names which attach tells the component where to place it or what it does.
+    Datasets loaded with &lt;data&gt; tags only have "value" and "label"
+    even though the autofuzz="" attribute tells veef which key should be indexed.
+
+    We can use JS to supply complex data structures. Furthermore, we can make our own
+    declarative renderer for the search results.
     </p>
     <p>
-    The v-search tag has a slot="setup" that can be used for a setup script which must be a function
-    taking a single argument. <strong>We suggest you name it h</strong> because it is the 'h' from
+    The v-search tag has a slot="setup" which can contain a JavaScript function
+    taking a single argument. Even though it's arbitrary, <strong>we suggest you name it h</strong> because it is the 'h' from
     <a href="https://github.com/developit/htm">Jason Miller's htm project</a> and is used for HTM expressions:
     </p>
 
     <v-code lang="html">
-    ~v-search id="s"~
+    ~v-search~
      ~script slot="setup"~
             (h) =&gt; {
                 const suggestList = new Array(5).fill(0);
@@ -270,7 +275,12 @@
 
         <div>
         <h1>Some title</h1>
-        <h3>Arbitrary HTML (note that it  </h3>
+        <h3>
+            Arbitrary HTML. The border on the left happens because
+            the host page has full control over the styling of the dialog
+            (which happens to add a border)
+            while the rest is controlled by veef.
+        </h3>
         </div>
         
         <section data-intent="actions">
@@ -301,10 +311,15 @@
     </main>
 
     <aside>
-    <h3>The style of icons/buttons in the example</h3>
-    The actual example has styled buttons, but that depends on your own CSS.
+    <h3>... About the styling of icons/buttons in the demo</h3>
+    The demo dialog has styled buttons, but that depends on the CSS
+    of the elements inside the dialog. A website with green buttons
+    will have green buttons in the dialog, and an unstyled website
+    will have unstyled buttons.
+
     <p>
-    <strong>Web Components aren't supposed to touch your site's styles</strong>, but we provide
+    <strong>Web Components are independent of your DOM and they wrap elements
+    without affecting their styles</strong>, but we provide
     some nice defaults with data-intent:
     </p>
     <v-code lang="html">
@@ -347,7 +362,11 @@
             <li>The size comes from the CSS width/height of the element. </li>
     </ul>
     <p>
-    And if you forget the names, you can just use <code>&lt;v-icon all&gt;</code> and it will show all the icons like this:
+    
+    <aside>
+    If you forget the names of the icons, you can just use <code>&lt;v-icon all&gt;</code> and it will show all the
+    icons like in the demo below:
+    </aside>
     </p>
     <div class="demo">
     <v-icon all></v-icon>
