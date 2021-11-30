@@ -50,8 +50,6 @@ export class Alert extends TmSlot {
   }
 }
 
-import {prismCss} from './syntaxh/theme';
-
 
 export class Code extends TmSlot {
   root: HTMLElement
@@ -61,20 +59,57 @@ export class Code extends TmSlot {
     this.render()
   }
 
-  dedent(code: string) {
-    let spc = [...code].findIndex(x => !x.match(/\s/));
-    if (spc == -1) {
+  /**Given a Node.textContent, de-indents the
+   * source code such that you can freely indent your HTML:
+   * <code>
+   *    const x = 1          <=>    <code>const x = 1</code>
+   * </code>
+   */
+  dedent(code: string) : string {
+    let nonSpace = [...code].findIndex(x => !x.match(/\s/));
+    if (nonSpace === -1) {
+      // No non-space characters
       return code
     }
+
+    // The first newline is considered redundant
+    // because source usually looks like this:
+    //
+    // <code>
+    // code begins here
+    // </code>
     if(code.startsWith('\n')) { 
       code = code.substring(1);
-      spc--;
+      nonSpace--;
     }
     
-    const b = code.substring(0, spc);
-    const b2 = b.substring(b.lastIndexOf('\n') + 1);
-    return code.split("\n").map(x => {
-      return x.replace(b, "").replace(b2, "")
+    const weight = (spc: string): number => {
+      return spc.split('').reduce((acc, x) => {
+        if (x === '\t') acc+= 4;
+        else if(x.match(/\s/)) acc++;
+        return acc
+      }, 0)
+    };
+
+    const detectedSpace = code.substring(0, nonSpace);
+    const detectedWeight = detectedSpace.split('\n').reduce((acc, x) => {
+        if (weight(x) > acc) acc = weight(x);
+        return acc
+      }, 0);
+    
+    // const detectedWeight = weight(detectedSpace);
+
+    const restString = code.substring(nonSpace);
+    return restString.split("\n").map(x => {
+      for(let i = 0; i < detectedWeight; i++) {
+        if(x.length > 0 && x[0].trim().length === 0) {
+          if(x[0] === '\t') {
+            i += 3;
+          }
+          x = x.substring(1);
+        }
+      }
+      return x;
     }).join("\n").trim()
   }
 
@@ -96,17 +131,11 @@ export class Code extends TmSlot {
     return out
   }
 
-
-  // connectedCallback() {
-  //   this.render()
-  //   this.slotSetup(this.root, () => this.render())
-  // }
-
   render() {
-    render(
+    preactRender(
       <>
       <div style="display: none"><slot></slot></div>
-      <style>{prismCss}</style>
+      <style>{codeCss}</style>
       <pre>
       <code id='code'>
 
@@ -143,3 +172,7 @@ export class Code extends TmSlot {
     return ['lang']
   }
 }
+
+import {render as preactRender} from 'preact'
+
+import codeCss from './icons/syntax-hl.css'

@@ -322,7 +322,7 @@ import { Dialog } from './dialog'
 import { Table } from './table'
 import { Tree } from './tree'
 
-export function loadComponents() {
+function loadComponents() {
   customElements.define('v-tree', Tree)
   customElements.define('v-search', SearchField)
   customElements.define('v-dialog', Dialog)

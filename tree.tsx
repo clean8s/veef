@@ -3,6 +3,8 @@ import JSONTree from 'react-json-tree'
 import { render } from './style'
 import { fnCall, TmSlot } from './slottable'
 
+type ThemeObj = Record<string, string> | {[key in "base00"]: string};
+
 export class Tree extends TmSlot {
   //@ts-ignore
   root: ShadowRoot
@@ -58,6 +60,7 @@ export class Tree extends TmSlot {
 
     const App = () => {
       return <>
+      <div class='p-2' style={`background:${this.theme.base00}`}>
         <JSONTree
           labelRenderer={(path, type, isExpanded, canExpand) => {
             const args = { path, type, isExpanded, canExpand }
@@ -76,6 +79,7 @@ export class Tree extends TmSlot {
           data={this.data}
           invertTheme={!this._darkMode}
         />
+        </div>
 
         <slot name='setup'></slot>
       </>
@@ -85,7 +89,7 @@ export class Tree extends TmSlot {
   }
 
   private _internalData: any = ''
-  private _theme: object = {
+  private _theme: ThemeObj = {
     scheme: 'monokai',
     author: 'wimer hazenberg (http://www.monokai.nl)',
     base00: '#272822',
