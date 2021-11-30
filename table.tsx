@@ -8,9 +8,7 @@ export class Table extends TmSlot {
     super()
     this.root = this.attachShadow({ mode: 'open' }) as any as HTMLElement
   }
-  static get observedAttributes() {
-    return []
-  }
+
   connectedCallback() {
     this.render()
     this.slotSetup(this.root, () => this.render())
@@ -22,6 +20,21 @@ export class Table extends TmSlot {
 
   getTable(): HTMLElement {
     return this.root.querySelector('#table') as HTMLElement
+  }
+
+  static get observedAttributes() {
+    return ['selectable']
+  }
+
+  private _selectable = false;
+
+  get selectable() : boolean {
+    return this._selectable;
+  }
+
+  set selectable(s: boolean) {
+    this._selectable = s;
+    this.render()
   }
 
   render() {
@@ -37,10 +50,11 @@ export class Table extends TmSlot {
 
       let row: El = (e.target as El).closest('tr')
       const rowIndex = parentPos(row)
-      if (rowIndex !== 0) return
-      ;[...this.querySelectorAll('td,th')].map(x => x.classList.remove('vf-active'))
+      if (rowIndex !== 0) return;
       let col = (e.target as El).closest('td')
       const colIndex = parentPos(col)
+      if(colIndex === 0 && this.selectable) return;
+      [...this.querySelectorAll('td,th')].map(x => x.classList.remove('vf-active'))
       col?.classList.add('vf-active')
       const ascending = col.classList.toggle('desc')
 
@@ -75,9 +89,42 @@ export class Table extends TmSlot {
       this.root,
     )
 
-    if (!this.everSorted && '' in this.templates) {
-      this.templates[''][0].querySelector("tr:first-child>td:first-child").click()
+    if(this.selectable) {
+      const hasSelect: boolean = document.querySelector('.vf-checkbox') !== null;
+      if(!hasSelect) {
+        const checkbox = (selectAll?: boolean) => {
+          const checkCol = document.createElement('td');
+          checkCol.classList.add('vf-checkbox');
+          const c = document.createElement('input');
+          c.type = 'checkbox';
+          checkCol.appendChild(c);
+          checkCol.addEventListener('click', (e) => {
+            if(e.target instanceof HTMLInputElement) {
+              return
+            }
+            if(selectAll === true) {
+              c.checked = !c.checked;
+              [...this.querySelectorAll('td.vf-checkbox input')].map((x) => x.checked = c.checked)
+            } else {
+              c.click()
+            }
+          });
+          return checkCol;
+        }
+        this.querySelectorAll('tr').forEach((x, idx) => x.prepend(checkbox(idx === 0)))
+      }
+
     }
+
+    if (!this.everSorted && '' in this.templates) {
+      this.firstHeader().click()
+      // this.templates[''][0].querySelector("tr:first-child>td:first-child").click()
+    }
+  }
+
+  firstHeader() : HTMLElement {
+    const i = this.selectable ? 2 : 1;
+    return this.querySelector(`tr:first-child>td:nth-child(${i})`) as HTMLElement;
   }
 
   everSorted = false

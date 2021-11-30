@@ -2,6 +2,20 @@ import React from 'react'
 import windiCss from 'virtual:windi'
 
 export const mainCss = `
+v-search, v-tree, v-table, v-alert {
+	margin: 15px 0;
+}
+
+v-table .vf-checkbox {
+	width: 50px;
+	box-sizing: border-box;
+	cursor: pointer;
+}
+v-table .vf-checkbox input {
+	width: 15px;
+	height: 15px;
+}
+
 v-search {
 	display: block;
 	box-shadow: var(--tw-shadow);
@@ -12,12 +26,6 @@ v-search {
 
 v-search:focus {
 	outline: none;
-}
-
-v-loader {
-	display: inline-block;
-	width: 40px;
-	height: 40px;
 }
 
 v-icon {
@@ -108,7 +116,6 @@ section[data-intent="actions"] button {
 }
 
 v-table {
-	margin: 10px 0;
 	display: block;
 }
 v-table table {
@@ -144,7 +151,6 @@ v-table tr:first-child>.vf-active:after {
 
 v-table td.vf-active.desc:after {
 	content: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%233366CC' width='24' height='24'%3E%3Cpath d='m12 8-6 6 1.41 1.41L12 10.83l4.59 4.58L18 14z'%3E%3C/path%3E%3C/svg%3E");
-	vertical-align: middle;
 }
 
 v-table tr {
@@ -160,7 +166,6 @@ v-table td {
 }
 
 v-alert {
-	margin: 10px 0;
 	display: flex;
 	flex-direction: column;
 	align-items: center;

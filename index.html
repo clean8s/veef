@@ -9,11 +9,13 @@
         }
         header { background: #000; position: sticky; inset: 0; bottom: auto; color: #fff; z-index: 40; padding: 20px 0; }
         .container { width: min(1000px, 80vw); margin: 0 auto; }
+        .showcase h2 { margin: 50px 0; font-weight: 400; }
     </style>
 </head>
 <body>
     <header><div class="container">veef Web Component Kit</div></header>
-    <div class="container">
+    <div class="container showcase">
+        <h2>v-tree</h2>
 
         <v-tree dark id="tree" labelrender='(p) => p.length == 1 ? "joke.json" : p[0]' inforender='(t) => h`has typeof: ${t}`'>
         </v-tree>
@@ -24,64 +26,84 @@
             });
         </script>
 
+        <h2>v-search with custom logic</h2>
+
+
+    <v-search id="s">
+        <script slot="setup">
+            (h) => {
+                this.suggestions = [{"label": "A", value: "B"}];
+                this.rowRender = (row) => h`${row.label}`
+                this.addEventListener('input', (x) => {
+                    console.log(x);
+                })
+            }
+        </script>
+    </v-search>
+
+    <h2>v-search with automatic fuzzy search</h2>
+
     <v-search autofuzz="label"
         rowrender="(row, highlight) => h`<v-icon name='Headset' style='color: red' /> ${highlight} <small style='margin: 0 10px; color:#999'>${row.value}</span>`">
 
-        <data value="song0">"'39"</data>
-        <data value="song1">"Action This Day"</data>
-        <data value="song2">"All Dead, All Dead"</data>
-        <data value="song3">"All God's People"</data>
-        <data value="song4">"Another One Bites the Dust" </data>
-        <data value="song5">"Arboria (Planet of the Tree Men)"</data>
-        <data value="song6">"Back Chat" </data>
-        <data value="song7">"Battle Theme"</data>
-        <data value="song8">"Bicycle Race" </data>
-        <data value="song9">"Bijou"</data>
-        <data value="song10">"Blurred Vision"</data>
-        <data value="song11">"Body Language" </data>
-        <data value="song12">"Bohemian Rhapsody" </data>
-        <data value="song13">"Breakthru" </data>
-        <data value="song14">"Brighton Rock"</data>
-        <data value="song15">"Bring Back That Leroy Brown"</data>
-        <data value="song16">"Calling All Girls" </data>
-        <data value="song17">"Chinese Torture"</data>
-        <data value="song18">"Coming Soon"</data>
-        <data value="song19">"Cool Cat"</data>
-        <data value="song20">"Crash Dive On Mingo City"</data>
-        <data value="song21">"Crazy Little Thing Called Love" </data>
-        <data value="song22">"Dancer"</data>
-        <data value="song23">"Dead On Time"</data>
-        <data value="song24">"Dear Friends"</data>
-        <data value="song25">"Death on Two Legs (Dedicated to...)"</data>
-        <data value="song26">"Delilah"</data>
-        <data value="song27">"Doing All Right"</data>
-        <data value="song28">"Don't Lose Your Head"</data>
-        <data value="song29">"Don't Stop Me Now" </data>
-        <data value="song30">"Don't Try So Hard"</data>
-        <data value="song31">"Don't Try Suicide"</data>
-        <data value="song32">"A Dozen Red Roses For My Darling"</data>
-        <data value="song33">"Dragon Attack"</data>
-        <data value="song34">"Dreamer's Ball"</data>
-        <data value="song35">"Drowse"</data>
-        <data value="song36">"Escape from the Swamp"</data>
-        <data value="song37">"Execution of Flash"</data>
-        <data value="song38">"The Fairy Feller's Master-Stroke"</data>
-        <data value="song39">"Fat Bottomed Girls" </data>
-        <data value="song40">"Father to Son"</data>
-        <data value="song41">"Feelings, Feelings"</data>
-        <data value="song42">"Fight from the Inside"</data>
-        <data value="song43">"Flash's Theme" </data>
-        <data value="song44">"Flash to the Rescue"</data>
-        <data value="song45">"Flash's Theme Reprise (Victory Celebrations)"</data>
-        <data value="song46">"Flick of the Wrist"</data>
-        <data value="song47">"Football Fight"</data>
-        <data value="song48">"Friends Will Be Friends" </data>
-        <data value="song49">"Fun It"</data>
-        <data value="song50">"Funny How Love Is"</data>
+        <data value="song0">'39</data>
+        <data value="song1">Action This Day</data>
+        <data value="song2">All Dead, All Dead</data>
+        <data value="song3">All God's People</data>
+        <data value="song4">Another One Bites the Dust</data>
+        <data value="song5">Arboria (Planet of the Tree Men)</data>
+        <data value="song6">Back Chat</data>
+        <data value="song7">Battle Theme</data>
+        <data value="song8">Bicycle Race</data>
+        <data value="song9">Bijou</data>
+        <data value="song10">Blurred Vision</data>
+        <data value="song11">Body Language</data>
+        <data value="song12">Bohemian Rhapsody</data>
+        <data value="song13">Breakthru</data>
+        <data value="song14">Brighton Rock</data>
+        <data value="song15">Bring Back That Leroy Brown</data>
+        <data value="song16">Calling All Girls</data>
+        <data value="song17">Chinese Torture</data>
+        <data value="song18">Coming Soon</data>
+        <data value="song19">Cool Cat</data>
+        <data value="song20">Crash Dive On Mingo City</data>
+        <data value="song21">Crazy Little Thing Called Love</data>
+        <data value="song22">Dancer</data>
+        <data value="song23">Dead On Time</data>
+        <data value="song24">Dear Friends</data>
+        <data value="song25">Death on Two Legs (Dedicated to...)</data>
+        <data value="song26">Delilah</data>
+        <data value="song27">Doing All Right</data>
+        <data value="song28">Don't Lose Your Head</data>
+        <data value="song29">Don't Stop Me Now</data>
+        <data value="song30">Don't Try So Hard</data>
+        <data value="song31">Don't Try Suicide</data>
+        <data value="song32">A Dozen Red Roses For My Darling</data>
+        <data value="song33">Dragon Attack</data>
+        <data value="song34">Dreamer's Ball</data>
+        <data value="song35">Drowse</data>
+        <data value="song36">Escape from the Swamp</data>
+        <data value="song37">Execution of Flash</data>
+        <data value="song38">The Fairy Feller's Master-Stroke</data>
+        <data value="song39">Fat Bottomed Girls</data>
+        <data value="song40">Father to Son</data>
+        <data value="song41">Feelings, Feelings</data>
+        <data value="song42">Fight from the Inside</data>
+        <data value="song43">Flash's Theme</data>
+        <data value="song44">Flash to the Rescue</data>
+        <data value="song45">Flash's Theme Reprise (Victory Celebrations)</data>
+        <data value="song46">Flick of the Wrist</data>
+        <data value="song47">Football Fight</data>
+        <data value="song48">Friends Will Be Friends</data>
+        <data value="song49">Fun It</data>
+        <data value="song50">Funny How Love Is</data>
     </v-search>
+
+    <h2>v-icon</h2>
 
     <v-icon all></v-icon>
 
+    <h2>v-dialog</h2>
     <v-dialog id="d1">
         <v-icon name="Delete" data-intent="message"></v-icon>
 
@@ -101,13 +123,16 @@
         Open dialog
     </button>
 
+    <h2>v-alert</h2>
     <v-alert error>This is an error message. You can put <strong>whatever HTML</strong> you like.</v-alert>
     <v-alert warning>This is a warning. It means something, I think ...</v-alert>
     <v-alert success>This is a success!</v-alert>
     <v-alert info>This is an alert, a classic.</v-alert>
 
 
-    <v-table>
+    <h2>v-table</h2>
+
+    <v-table selectable>
         <table>
         <tr>
             <td>Col 1</td>
@@ -117,17 +142,17 @@
         <tr>
             <td>3</td>
             <td>1</td>
-            <td>2</td>
+            <td>Zed</td>
         </tr>
         <tr>
             <td>5</td>
             <td>0</td>
-            <td>-2</td>
+            <td>Ann</td>
         </tr>
         <tr>
             <td>5</td>
             <td>5</td>
-            <td>-8</td>
+            <td>George</td>
         </tr>
         </table>
     </v-table>

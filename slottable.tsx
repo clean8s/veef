@@ -56,7 +56,7 @@ export abstract class TmSlot extends HTMLElement {
     if (typeof classicEl != 'undefined') {
       let code = classicEl.textContent as string
       if (slot.name == 'setup') {
-        new Function('args', `let code = ${code}; return code(...args)`)([html, this])
+        new Function('html', `let code = ${code}; return code(html)`).bind(this)(html);
       } else {
         // this.templates[slot.name] = (args: InjectedArgs) => {
         //     code = code.trim();
