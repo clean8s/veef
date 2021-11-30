@@ -2,17 +2,18 @@
 Setup
 -----
 
-```
+```html
 <script type="module">
 import "https://unpkg.com/veef"; // should be under 60KB
 // you have now loaded every <v-component> and its styles.
 </script>
 ```
+<img src="og.png" width="50%">
 
 **v-tree**: instant JSON object preview
 ---------------------------------------
 
-```
+```html
 <v-tree id="tree"></v-tree>
 
 <script>
@@ -27,7 +28,7 @@ fetch("https://run.mocky.io/v3/7b1ccde5-01bf-4e12-9a23-d87ff910a0cd")
 
 The data property can also be set using HTML attributes, like this:
 
-```
+```html
 <v-tree id="tree" data='{"some":"json"}'></v-tree>
 ```
 
@@ -36,7 +37,7 @@ The data property can also be set using HTML attributes, like this:
 
 Search Queen songs: (look at the page HTML to see the dataset)
 
-```
+```html
 <v-search autofuzz="label">
 <data value="id-1">
   Some label that can be matched against
@@ -53,7 +54,7 @@ Custom elements can use slot="" names which attach tells the component where to 
 
 The v-search tag has a slot="setup" that can be used for a setup script which must be a function taking a single argument. **We suggest you name it h** because it is the 'h' from [Jason Miller's htm project](https://github.com/developit/htm) and is used for HTM expressions:
 
-```
+```html
 <v-search id="s">
  <script slot="setup">
     (h) => {
@@ -86,7 +87,7 @@ You get some styling, sorting and checkboxes for free!
 **v-dialog**: a full screen dialog
 ----------------------------------
 
-```
+```html
 <v-dialog id="dlg1">
   Some HTML
 </v-dialog>
@@ -101,7 +102,7 @@ The actual example has styled buttons, but that depends on your own CSS.
 
 **Web Components aren't supposed to touch your site's styles**, but we provide some nice defaults with data-intent:
 
-```
+```html
 <v-dialog>
   <v-icon name="Delete" data-intent="message"></v-icon>
 
@@ -120,7 +121,7 @@ The actual example has styled buttons, but that depends on your own CSS.
 **v-alert**: styled message boxes
 ---------------------------------
 
-```
+```html
 <v-alert success>Put any HTML here.</v-alert>
 <v-alert warning>Put any HTML here.</v-alert>
 <v-alert error>Put any HTML here.</v-alert>
