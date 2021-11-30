@@ -35,11 +35,11 @@ export class Table extends TmSlot {
     const clickHandle = (e: PointerEvent) => {
       this.everSorted = true
 
-      let row: El = (e.target as El).closest('dl')
+      let row: El = (e.target as El).closest('tr')
       const rowIndex = parentPos(row)
       if (rowIndex !== 0) return
-      ;[...row.querySelectorAll('dt')].map(x => x.classList.remove('vf-active'))
-      let col = (e.target as El).closest('dt')
+      ;[...this.querySelectorAll('td,th')].map(x => x.classList.remove('vf-active'))
+      let col = (e.target as El).closest('td')
       const colIndex = parentPos(col)
       col?.classList.add('vf-active')
       const ascending = col.classList.toggle('desc')
@@ -54,14 +54,21 @@ export class Table extends TmSlot {
               getCellValue(asc ? b : a, idx),
             )
 
-      Array.from(this.querySelectorAll('dl:nth-child(n+2)'))
+      let tbody: HTMLElement | null = this.querySelector("tbody");
+      let theTable: HTMLElement = tbody as HTMLElement;
+      if(tbody === null) {
+        theTable = this.querySelector("table") as HTMLElement;
+      }
+
+      Array.from(this.querySelectorAll('tr:nth-child(n+2)'))
         .sort(comparer(colIndex, ascending))
-        .forEach(tr => this.appendChild(tr))
+        .map(tr => theTable.appendChild(tr))
+        .map(x => x.children[colIndex].classList.add('vf-active'))
     }
 
     render(
       <>
-        <div id='table' class='w-full mb-8 overflow-hidden rounded-lg shadow-lg table' onClick={e => clickHandle(e)}>
+        <div id='table' class='w-full mb-8 overflow-hidden rounded-lg shadow-lg' onClick={e => clickHandle(e)}>
           <slot></slot>
         </div>
       </>,
@@ -69,7 +76,7 @@ export class Table extends TmSlot {
     )
 
     if (!this.everSorted && '' in this.templates) {
-      this.templates[''][0].children[0].click()
+      this.templates[''][0].querySelector("tr:first-child>td:first-child").click()
     }
   }
 

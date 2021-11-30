@@ -50,10 +50,13 @@ class SearchField extends TmSlot {
       }}
     >
       {props => {
-        const { results, formattedResults, timing } = props
+        let { results, formattedResults, timing } = props
         if (results.length == 0) {
           return <></>
         }
+        results = results.slice(0, 5);
+        formattedResults = formattedResults.slice(0, 5);
+
         this.fuzzyResults = results as any
         return (formattedResults.map((opt, idx) => {
           // const res = formattedResults.find(x => x.refIndex === idx);
@@ -254,10 +257,10 @@ class SearchField extends TmSlot {
   private _hideCompleteBox = false
 
   private autocomplete() {
-    const hover = (idx: number) => {
-      this.selectedIndex = idx
-      this.render()
-    }
+    // const hover = (idx: number) => {
+    //   this.selectedIndex = idx
+    //   this.render()
+    // }
     const click = (idx: number) => {
       this.accept(idx)
     }
@@ -266,11 +269,10 @@ class SearchField extends TmSlot {
       const active = this.selectedIndex === props.idx
       let extraCls = active ? 'bg-indigo-500 !text-white' : ''
       return <li
-        onMouseOver={() => hover(props.idx)}
         onPointerDown={e => click(props.idx)}
         id='listbox-item-1'
         role='option'
-        class={'text-gray-900 cursor-default select-none relative py-2 pr-9 ' + extraCls}
+        class={'text-gray-900 hover:bg-[#3366CC20] cursor-default select-none relative py-2 pr-9 ' + extraCls}
       >
         <div class='flex items-center'>
           <span class='ml-3 block font-normal truncate'>

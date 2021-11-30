@@ -30,6 +30,9 @@ import Start from '@material-design-icons/svg/filled/play_arrow.svg'
 import Circle from '@material-design-icons/svg/filled/radio_button_unchecked.svg'
 import Save from '@material-design-icons/svg/filled/save.svg'
 import Stop from '@material-design-icons/svg/filled/stop.svg'
+import Repeat from '@material-design-icons/svg/filled/repeat.svg'
+import Headset from '@material-design-icons/svg/filled/headset.svg'
+import MusicNote from '@material-design-icons/svg/filled/audiotrack.svg'
 import Disabled from '@material-design-icons/svg/outlined/disabled_visible.svg'
 
 import Error from '@material-design-icons/svg/filled/error.svg'
@@ -65,6 +68,10 @@ const brandIcons: { [k in keyof typeof BrandSvgStrings]: IconComponent } = Objec
   Object.entries(BrandSvgStrings).map(([k, v]) => [k, sized(v)]),
 ) as any
 
+import Repeat from '@material-design-icons/svg/filled/repeat.svg'
+import Headset from '@material-design-icons/svg/filled/headset.svg'
+import MusicNote from '@material-design-icons/svg/filled/audiotrack.svg'
+
 const IconLibrary = {
   'Home': sized(Home),
   'Add': sized(Add),
@@ -93,6 +100,9 @@ const IconLibrary = {
   'Pause': sized(Pause),
   'Stop': sized(Stop),
   'Start': sized(Start),
+  'Repeat': sized(Repeat),
+  'Headset': sized(Headset),
+  'MusicNote': sized(MusicNote),
   'Delete': sized(Delete),
   'Help': sized(Help),
   'Error': sized(Error),

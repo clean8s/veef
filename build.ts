@@ -71,6 +71,11 @@ let preactAlias = {
   },
 }
 
+const opts: Record<string, any> = {};
+if(process.argv.length > 1) {
+  opts['watch'] = process.argv[2] === 'watch';
+}
+
 require('esbuild').build({
   // watch: true,
   entryPoints: ['index.tsx'],
@@ -83,4 +88,5 @@ require('esbuild').build({
   format: 'esm',
   outfile: 'dist/index.js',
   plugins: [preactAlias],
+  ...opts,
 }).catch(() => process.exit(1))

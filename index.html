@@ -1,8 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="index.out.js"></script>
+    <script src="dist/index.js"></script>
     <style>
         body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; padding: 0;
         }
@@ -24,7 +25,7 @@
         </script>
 
     <v-search autofuzz="label"
-        rowrender="(row, highlight) => h`<v-icon name='LikeAnim' style='color: red' /> ${highlight} <small style='margin: 0 10px; color:#999'>${row.value}</span>`">
+        rowrender="(row, highlight) => h`<v-icon name='Headset' style='color: red' /> ${highlight} <small style='margin: 0 10px; color:#999'>${row.value}</span>`">
 
         <data value="song0">"'39"</data>
         <data value="song1">"Action This Day"</data>
@@ -107,26 +108,28 @@
 
 
     <v-table>
-        <dl>
-            <dt>Col 1</dt>
-            <dt>Col 2</dt>
-            <dt>Col 3</dt>
-        </dl>
-        <dl>
-            <dt>3</dt>
-            <dt>1</dt>
-            <dt>2</dt>
-        </dl>
-        <dl>
-            <dt>5</dt>
-            <dt>0</dt>
-            <dt>-2</dt>
-        </dl>
-        <dl>
-            <dt>5</dt>
-            <dt>5</dt>
-            <dt>-8</dt>
-        </dl>
+        <table>
+        <tr>
+            <td>Col 1</td>
+            <td>Col 2</td>
+            <td>Col 3</td>
+        </tr>
+        <tr>
+            <td>3</td>
+            <td>1</td>
+            <td>2</td>
+        </tr>
+        <tr>
+            <td>5</td>
+            <td>0</td>
+            <td>-2</td>
+        </tr>
+        <tr>
+            <td>5</td>
+            <td>5</td>
+            <td>-8</td>
+        </tr>
+        </table>
     </v-table>
 
     <style>
