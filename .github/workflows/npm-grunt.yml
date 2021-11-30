@@ -20,11 +20,6 @@ jobs:
       run: |
         yarn
         yarn build git
-
-    - name: Get Hash
-      id: hash
-      run: echo "git_hash=$(git rev-parse --short "$GITHUB_SHA")" >> $GITHUB_HASH
-        
     - name: Deploy
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -35,5 +30,5 @@ jobs:
         git checkout -b gh-pages
         ls | grep -v -E "(git|CNAME)" | xargs rm -rf
         git add -A
-        git commit -m "Deploy {{ env.hash }}"
+        git commit -m "Deploy web"
         git push -u --force origin gh-pages 
