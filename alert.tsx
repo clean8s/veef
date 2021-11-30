@@ -1,6 +1,7 @@
 import React from 'react'
-import { render } from './style'
+import { render, alertCss } from './style'
 import { TmSlot } from './slottable'
+
 
 export class Alert extends TmSlot {
   root: HTMLElement
@@ -13,21 +14,28 @@ export class Alert extends TmSlot {
     this.render()
   }
 
+  alertType() {
+    const typ = Alert.observedAttributes.find(x => this.getAttribute(x) != null);
+    return typ ? typ : 'info'
+  }
+
   render() {
     let icon = 'info'
-    const attr = Alert.observedAttributes.find(x => this.getAttribute(x) != null)
+    const currentType = this.alertType()
 
-    if (typeof attr != 'undefined') {
-      icon = attr[0].toUpperCase() + attr.substring(1)
+    if (typeof currentType != 'undefined') {
+      icon = `${currentType[0].toUpperCase()}${currentType.substring(1)}`
     }
 
     render(
-      <div class='flex'>
-        <v-icon name={icon} class='w-6 h-6 fill-current mx-2' />
+      <>
+      <style>{alertCss}</style>
+      <div class={currentType} id='alert'>
+        <v-icon name={icon} class='flex-shrink-0 w-6 h-6 fill-current mx-2' />
         <div>
           <slot></slot>
         </div>
-      </div>,
+      </div></>,
       this.root,
     )
   }

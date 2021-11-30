@@ -9,7 +9,7 @@
         }
         header { background: #000; position: sticky; inset: 0; bottom: auto; color: #fff; z-index: 40; padding: 20px 0; }
         .container { width: min(1000px, 80vw); margin: 0 auto; }
-        .showcase h2 { margin: 50px 0; font-weight: 400; }
+        .showcase h2 { margin: 30px 0; font-weight: 400; }
     </style>
 </head>
 <body>
@@ -32,10 +32,11 @@
     <v-search id="s">
         <script slot="setup">
             (h) => {
-                this.suggestions = [{"label": "A", value: "B"}];
                 this.rowRender = (row) => h`${row.label}`
                 this.addEventListener('input', (x) => {
-                    console.log(x);
+                    if(x.target.value.trim().length == 0) return;
+                    let q = x.target.value.trim();
+                    this.suggestions = new Array(5).fill(0).map((_, value) => ({value, label: `Item ${value}; you typed ${q}`}))
                 })
             }
         </script>

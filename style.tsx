@@ -6,6 +6,10 @@ v-search, v-tree, v-table, v-alert {
 	margin: 15px 0;
 }
 
+v-alert {
+	display: block;
+}
+
 v-table .vf-checkbox {
 	width: 50px;
 	box-sizing: border-box;
@@ -164,12 +168,13 @@ v-table td {
 	display: table-cell;
 	border: 1px solid #e5e7eb;
 }
+`
 
-v-alert {
+export const alertCss = `
+#alert {
 	display: flex;
 	flex-direction: column;
 	align-items: center;
-	justify-content: space-between;
 	background-color: hsla(var(--info) / 0.1);
 	padding: 1rem;
 	border-radius: 1rem;
@@ -179,28 +184,28 @@ v-alert {
 	--er: 14 100% 57.1%;
 }
 
-v-alert[warning] {
+#alert.warning {
 	background-color: hsla(var(--wa) / 0.1);
 	color: hsla(var(--wa) / 1);
 }
 
-v-alert[info] {
+#alert.info {
 	background-color: hsla(var(--in) / 0.1);
 	color: hsla(var(--in) / 1);
 }
 
-v-alert[success] {
+#alert.success {
 	background-color: hsla(var(--su) / 0.1);
 	color: hsla(var(--su)/1);
 }
 
-v-alert[error] {
+#alert.error {
 	background-color: hsla(var(--er) / 0.1);
 	color: hsla(var(--er)/1);
 }
 
 @media (min-width: 768px) {
-	v-alert {
+	#alert {
 		flex-direction: row;
 	}
 }

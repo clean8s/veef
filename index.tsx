@@ -308,8 +308,8 @@ class SearchField extends TmSlot {
     }
 
     return <div
-      id='autolist'
-      class='absolute top-9 w-full z-10 border-t-1 border-gray-300 border-solid bg-white shadow-lg'
+      id='autolist' style="z-index: 35"
+      class='absolute top-9 w-full border-t-1 border-gray-300 border-solid bg-white shadow-lg'
     >
       <ul
         role='listbox'
