@@ -86,22 +86,22 @@ require('esbuild').build({
     '.svg': 'text',
   },
   format: 'esm',
-  outfile: 'dist/index.js',
+  outfile: 'dist/index.mjs',
   plugins: [preactAlias],
   ...opts,
 }).catch(() => process.exit(1)).then(() => {
   
-  const distjs = fs.readFileSync('dist/index.js', 'utf8')
+  const distjs = fs.readFileSync('dist/index.mjs', 'utf8')
   const indexh = fs.readFileSync('index.html', 'utf8')
   
   if(process.argv.length > 1 && process.argv[2] === 'git') {
     const nonce = Math.random().toString(36).substring(2, 15);
     // create directory recursively if it doesn't exist
     fs.mkdirSync('git-dist', { recursive: true }, () => void 0); 
-    fs.writeFileSync('git-dist/index.js', distjs)
+    fs.writeFileSync('git-dist/index.mjs', distjs)
     fs.writeFileSync('git-dist/index.html', indexh
     .replace("<!--script-->", `<script src="https://unpkg.com/veef?${nonce}"></script>`)
-    .replace(`<script src="dist/index.js"></script>`, "")
+    .replace(`<script src="dist/index.mjs"></script>`, "")
     );
   }
   
