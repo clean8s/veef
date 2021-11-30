@@ -26,7 +26,7 @@ jobs:
       run: echo "git_hash=$(git rev-parse --short "$GITHUB_SHA")" >> $GITHUB_HASH
         
     - name: Deploy
-    - env:
+      env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: |
         git config user.name "gh-action"
