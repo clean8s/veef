@@ -34,13 +34,14 @@
         <a href="#v-search">v-dialog</a>
         <a href="#v-alert">v-alert</a>
         <a href="#v-alert">v-icon</a>
+        <a href="#license">License</a>
     </nav>
 
     <div class="container showcase">
         <h2>Setup</h2>
         <v-code lang="html">
             ~script type="module"~
-            import "https://unpkg.com/veef";
+            import "https://unpkg.com/veef"; // should be under 60KB
             // you have now loaded every ~v-component~ and its styles.
             ~/script~
         </v-code>
@@ -340,6 +341,16 @@
     <div class="demo">
     <v-icon all></v-icon>
     </div>
+
+    <h2>License</h2>
+    veef is licensed under MIT. It uses several open source libraries, which are licensed under their own licenses:
+    <v-code lang="text">
+        Material Icons by Google
+        preact
+        htm
+        esbuild
+        redux-devtools/json-tree
+    </v-code>
 
     <style>
         .big-blue {

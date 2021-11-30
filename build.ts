@@ -99,7 +99,10 @@ require('esbuild').build({
     // create directory recursively if it doesn't exist
     fs.mkdirSync('git-dist', { recursive: true }, () => void 0); 
     fs.writeFileSync('git-dist/index.js', distjs)
-    fs.writeFileSync('git-dist/index.html', indexh.replace("<!--script-->", `<script src="https://unpkg.com/veef?${nonce}"></script>`));
+    fs.writeFileSync('git-dist/index.html', indexh
+    .replace("<!--script-->", `<script src="https://unpkg.com/veef?${nonce}"></script>`)
+    .replace(`<script src="dist/index.js"></script>`, "")
+    );
   }
   
 })
