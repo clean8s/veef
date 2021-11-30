@@ -74,10 +74,6 @@ class SearchField extends TmSlot {
         }
 
         return (formattedResults.map((opt, idx) => {
-          // const res = formattedResults.find(x => x.refIndex === idx);
-          // if(!res) {highlight
-          //     return <span>filtered</span>
-          // }
           const row = this.rowRender(opt.item, <Highlighter text={opt.formatted.label} />)
           return (
             <WindiItem idx={opt.refIndex}>{row}</WindiItem>
@@ -329,7 +325,6 @@ class SearchField extends TmSlot {
 }
 
 import './icons/el'
-import { IconKey } from './icons/lib/icons'
 
 const vn = document.createElement('style')
 vn.textContent = mainCss

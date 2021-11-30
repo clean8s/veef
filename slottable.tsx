@@ -1,29 +1,30 @@
 import htm from 'htm'
 import { VNode } from 'preact'
-import { h as hh } from 'preact'
+import { h as preactH } from 'preact'
 //@ts-ignore
-const html = htm.bind(hh)
+const html = htm.bind(preactH)
+
+export type Component<T> = React.ReactElement<T>
+export type VNode = React.ReactNode
 
 type InjectedArgs = any[]
 type Renderer = (args: InjectedArgs) => VNode
 
-function templateContent(t: HTMLTemplateElement): string {
-  let nodeCopy = t.content.cloneNode(true)
-  let code = nodeCopy.textContent as string
-  code = code.trim()
-  if (!code.startsWith('html`')) code = 'html`' + code + '`'
-  return code
-}
-
+/** Evaluates JS source in a transpiler-safe way:
+ it only exposes a single variable named 'h'
+ which is the htm function from the htm library.
+ Note: this still means executing arbitrary code.
+*/
 export function fnCall(source: string, ...args: any[]): any {
   return new Function('h', 'args', `let code = ${source}; return code(...args)`)(html, args)
 }
 
+/** A custom Element that handles slotting templates. */
 export abstract class TmSlot extends HTMLElement {
   static isTemplate(x: HTMLElement) {
     return x.tagName.toLowerCase() === 'template'
   }
-
+  
   slotSetup(root: HTMLElement, updateCb: () => void) {
     let slots = [...root.querySelectorAll('slot')]
     slots.map(slot => {
@@ -31,25 +32,27 @@ export abstract class TmSlot extends HTMLElement {
       this.handleSlot({ target: slot }, updateCb)
     })
   }
-
+  
   templates: Record<string, HTMLElement[]> = {}
-
+  
   getSlotted<T extends HTMLElement>(slotName: string): T[] {
     if (slotName in this.templates) {
       return this.templates[slotName] as T[]
     }
     return []
   }
-
+  
   private handleSlot(e: Event | { target: HTMLSlotElement }, updateCb: () => void) {
     const slot = e.target as HTMLSlotElement
-
+    
     const slottedEls: HTMLElement[] = slot.assignedNodes().filter(x => x.nodeType == Node.ELEMENT_NODE) as HTMLElement[]
-
+    
     let classicEl = slottedEls.find(x => x.tagName.toLowerCase() == 'script') as HTMLElement | undefined
     let others = slottedEls.filter(x => x.tagName.toLowerCase() != 'script') as HTMLElement[]
     if (typeof others != 'undefined') {
       this.templates[slot.name] = others
+      // TODO: do we want to call an update?
+      // when? immediately or reqAnimFrame?
       // updateCb()
       requestAnimationFrame(() => updateCb())
     }
@@ -57,24 +60,22 @@ export abstract class TmSlot extends HTMLElement {
       let code = classicEl.textContent as string
       if (slot.name == 'setup') {
         new Function('html', `let code = ${code}; return code(html)`).bind(this)(html);
-      } else {
-        // this.templates[slot.name] = (args: InjectedArgs) => {
-        //     code = code.trim();
-        //     return new Function("x", `let code = ${code}; return code(...x)`)(args);
-        // }
-        // requestAnimationFrame(() => updateCb());
       }
     }
   }
-
+  
   private getAttrList(): string[] {
     //@ts-ignore
     return this.constructor.observedAttributes
   }
-
+  
+  /**Parse attribute string to a likely more useful thing.
+   * basic JS literals get JSON.parse'd, empty attribute
+   * is considered a flag and is returned as true.
+  */
   attributeChangedCallback(key: string, _: any, newVal: string) {
     let obsAttr: string[] = this.getAttrList()
-
+    
     if (!obsAttr.find(x => x === key)) {
       return
     }

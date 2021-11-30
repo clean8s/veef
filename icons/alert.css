@@ -1,0 +1,38 @@
+#alert {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	background-color: hsla(var(--info) / 0.1);
+	padding: 1rem;
+	border-radius: 1rem;
+	--in: 207 89.8% 53.9%;
+	--su: 174 100% 29%;
+	--wa: 36 100% 50%;
+	--er: 14 100% 57.1%;
+}
+
+#alert.warning {
+	background-color: hsla(var(--wa) / 0.1);
+	color: hsla(var(--wa) / 1);
+}
+
+#alert.info {
+	background-color: hsla(var(--in) / 0.1);
+	color: hsla(var(--in) / 1);
+}
+
+#alert.success {
+	background-color: hsla(var(--su) / 0.1);
+	color: hsla(var(--su)/1);
+}
+
+#alert.error {
+	background-color: hsla(var(--er) / 0.1);
+	color: hsla(var(--er)/1);
+}
+
+@media (min-width: 768px) {
+	#alert {
+		flex-direction: row;
+	}
+}
