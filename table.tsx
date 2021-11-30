@@ -99,11 +99,10 @@ export class Table extends TmSlot {
           c.type = 'checkbox';
           checkCol.appendChild(c);
           checkCol.addEventListener('click', (e) => {
-            if(e.target instanceof HTMLInputElement) {
-              return
+            if(!(e.target instanceof HTMLInputElement)) {
+              c.checked = !c.checked;
             }
             if(selectAll === true) {
-              c.checked = !c.checked;
               [...this.querySelectorAll('td.vf-checkbox input')].map((x) => x.checked = c.checked)
             } else {
               c.click()
@@ -113,12 +112,10 @@ export class Table extends TmSlot {
         }
         this.querySelectorAll('tr').forEach((x, idx) => x.prepend(checkbox(idx === 0)))
       }
-
     }
 
     if (!this.everSorted && '' in this.templates) {
       this.firstHeader().click()
-      // this.templates[''][0].querySelector("tr:first-child>td:first-child").click()
     }
   }
 
