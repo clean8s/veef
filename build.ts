@@ -90,3 +90,6 @@ require('esbuild').build({
   plugins: [preactAlias],
   ...opts,
 }).catch(() => process.exit(1))
+
+const r = fs.readFileSync('dist/index.js', 'utf8')
+fs.writeFileSync('index.out.js', r);
