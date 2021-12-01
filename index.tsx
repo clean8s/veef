@@ -5,7 +5,7 @@ import { render, mainCss } from './style'
 import { fnCall, TmSlot } from './slottable'
 
 
-export type Component<T> = React.ReactElement<T>
+export type Component<T> = React.ComponentType<T>
 export type VNode = React.ReactNode
 
 
@@ -38,7 +38,7 @@ class SearchField extends TmSlot {
 
   private _suggestionList: any[] = []
 
-  private _rowFn = (o: any, highlight: VNode) => {
+  private _rowFn = (o: any, highlight: VNode) : VNode => {
     // by default just render the label
     return <>{this.objToString(o)}</>
   }
@@ -127,7 +127,6 @@ class SearchField extends TmSlot {
     const curVal = this.input.value
     if (e.type == 'input' && this._lastRealValue != curVal) {
       this._lastRealValue = curVal
-      this._lastValue = curVal
       this.dispatchEvent(new Event(e.type))
       this.render()
       return
@@ -140,8 +139,6 @@ class SearchField extends TmSlot {
       this._hideCompleteBox = false
       this.render()
     }
-
-    this._lastValue = curVal
 
     if (e.type.indexOf('key') === -1) {
       this.dispatchEvent(new Event(e.type))
@@ -205,7 +202,6 @@ class SearchField extends TmSlot {
 
   public set value(s: string) {
     this.input.value = s
-    this._lastValue = s
   }
 
   public get input() {
@@ -279,7 +275,7 @@ class SearchField extends TmSlot {
       </li>
     }
 
-    let optList: any[] = []
+    let optList: VNode = []
     if (this.autofuzz !== null) {
       if(this.suggestions.length == 0) return <></>
       optList = this.fuzzyRenderer(WindiItem)
@@ -335,13 +331,4 @@ function loadComponents() {
 // one of which doesn't auto-load the components.
 loadComponents()
 
-declare global {
- namespace JSX {
-    interface IntrinsicElements  {
-      'v-search': {};
-      'v-icon': {name: string};
-    }
-}
-}
-
-type WindiProps = { idx: number, children: any }
+type WindiProps = { idx: number, children?: any }

@@ -118,10 +118,10 @@ export class Tree extends TmSlot {
     this._internalData = v
     this.render()
   }
-  get theme(): Theme {
+  get theme(): ThemeObj {
     return this._theme
   }
-  set theme(v: Theme) {
+  set theme(v: ThemeObj) {
     if (v == null || typeof v != 'object') return
     this._theme = v
     this.render()

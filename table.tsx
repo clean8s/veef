@@ -14,10 +14,6 @@ export class Table extends TmSlot {
     this.slotSetup(this.root, () => this.render())
   }
 
-  extractValue(x: HTMLElement, col: number): any {
-    return x.textContent.trim()
-  }
-
   getTable(): HTMLElement {
     return this.root.querySelector('#table') as HTMLElement
   }
@@ -37,6 +33,11 @@ export class Table extends TmSlot {
     this.render()
   }
 
+  setActive(cell: HTMLTableCellElement) : void {
+    [...this.querySelectorAll('td,th')].forEach(x => x.classList.remove('vf-active'));
+    cell.classList.add('vf-active')
+  }
+
   render() {
     const parentPos = (c: HTMLElement): number => {
       //@ts-ignore
@@ -45,20 +46,37 @@ export class Table extends TmSlot {
 
     type El = HTMLElement
 
-    const clickHandle = (e: PointerEvent) => {
+    const clickHandle = (e: MouseEvent) => {
       this.everSorted = true
 
-      let row: El = (e.target as El).closest('tr')
+      // get the row that belongs to the clicked element
+      let row = (e.target as El).closest('tr')
+      if (!row) return
+
+      // find location of row in respect to table
       const rowIndex = parentPos(row)
       if (rowIndex !== 0) return;
+
+      // get the column that belongs to the clicked element
       let col = (e.target as El).closest('td')
+      if (!col) return
+      
+      // find location of column in respect to table
       const colIndex = parentPos(col)
+
+      // if we have a checkbox, ignore first column
       if(colIndex === 0 && this.selectable) return;
-      [...this.querySelectorAll('td,th')].map(x => x.classList.remove('vf-active'))
-      col?.classList.add('vf-active')
+
+      this.setActive(col)
+      
       const ascending = col.classList.toggle('desc')
 
-      const getCellValue = (tr: El, idx: number) => tr.children[idx].textContent.trim()
+      const getCellValue = (tr: HTMLTableRowElement, idx: number) : string => {
+        if(typeof tr.children[idx] === 'undefined') return ''
+        let td = tr.children[idx]
+        if(td.textContent === null) return ''
+        return td.textContent.trim()
+      }
 
       type Comparer<T> = (a: T, b: T) => number
 
@@ -93,30 +111,35 @@ export class Table extends TmSlot {
     )
 
     if(this.selectable) {
-      const hasSelect: boolean = document.querySelector('.vf-checkbox') !== null;
-      if(!hasSelect) {
-        const checkbox = (selectAll?: boolean) => {
-          const checkCol = document.createElement('td');
-          checkCol.classList.add('vf-checkbox');
-          const c = document.createElement('input');
-          c.type = 'checkbox';
-          checkCol.appendChild(c);
-          checkCol.addEventListener('click', (e) => {
-            if(!(e.target instanceof HTMLInputElement)) {
-              c.checked = !c.checked;
-            }
-            if(selectAll === true) {
-              [...this.querySelectorAll('td.vf-checkbox input')].map((x) => x.checked = c.checked)
-            }
-          });
-          return checkCol;
-        }
-        this.querySelectorAll('tr').forEach((x, idx) => x.prepend(checkbox(idx === 0)))
-      }
+      this.setupSelect()
     }
 
     if (!this.everSorted && '' in this.templates) {
       this.firstHeader().click()
+    }
+  }
+
+  setupSelect() {
+    const hasSelect: boolean = document.querySelector('.vf-checkbox') !== null;
+    if(!hasSelect) {
+      const checkbox = (selectAll?: boolean) => {
+        const checkCol = document.createElement('td');
+        checkCol.classList.add('vf-checkbox');
+        const c = document.createElement('input');
+        c.type = 'checkbox';
+        checkCol.appendChild(c);
+        checkCol.addEventListener('click', (e) => {
+          if(!(e.target instanceof HTMLInputElement)) {
+            c.checked = !c.checked;
+          }
+          if(selectAll === true) {
+            ([...this.querySelectorAll('td.vf-checkbox input')] as HTMLInputElement[])
+              .map((x) => x.checked = c.checked)
+          }
+        });
+        return checkCol;
+      }
+      this.querySelectorAll('tr').forEach((x, idx) => x.prepend(checkbox(idx === 0)))
     }
   }
 

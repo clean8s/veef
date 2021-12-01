@@ -1,7 +1,7 @@
 import React from 'react'
 import { render, alertCss } from './style'
 import { TmSlot } from './slottable'
-
+//@ts-ignore
 import Prism from "prism-es6"
 
 export class Alert extends TmSlot {
@@ -144,11 +144,14 @@ export class Code extends TmSlot {
       </>,
       this.root,
    )
-   const codeEl : HTMLElement = this.root.querySelector('#code');
-   this.root.querySelector('slot').addEventListener('slotchange', e => {
-
+   const codeEl = this.root.querySelector('#code');
+   const slot = this.root.querySelector('slot')
+   if(codeEl === null || slot === null) {
+     return
+   }
+   slot.addEventListener('slotchange', e => {
     const langClass = `language-${this._lang}`
-    let code = this.dedent(this.textContent)
+    let code = this.dedent(this.textContent || "")
     if(this._lang === 'html') {
       code = this.htmlify(code)
     }

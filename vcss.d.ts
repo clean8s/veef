@@ -7,3 +7,8 @@ declare module "*.css" {
     const content: string;
     export default content;
 }
+
+declare module 'color-string' {
+    export function toHex(color: string): string;
+    export type Color = string;
+}

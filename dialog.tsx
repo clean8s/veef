@@ -7,7 +7,7 @@ export class Dialog extends TmSlot {
 
   constructor() {
     super()
-    this.root = this.attachShadow({ mode: 'open', delegatesFocus: 'true' }) as any as HTMLElement
+    this.root = this.attachShadow({ mode: 'open', delegatesFocus: true }) as any as HTMLElement
   }
 
   static get observedAttributes() {
@@ -38,15 +38,15 @@ export class Dialog extends TmSlot {
       render(<></>, this.root)
       return
     }
-    let click = (e: PointerEvent) => {
-      const P = e.composedPath().find(x => 'id' in x && x.id === 'v-popup')
+    let click = (e: MouseEvent) => {
+      const P = e.composedPath().find(x => x instanceof HTMLElement ? x.id === 'v-popup' : false)
       if (!P) {
         this.open = false
       }
       // console.log(e.composedPath())
     }
     render(
-      <div ref={this.R} onClick={click} class='inset-0 fixed bg-[rgba(0,0,0,0.5)] z-50'>
+      <div onClick={click} class='inset-0 fixed bg-[rgba(0,0,0,0.5)] z-50'>
         <div
           id='v-popup'
           class='relative shadow-lg rounded-lg p-4 bg-white dark:bg-gray-800 w-[min(500px,40vw)] min-w-[300px] mt-20 mx-auto justify-center'

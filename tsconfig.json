@@ -6,6 +6,10 @@
         "target": "ESNext",
         "moduleResolution": "node",
         "allowSyntheticDefaultImports": true,
-        "strict": true
-    },
+        "strict": true,
+        "declaration": false,
+        "module": "ES6",
+        "experimentalDecorators": true,
+        "types": ["preact/src/jsx"],
+    }
 }

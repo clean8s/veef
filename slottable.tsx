@@ -1,14 +1,10 @@
 import htm from 'htm'
-import { VNode } from 'preact'
 import { h as preactH } from 'preact'
 //@ts-ignore
 const html = htm.bind(preactH)
 
 export type Component<T> = React.ReactElement<T>
 export type VNode = React.ReactNode
-
-type InjectedArgs = any[]
-type Renderer = (args: InjectedArgs) => VNode
 
 /** Evaluates JS source in a transpiler-safe way:
  it only exposes a single variable named 'h'
