@@ -2,7 +2,7 @@ name: Yarn build
 
 on:
   push:
-    branches: [ main ]
+    branches: [ nopush ]
   workflow_dispatch:
     inputs: {}
 
