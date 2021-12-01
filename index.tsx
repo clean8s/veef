@@ -1,7 +1,7 @@
 import Fuse from 'fuse.js'
 import React from 'react'
 import FuzzyHighlighter, { Highlighter } from 'react-fuzzy-highlighter'
-import { render, mainCss } from './style'
+import { render } from './style'
 import { fnCall, fnCallSetup, Slottable, TmSlot } from './slottable'
 
 
@@ -92,7 +92,7 @@ class SearchField extends Slottable {
     
     return (<FuzzyHighlighter
       query={this._lastRealValue}
-      data={this.suggestions}
+      data={this.filteredData}
       options={{
         shouldSort: true,
         includeMatches: true,
@@ -139,7 +139,7 @@ class SearchField extends Slottable {
     return all;
   } 
 
-  get suggestions(): Item[] {
+  get filteredData(): Item[] {
     let res = this._props.data;
     
     this.filterChain().forEach((fn: ItemFilter) => {
@@ -206,9 +206,9 @@ class SearchField extends Slottable {
 
   private accept(idx: number, skipRender?: boolean) {
     if (idx <= -1) return
-    if (idx >= this.suggestions.length) return
+    if (idx >= this.filteredData.length) return
     
-    const item = this.suggestions[idx]
+    const item = this.filteredData[idx]
     // const inpText = this._props.itemToString(this.suggestions[idx]);
     if(!this.putSuggestionIntoField(item)) {
 
@@ -218,7 +218,7 @@ class SearchField extends Slottable {
     this.hideSuggestions = true
     this.dispatchEvent(
       new CustomEvent('pick', {
-        detail: this.suggestions[idx],
+        detail: this.filteredData[idx],
       }),
     )
     if (skipRender !== false) {
@@ -228,11 +228,11 @@ class SearchField extends Slottable {
 
   public moveSelect(delta: number) {
     this.selectedIndex += delta
-    this.selectedIndex = (this.selectedIndex % (this.suggestions.length + 1))
-    if (this.selectedIndex == this.suggestions.length || this.selectedIndex == -1) {
+    this.selectedIndex = (this.selectedIndex % (this.filteredData.length + 1))
+    if (this.selectedIndex == this.filteredData.length || this.selectedIndex == -1) {
       this.value = this._lastRealValue
     } else {
-      this.putSuggestionIntoField(this.suggestions[this.selectedIndex])
+      this.putSuggestionIntoField(this.filteredData[this.selectedIndex])
       // this.value = this.objToString(this.suggestions[this.selectedIndex])
     }
     this.render()
@@ -333,12 +333,12 @@ class SearchField extends Slottable {
     }
 
     let optList: VNode = []
-    if(this.suggestions.length === 0 || this.hideSuggestions) return <></>;
+    if(this.filteredData.length === 0 || this.hideSuggestions) return <></>;
 
     if(this._props.dataFilterKey) {
       optList = this.fuzzyRenderer(WindiItem)
     } else {
-      optList = this._props.itemRender(this.suggestions, null)
+      optList = this._props.itemRender(this.filteredData, null)
     }
 
     return <div
@@ -359,22 +359,12 @@ class SearchField extends Slottable {
 
 import './icons/el'
 
-const vn = document.createElement('style')
-vn.textContent = mainCss
-document.head.append(vn)
-
 import { Alert, Tabs } from './alert'
 import { Code } from './codehl'
 import { Dialog } from './dialog'
 import { Table } from './table'
 import { Tree } from './tree'
 
-class Sch extends HTMLDivElement {
-  constructor() {
-    super()
-    render(<h1>yo</h1>, this)
-  }
-}
 function loadComponents() {
   customElements.define('v-tree', Tree)
   customElements.define('v-search', SearchField)
@@ -384,6 +374,8 @@ function loadComponents() {
   customElements.define('v-code', Code);
   customElements.define('v-tabs', Tabs);
 }
+
+export {Tree, SearchField, Dialog, Table, Alert, Code, Tabs};
 
 // TODO: Make different versions of the library
 // one of which doesn't auto-load the components.

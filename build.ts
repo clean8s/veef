@@ -1,5 +1,6 @@
 import { Processor } from 'windicss/lib'
 const fs = require('fs')
+const path = require('path')
 import { createUtils, UserOptions } from '@windicss/plugin-utils'
 
 async function generateStyles(html: string) {
@@ -27,7 +28,6 @@ async function generateStyles(html: string) {
 }
 
 import { sync as globSync } from 'glob'
-import path from 'path/posix'
 
 
 let preactAlias = {
@@ -69,8 +69,10 @@ let preactAlias = {
 }
 
 const opts: Record<string, any> = {};
-if(process.argv.length > 1) {
-  opts['watch'] = process.argv[2] === 'watch';
+const watchFlag = process.argv.findIndex(x => x === '--watch') > 0;
+
+if(watchFlag) {
+  opts['watch'] = true;
 }
 
 let outputDir = 'dist';
@@ -91,22 +93,29 @@ if(out > 0) {
     fs.writeFileSync(path.join(outputDir, 'index.html'), htmlTransform(htmlCopy));
   }
 }
+const isDebug = 'watch' in opts;
 
-['esm', 'cjs'].forEach(fmt => {
+(['esm', 'cjs']).map(fmt => {
+  const outf = path.join(outputDir, 'index.' + (fmt == 'esm' ? 'mjs' : 'js'));
+  console.log(`Building ${fmt} into ${outf}...`)
   require('esbuild').build({
     entryPoints: ['index.tsx'],
     bundle: true,
-    minify: true,
+    minify: !isDebug,
+    keepNames: isDebug,
     sourcemap: true,
     loader: {
       '.svg': 'text',
       '.css': 'text'
     },
     format: fmt,
-    outfile: path.join(outputDir, 'index.mjs'),
+    outfile: outf,
     plugins: [preactAlias],
     ...opts,
   }).catch(() => process.exit(1)).then(() => {
     console.log("Built!")
+    if("watch" in opts) {
+      console.log("Continuing to watch...")
+    }
   })
 });

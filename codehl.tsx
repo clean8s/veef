@@ -1,4 +1,4 @@
-import {render as preactRender} from 'preact'
+import { renderWithCss } from './style'
 import React from 'react'
 import { TmSlot } from './slottable'
 //@ts-ignore
@@ -86,10 +86,9 @@ export class Code extends TmSlot {
     }
   
     render() {
-      preactRender(
+      renderWithCss(codeCss)(
         <>
         <div style="display: none"><slot></slot></div>
-        <style>{codeCss}</style>
         <pre>
         <code id='code'>
   
