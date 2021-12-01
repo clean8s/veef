@@ -262,7 +262,8 @@ class SearchField extends Slottable {
 
     if(!this.scriptSetup) {
       // console.log(this.slottedNodes)
-      const scripts = this.slottedElements<HTMLScriptElement>("script");
+      const scripts = this.slottedElements<HTMLScriptElement>("setup");
+      
       if(scripts.length > 0)
       this.scriptSetup = true;
 
@@ -300,7 +301,7 @@ class SearchField extends Slottable {
 
         {this.autocomplete()}
         <div class='hidden'>
-          <slot name='script'></slot>
+          <slot name='setup'></slot>
           <slot></slot>
         </div>
       </div>,

@@ -225,15 +225,21 @@
     <v-search id="s">
         <script slot="setup">
             (h) => {
-                this.rowRender = (row) => h`${row.label}`
-                this.addEventListener('input', (x) => {
-                    if(x.target.value.trim().length == 0) return;
-                    let q = x.target.value.trim();
-                    this.suggestions = new Array(5).fill(0).map((_, value) => (
-                        {value, label: h`<small>Item ${value};</small> you typed <b>${q}</i>`}
-                    ))
-                    this.objToString = (x) => `Item ${x.value}: ${this.value}`;
-                })
+                this.data = [{flt: "example", i: ["item", "one"]}, {flt: "example2", i: ["item", "two"]}]
+                this.itemFilter = (i) => true;
+                this.itemRender = (i) => JSON.stringify(i);
+                this.dataFilterKey = "flt";
+                this._lastRealValue = "ex"
+
+                // this.rowRender = (row) => h`${row.label}`
+                // this.addEventListener('input', (x) => {
+                //     if(x.target.value.trim().length == 0) return;
+                //     let q = x.target.value.trim();
+                //     this.suggestions = new Array(5).fill(0).map((_, value) => (
+                //         {value, label: h`<small>Item ${value};</small> you typed <b>${q}</i>`}
+                //     ))
+                //     this.objToString = (x) => `Item ${x.value}: ${this.value}`;
+                // })
             }
         </script>
     </v-search>

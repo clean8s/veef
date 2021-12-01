@@ -10,6 +10,9 @@ global.HTMLElement = dom.window.HTMLElement;
 global.customElements = dom.window.customElements;
 global.requestAnimationFrame = (x) => x()
 global.CSSStyleSheet = dom.window.CSSStyleSheet;
+global.InputEvent = dom.window.InputEvent;
+global.Event = dom.window.Event;
+global.FocusEvent = dom.window.FocusEvent;
 CSSStyleSheet.prototype.replace = (x) => 0;
 Document.prototype.adoptedStyleSheets = [];
 
