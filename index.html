@@ -13,6 +13,7 @@
     <!--script-->
     <script src="dist/index.mjs"></script>
     <style>
+        /* You DON'T need this. This is the documentation CSS, not the components! */
         body {
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;
             margin: 0; padding: 0; } * { box-sizing: border-box; -webkit-font-smoothing: antialiased; text-rendering: optimizelegibility; }
@@ -26,17 +27,18 @@
         main>v-code:before{ content: "SOURCE"; font-weight: 500; color: #fff; background:#333333; border-radius: 20px; padding: 3px 10px; }
         main>div:before,.demo:before { content: "DEMO"; font-weight: 500; color: #fff; background:#FB5012; border-radius: 20px; padding: 3px 10px;}
         h2>code{ color: #996699;  } h2>code:before{content:"<";}h2>code:after{content:">";}
-        nav { color: #888; position: fixed; top: 63px; left: 0px; padding: 20px; z-index: 40; background: #fff; } nav>a{display: block; color: #FB5012; font-weight: 500; padding: 5px 0; }
+        nav { color: #888; position: fixed; top: 63px; display: none; left: 0px; padding: 20px; z-index: 40; background: #fff; } nav>a{display: block; color: #FB5012; font-weight: 500; padding: 5px 0; }
         #M { display: none; float: right; } sup { font-size: 0.8rem; }
-        @media screen and (max-width: 1200px) { nav{height: 90vh;} .nav>nav{display:none;} #M { display: inline-block; } main { grid-template-columns: 100%; } }
+        .nav>nav{display:block;} .ptr { cursor: pointer; }
+        @media screen and (max-width: 1200px) { nav{height: 90vh;} #M { display: inline-block; } main { grid-template-columns: 100%; } }
     </style>
     <title>veef Web Component kit</title>
 </head>
 <body class="nav">
-    <header><div class="container"><v-icon name="Bolt"></v-icon> veef Web Components <v-icon id="M" onclick="document.body.classList.toggle('nav')" name="Menu"></v-icon></div></header>
+    <header><div class="container"><v-icon name="Bolt"></v-icon> veef Web Components <v-icon id="M" class="ptr" onclick="document.body.classList.toggle('nav')" name="Menu"></v-icon></div></header>
 
-    <nav>
-        <p>Contents</p>
+    <nav class="nav">
+        <p>Contents <v-icon onclick="document.body.classList.toggle('nav')" class="ptr" name="Close"></v-icon></p>
         <a href="#v-tree">v-tree</a>
         <a href="#v-search">v-search</a>
         <a href="#v-table">v-table</a>
@@ -109,57 +111,56 @@
             </p>
             <v-search autofuzz="label"
             rowrender="(row, highlight) => h`<v-icon name='Headset' style='color: red' /> ${highlight} <small style='margin: 0 10px; color:#999'>${row.value}</span>`">
-            <data value="song0">'39</data>
-            <data value="song1">Action This Day</data>
-            <data value="song2">All Dead, All Dead</data>
-            <data value="song3">All God's People</data>
-            <data value="song4">Another One Bites the Dust</data>
-            <data value="song5">Arboria (Planet of the Tree Men)</data>
-            <data value="song6">Back Chat</data>
-            <data value="song7">Battle Theme</data>
-            <data value="song8">Bicycle Race</data>
-            <data value="song9">Bijou</data>
-            <data value="song10">Blurred Vision</data>
-            <data value="song11">Body Language</data>
-            <data value="song12">Bohemian Rhapsody</data>
-            <data value="song13">Breakthru</data>
-            <data value="song14">Brighton Rock</data>
-            <data value="song15">Bring Back That Leroy Brown</data>
-            <data value="song16">Calling All Girls</data>
-            <data value="song17">Chinese Torture</data>
-            <data value="song18">Coming Soon</data>
-            <data value="song19">Cool Cat</data>
-            <data value="song20">Crash Dive On Mingo City</data>
-            <data value="song21">Crazy Little Thing Called Love</data>
-            <data value="song22">Dancer</data>
-            <data value="song23">Dead On Time</data>
-            <data value="song24">Dear Friends</data>
-            <data value="song25">Death on Two Legs (Dedicated to...)</data>
-            <data value="song26">Delilah</data>
-            <data value="song27">Doing All Right</data>
-            <data value="song28">Don't Lose Your Head</data>
-            <data value="song29">Don't Stop Me Now</data>
-            <data value="song30">Don't Try So Hard</data>
-            <data value="song31">Don't Try Suicide</data>
-            <data value="song32">A Dozen Red Roses For My Darling</data>
-            <data value="song33">Dragon Attack</data>
-            <data value="song34">Dreamer's Ball</data>
-            <data value="song35">Drowse</data>
-            <data value="song36">Escape from the Swamp</data>
-            <data value="song37">Execution of Flash</data>
-            <data value="song38">The Fairy Feller's Master-Stroke</data>
-            <data value="song39">Fat Bottomed Girls</data>
-            <data value="song40">Father to Son</data>
-            <data value="song41">Feelings, Feelings</data>
-            <data value="song42">Fight from the Inside</data>
-            <data value="song43">Flash's Theme</data>
-            <data value="song44">Flash to the Rescue</data>
-            <data value="song45">Flash's Theme Reprise (Victory Celebrations)</data>
-            <data value="song46">Flick of the Wrist</data>
-            <data value="song47">Football Fight</data>
-            <data value="song48">Friends Will Be Friends</data>
-            <data value="song49">Fun It</data>
-            <data value="song50">Funny How Love Is</data>
+                <data value="song1">Bohemian Rhapsody (1975)</data>
+                <data value="song2">Under Pressure (with David Bowie) (1981)</data>
+                <data value="song3">Killer Queen (1974)</data>
+                <data value="song4">Radio Ga Ga (1984)</data>
+                <data value="song5">Seven Seas of Rhye (1974)</data>
+                <data value="song6">Another One Bites the Dust (1980)</data>
+                <data value="song7">Don’t Stop Me Now (1979)</data>
+                <data value="song8">We Will Rock You (1977)</data>
+                <data value="song9">You’re My Best Friend (1976)</data>
+                <data value="song10">Somebody to Love (1976)</data>
+                <data value="song11">We Are the Champions (1977)</data>
+                <data value="song12">Love of My Life (live at Festhalle Frankfurt, 2 February 1979) (1979)</data>
+                <data value="song13">Spread Your Wings (1978)</data>
+                <data value="song14">I Want to Break Free (1984)</data>
+                <data value="song15">Who Wants to Live Forever (1986)</data>
+                <data value="song16">Tie Your Mother Down (1977)</data>
+                <data value="song17">Crazy Little Thing Called Love (1979)</data>
+                <data value="song18">These Are the Days of Our Lives (1991)</data>
+                <data value="song19">Now I’m Here (1975)</data>
+                <data value="song20">Bicycle Race (1978)</data>
+                <data value="song21">Fat Bottomed Girls (1978)</data>
+                <data value="song22">The Show Must Go On (1991)</data>
+                <data value="song23">Keep Yourself Alive (1973)</data>
+                <data value="song24">Too Much Love Will Kill You (1996)</data>
+                <data value="song25">Good Old Fashioned Lover Boy (1977)</data>
+                <data value="song26">One Vision (1985)</data>
+                <data value="song27">Play the Game (1980)</data>
+                <data value="song28">I Want It All (1989)</data>
+                <data value="song29">A Kind of Magic (1986)</data>
+                <data value="song30">Save Me (1980)</data>
+                <data value="song31">Hammer to Fall (1984)</data>
+                <data value="song32">You Don’t Fool Me (1996)</data>
+                <data value="song33">Let Me Live (1996)</data>
+                <data value="song34">Back Chat (1982)</data>
+                <data value="song35">A Winter’s Tale (1995)</data>
+                <data value="song36">Innuendo (1991)</data>
+                <data value="song37">Flash (1980)</data>
+                <data value="song38">I’m Going Slightly Mad (1991)</data>
+                <data value="song39">Thank God It’s Christmas (1984)</data>
+                <data value="song40">Las Palabras de Amor (the Words of Love) (1982)</data>
+                <data value="song41">It’s a Hard Life (1984)</data>
+                <data value="song42">Breakthru (1989)</data>
+                <data value="song43">Friends Will Be Friends (1986)</data>
+                <data value="song44">Heaven for Everyone (1995)</data>
+                <data value="song45">No One But You (Only the Good Die Young) (1998)</data>
+                <data value="song46">Headlong (1991)</data>
+                <data value="song47">Body Language (1982)</data>
+                <data value="song48">Scandal (1989)</data>
+                <data value="song49">The Invisible Man (1989)</data>
+                <data value="song50">The Miracle (1989)</data>
         </v-search>
     </div>
     <v-code lang="html">
@@ -378,6 +379,7 @@
     <h2 id="license">License</h2>
     veef is licensed under MIT. It uses several open source libraries, which are licensed under their own licenses:
     <v-code lang="text">
+        windi https://windicss.org/
         Material Icons by Google
         preact
         htm

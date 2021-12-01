@@ -144,6 +144,7 @@ License
 veef is licensed under MIT. It uses several open source libraries, which are licensed under their own licenses:
 
 ```
+windi - https://windicss.org/
 Material Icons by Google
 preact
 htm
