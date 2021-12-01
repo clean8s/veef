@@ -34,6 +34,11 @@ export class Dialog extends TmSlot {
     })
   }
   render() {
+    document.body.setAttribute("data-vfdialog", this.open ? "open": "none");
+    if(!this.open) {
+      document.body.removeAttribute("data-vfdialog");
+    }
+
     if (!this.open) {
       render(<></>, this.root)
       return

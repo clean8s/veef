@@ -23,12 +23,59 @@ function fuzzy(data: object[], keys: any, query: string, maxResults?: number) {
   return fuse.search(query).slice(0, maxResults || 5);
 }
 
+// itemToString(item) => string
+// itemFilter (item) => bool
+// itemRender (item) => VNode
+// onPick 
+// .data = item[]
+// .dataFilterKey = string
+
+type Item = object;
+type ItemToStr = (item: Item) => string | null;
+type ItemFilter = (item: Item) => boolean;
+type ItemRender = (item: Item, hl: any) => VNode;
+type ItemPick = CustomEvent<Item>;
+
 class SearchField extends TmSlot {
   private root: HTMLElement
 
   constructor() {
     super()
     this.root = this.attachShadow({ mode: 'open' }) as any as HTMLElement
+  }
+  
+  private _props = {
+    itemToString: ((i) => null) as ItemToStr,
+    itemFilter: (i: Item) => true,
+    itemRender: ((i: Item, hl: any) => JSON.stringify(i)) as ItemRender,
+    data: [] as Item[],
+    dataFilterKey: "label" as string
+  }
+
+  private _events = {
+    pick: (item: Item) => {
+      this.dispatchEvent(new CustomEvent('pick', {
+        detail: item
+      }) as ItemPick)
+    }
+  }
+
+  set itemToString(fn: ItemToStr) {
+    this._props.itemToString = fn
+  }
+
+  set itemFilter(fn: ItemFilter) {
+    this._props.itemFilter = fn
+  }
+
+  set itemRender(fn: ItemRender) {
+    this._props.itemRender = fn
+  }
+
+  set data(items: Item[]) {
+    this._props.data = items;
+    this._suggestionList = items;
+    this.render() 
   }
 
   connectedCallback() {
@@ -77,7 +124,7 @@ class SearchField extends TmSlot {
         }
 
         return (formattedResults.map((opt, idx) => {
-          const row = this.rowRender(opt.item, <Highlighter text={opt.formatted.label} />)
+          const row = this._props.itemRender(opt.item, <Highlighter text={opt.formatted.label} />)
           return (
             <WindiItem idx={opt.refIndex}>{row}</WindiItem>
           )
@@ -108,11 +155,29 @@ class SearchField extends TmSlot {
     this.render()
   }
 
-  get suggestions() {
-    if(this.autofuzz === null) {
-      return this._suggestionList
+  myFuzzy() : ItemFilter {
+    const results: Item[] =  fuzzy(this._suggestionList, [this._props.dataFilterKey], this._lastRealValue).map(x => x.item);
+    const getKey = (i: Item) => {
+      return (i as any)[this._props.dataFilterKey];
     }
-    return fuzzy(this._suggestionList, [this.autofuzz], this._lastRealValue).map(x => x.item);
+    return (R: Item) => typeof results.find(y => y === getKey(R)) != 'undefined';
+  }
+
+  filterChain() : ItemFilter[] {
+    let all: ItemFilter[] = [];
+    all.push(this._props.itemFilter);
+    if(this._props.dataFilterKey) {
+      all.push(this.myFuzzy())
+    }
+    return all;
+  } 
+
+  get suggestions(): Item[] {
+    let res = this._props.data;
+    this.filterChain().forEach((fn: ItemFilter) => {
+      res = res.filter(x => fn(x));
+    });
+    return res;
   }
 
   static get observedAttributes() {
@@ -301,10 +366,6 @@ class SearchField extends TmSlot {
       </ul>
     </div>
   }
-
-  public transform = (x: any[], val: string) => {
-    return x
-  }
 }
 
 import './icons/el'
@@ -313,7 +374,8 @@ const vn = document.createElement('style')
 vn.textContent = mainCss
 document.head.append(vn)
 
-import { Alert, Code } from './alert'
+import { Alert, Tabs } from './alert'
+import { Code } from './codehl'
 import { Dialog } from './dialog'
 import { Table } from './table'
 import { Tree } from './tree'
@@ -324,7 +386,8 @@ function loadComponents() {
   customElements.define('v-dialog', Dialog)
   customElements.define('v-table', Table)
   customElements.define('v-alert', Alert)
-  customElements.define('v-code', Code)
+  customElements.define('v-code', Code);
+  customElements.define('v-tabs', Tabs);
 }
 
 // TODO: Make different versions of the library

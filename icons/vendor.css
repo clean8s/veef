@@ -1,3 +1,7 @@
+body[data-vfdialog="open"] {
+	overflow: hidden;
+}
+
 v-search, v-tree, v-table, v-alert {
 	margin: 15px 0;
 }
