@@ -2,7 +2,7 @@ import Fuse from 'fuse.js'
 import React from 'react'
 import FuzzyHighlighter, { Highlighter } from 'react-fuzzy-highlighter'
 import { render, mainCss } from './style'
-import { fnCall, TmSlot } from './slottable'
+import { fnCall, fnCallSetup, Slottable, TmSlot } from './slottable'
 
 
 export type Component<T> = React.ComponentType<T>
@@ -36,14 +36,14 @@ type ItemFilter = (item: Item) => boolean;
 type ItemRender = (item: Item, hl: any) => VNode;
 type ItemPick = CustomEvent<Item>;
 
-class SearchField extends TmSlot {
+class SearchField extends Slottable {
   private root: HTMLElement
 
   constructor() {
     super()
     this.root = this.attachShadow({ mode: 'open' }) as any as HTMLElement
   }
-  
+
   private _props = {
     itemToString: ((i) => null) as ItemToStr,
     itemFilter: (i: Item) => true,
@@ -60,6 +60,11 @@ class SearchField extends TmSlot {
     }
   }
 
+  set dataFilterKey(k: string) {
+    this._props.dataFilterKey = k;
+    this.autofuzz = k;
+  }
+
   set itemToString(fn: ItemToStr) {
     this._props.itemToString = fn
   }
@@ -74,7 +79,6 @@ class SearchField extends TmSlot {
 
   set data(items: Item[]) {
     this._props.data = items;
-    this._suggestionList = items;
     this.render() 
   }
 
@@ -83,27 +87,9 @@ class SearchField extends TmSlot {
     this.slotSetup(this.root, () => this.render())
   }
 
-  private _suggestionList: any[] = []
-
-  private _rowFn = (o: any, highlight: VNode) : VNode => {
-    // by default just render the label
-    return <>{this.objToString(o)}</>
-  }
-
-  public objToString(o: any) {
-    if (o != null && typeof o == 'object' && 'label' in o) {
-      return o.label
-    }
-    return '[missing label key]'
-  }
-
-  public set objtostring(fnStr: string) {
-    this.objToString = (o: any) => fnCall(fnStr, o)
-  }
-
   private fuzzyRenderer(WindiItem: Component<WindiProps>): any {
     if (this.autofuzz == null) return
-
+    
     return (<FuzzyHighlighter
       query={this._lastRealValue}
       data={this.suggestions}
@@ -118,13 +104,13 @@ class SearchField extends TmSlot {
       }}
     >
       {props => {
-        let { results, formattedResults, timing } = props
+        let { results, formattedResults } = props
         if (results.length == 0) {
           return <></>
         }
 
-        return (formattedResults.map((opt, idx) => {
-          const row = this._props.itemRender(opt.item, <Highlighter text={opt.formatted.label} />)
+        return (formattedResults.map((opt) => {
+          const row = this._props.itemRender(opt.item, <Highlighter text={opt.formatted[this._props.dataFilterKey]} />)
           return (
             <WindiItem idx={opt.refIndex}>{row}</WindiItem>
           )
@@ -135,35 +121,16 @@ class SearchField extends TmSlot {
 
   public autofuzz: string | null = null;
 
-  get rowRender() {
-    return this._rowFn
-  }
-
-  set rowRender(fn: (opt: any, mark: VNode) => VNode) {
-    this._rowFn = fn
-    this.render()
-  }
-
-  set suggestions(opts: any[]) {
-    opts.forEach(x => {
-      if (typeof x == 'object' && x != null && 'label' in x) {
-      } else {
-        console.error('each autocomplete option must contain "label" key')
-      }
-    })
-    this._suggestionList = opts
-    this.render()
-  }
-
   myFuzzy() : ItemFilter {
-    const results: Item[] =  fuzzy(this._suggestionList, [this._props.dataFilterKey], this._lastRealValue).map(x => x.item);
+    const results: Item[] =  fuzzy(this._props.data, [this._props.dataFilterKey], this._lastRealValue).map(x => x.item);
+    
     const getKey = (i: Item) => {
       return (i as any)[this._props.dataFilterKey];
     }
-    return (R: Item) => typeof results.find(y => y === getKey(R)) != 'undefined';
+    return (R: Item) => (typeof results.find(y => getKey(y) === getKey(R))) != 'undefined';
   }
 
-  filterChain() : ItemFilter[] {
+  private filterChain() : ItemFilter[] {
     let all: ItemFilter[] = [];
     all.push(this._props.itemFilter);
     if(this._props.dataFilterKey) {
@@ -174,6 +141,7 @@ class SearchField extends TmSlot {
 
   get suggestions(): Item[] {
     let res = this._props.data;
+    
     this.filterChain().forEach((fn: ItemFilter) => {
       res = res.filter(x => fn(x));
     });
@@ -181,11 +149,7 @@ class SearchField extends TmSlot {
   }
 
   static get observedAttributes() {
-    return ['options', 'rowrender', 'autofuzz', 'objtostring']
-  }
-
-  set rowrender(fn: string) {
-    this.rowRender = (opt, mark) => fnCall(fn as string, opt, mark)
+    return ['options', 'autofuzz', 'objtostring']
   }
 
   private handleNativeInput(e: Event) {
@@ -197,11 +161,11 @@ class SearchField extends TmSlot {
       return
     }
     if (e.type === 'blur') {
-      this._hideCompleteBox = true
+      this.hideSuggestions = true
       this.render()
     }
     if (e.type === 'focus') {
-      this._hideCompleteBox = false
+      this.hideSuggestions = false
       this.render()
     }
 
@@ -228,12 +192,30 @@ class SearchField extends TmSlot {
     }
   }
 
+  // puts an Item into <input> if Item.toString()
+  // is defined. if not, it returns false
+  private putSuggestionIntoField(item: Item): boolean {
+    const maybeStr = this._props.itemToString(item);
+    if(maybeStr === null) {
+      // the item cannot be put into text fields
+      return false
+    }
+    this.value = maybeStr
+    return true
+  }
+
   private accept(idx: number, skipRender?: boolean) {
     if (idx <= -1) return
     if (idx >= this.suggestions.length) return
-    this.value = this.objToString(this.suggestions[idx])
+    
+    const item = this.suggestions[idx]
+    // const inpText = this._props.itemToString(this.suggestions[idx]);
+    if(!this.putSuggestionIntoField(item)) {
+
+    }
+
     this._lastRealValue = this.value
-    this._hideCompleteBox = true
+    this.hideSuggestions = true
     this.dispatchEvent(
       new CustomEvent('pick', {
         detail: this.suggestions[idx],
@@ -250,7 +232,8 @@ class SearchField extends TmSlot {
     if (this.selectedIndex == this.suggestions.length || this.selectedIndex == -1) {
       this.value = this._lastRealValue
     } else {
-      this.value = this.objToString(this.suggestions[this.selectedIndex])
+      this.putSuggestionIntoField(this.suggestions[this.selectedIndex])
+      // this.value = this.objToString(this.suggestions[this.selectedIndex])
     }
     this.render()
   }
@@ -273,18 +256,27 @@ class SearchField extends TmSlot {
     return this.root.querySelector('input') as HTMLInputElement
   }
 
+  private scriptSetup = false;
   private render() {
     if (!this.root) return
 
-    if ('' in this.templates) {
-      let optTags = this.templates[''].filter(x => x.tagName.toLowerCase() === 'data')
-      if (optTags.length > 0) {
-        //@ts-ignore
-        this._suggestionList = optTags.map((x: HTMLOptionElement) => {
-          return { value: x.value, label: x.textContent }
-        })
-      }
+    if(!this.scriptSetup) {
+      // console.log(this.slottedNodes)
+      const scripts = this.slottedElements<HTMLScriptElement>("script");
+      if(scripts.length > 0)
+      this.scriptSetup = true;
+
+      scripts.map(x => {
+        const src = x.textContent || "()=>0"
+        console.log(src)
+        fnCallSetup(this, src)
+      })
     }
+    // if ('' in this.templates) {
+    //   let optTags = this.templates[''].filter(x => x.tagName.toLowerCase() === 'data')
+    //   if (optTags.length > 0) {
+    //   }
+    // }
 
     let handlers: Record<string, any> = {}
     ;(['onInput', 'onChange', 'onBlur', 'onFocus', 'onContextMenu', 'onSelect', 'onKeyUp', 'onKeyDown', 'onKeyPress'])
@@ -307,8 +299,8 @@ class SearchField extends TmSlot {
         </div>
 
         {this.autocomplete()}
-        <slot name='setup'></slot>
         <div class='hidden'>
+          <slot name='script'></slot>
           <slot></slot>
         </div>
       </div>,
@@ -316,7 +308,7 @@ class SearchField extends TmSlot {
     )
   }
 
-  private _hideCompleteBox = false
+  public hideSuggestions = false
 
   private autocomplete() {
     const click = (idx: number) => {
@@ -341,15 +333,12 @@ class SearchField extends TmSlot {
     }
 
     let optList: VNode = []
-    if (this.autofuzz !== null) {
-      if(this.suggestions.length == 0) return <></>
+    if(this.suggestions.length === 0 || this.hideSuggestions) return <></>;
+
+    if(this._props.dataFilterKey) {
       optList = this.fuzzyRenderer(WindiItem)
-      if (this._hideCompleteBox) return <></>
     } else {
-      if (!this.suggestions || !this.suggestions.length || this._hideCompleteBox) return <></>
-      optList = this.suggestions.map((x, idx) => {
-        return <WindiItem idx={idx}>{this._rowFn(x, this.objToString(x))}</WindiItem>
-      })
+      optList = this._props.itemRender(this.suggestions, null)
     }
 
     return <div
@@ -380,6 +369,12 @@ import { Dialog } from './dialog'
 import { Table } from './table'
 import { Tree } from './tree'
 
+class Sch extends HTMLDivElement {
+  constructor() {
+    super()
+    render(<h1>yo</h1>, this)
+  }
+}
 function loadComponents() {
   customElements.define('v-tree', Tree)
   customElements.define('v-search', SearchField)

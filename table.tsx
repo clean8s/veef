@@ -39,6 +39,11 @@ export class Table extends TmSlot {
   }
 
   render() {
+    const sl = this.shadowRoot.querySelector("slot");
+    console.log("A", sl)
+    if(sl) {
+      console.log((sl as HTMLSlotElement).assignedNodes({flatten: true}))
+    }
     const parentPos = (c: HTMLElement): number => {
       //@ts-ignore
       return ([...c.parentElement.children] as HTMLElement[]).findIndex(x => x.isEqualNode(c))
@@ -103,6 +108,7 @@ export class Table extends TmSlot {
 
     render(
       <>
+      <div class="hidden"><slot name="A">pad a eb sin</slot></div>
         <div id='table' class='w-full mb-8 overflow-hidden rounded-lg shadow-lg' onClick={e => clickHandle(e)}>
           <slot></slot>
         </div>

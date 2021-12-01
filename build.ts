@@ -27,6 +27,7 @@ async function generateStyles(html: string) {
 }
 
 import { sync as globSync } from 'glob'
+import path from 'path/posix'
 
 
 let preactAlias = {
@@ -72,41 +73,40 @@ if(process.argv.length > 1) {
   opts['watch'] = process.argv[2] === 'watch';
 }
 
-require('esbuild').build({
-  // watch: true,
-  entryPoints: ['index.tsx'],
-  bundle: true,
-  minify: true,
-  sourcemap: true,
-  loader: {
-    '.svg': 'text',
-    '.css': 'text'
-  },
-  format: 'esm',
-  outfile: 'dist/index.mjs',
-  plugins: [preactAlias],
-  ...opts,
-}).catch(() => process.exit(1)).then(() => {
-  
-  const distjs = fs.readFileSync('dist/index.mjs', 'utf8')
-  const indexh = fs.readFileSync('index.html', 'utf8')
-  
-  if(process.argv.length > 1 && process.argv[2] === 'git') {
+let outputDir = 'dist';
 
-    /* 
-        For git builds we want a non .gitignore'd version of dist/
-        so that GitHub Pages can commit it. 
+const out = process.argv.findIndex(x => x === '--out');
+const htmlTransform =  (html: string) => {
+  const nonce = Math.random().toString(36).substr(2, 7);
+  return html
+  .replace("<!--script-->", `<script src="https://unpkg.com/veef?${nonce}"></script>`)
+  .replace(`<script src="dist/index.mjs"></script>`, "")
+}
 
-        Also we want a CDN provided source instead of the local one.
-    */
-    const nonce = Math.random().toString(36).substring(2, 15);
-    // create directory recursively if it doesn't exist
-    fs.mkdirSync('git-dist', { recursive: true }); 
-
-    fs.writeFileSync('git-dist/index.mjs', distjs)
-    fs.writeFileSync('git-dist/index.html', indexh
-    .replace("<!--script-->", `<script src="https://unpkg.com/veef?${nonce}"></script>`)
-    .replace(`<script src="dist/index.mjs"></script>`, "")
-    );
+if(out > 0) {
+  const maybeOut = process.argv[out + 1];
+  if(maybeOut) {
+    outputDir = maybeOut;
+    const htmlCopy = fs.readFileSync('index.html', 'utf8');
+    fs.writeFileSync(path.join(outputDir, 'index.html'), htmlTransform(htmlCopy));
   }
-})
+}
+
+['esm', 'cjs'].forEach(fmt => {
+  require('esbuild').build({
+    entryPoints: ['index.tsx'],
+    bundle: true,
+    minify: true,
+    sourcemap: true,
+    loader: {
+      '.svg': 'text',
+      '.css': 'text'
+    },
+    format: fmt,
+    outfile: path.join(outputDir, 'index.mjs'),
+    plugins: [preactAlias],
+    ...opts,
+  }).catch(() => process.exit(1)).then(() => {
+    console.log("Built!")
+  })
+});

@@ -1,7 +1,8 @@
 import htm from 'htm'
 import { h as preactH } from 'preact'
+import { SyntheticEvent } from 'react'
 //@ts-ignore
-const html = htm.bind(preactH)
+export const html = htm.bind(preactH)
 
 export type Component<T> = React.ReactElement<T>
 export type VNode = React.ReactNode
@@ -11,8 +12,50 @@ export type VNode = React.ReactNode
  which is the htm function from the htm library.
  Note: this still means executing arbitrary code.
 */
-export function fnCall(source: string, ...args: any[]): any {
-  return new Function('h', 'args', `let code = ${source}; return code(...args)`)(html, args)
+export function fnCall(bindThis: any, source: string, ...args: any[]): any {
+  return new Function('h', 'args', `let code = ${source}; return code(...args)`).bind(bindThis)(args)
+}
+
+/** Same as fnCall except it always calls f(h) 
+ * where h is preact/htm 
+ */
+export function fnCallSetup(bindThis: any, source: string) : any {
+  return new Function('h', `let code = ${source}; return code(h)`).bind(bindThis)(html)
+}
+
+type SlotEvent = {target: EventTarget & HTMLSlotElement | null}
+type SlotCallback = () => void;
+
+export abstract class Slottable extends HTMLElement {
+  slotSetup(root: HTMLElement, updateCb: SlotCallback) {
+    let slots = [...root.querySelectorAll('slot')];
+    slots.map(slot => {
+      slot.addEventListener('slotchange', e => this.handleSlot(e as SlotEvent, updateCb))
+      this.handleSlot({ target: slot }, updateCb)
+    })
+  }
+
+  slottedNodes: Map<string, { elements: HTMLElement[], texts: Text[]}> = new Map();
+
+  public slottedElements<T extends HTMLElement>(slotName: string): T[] {
+    if(this.slottedNodes.has(slotName)) {
+      return this.slottedNodes.get(slotName)?.elements as T[];
+    }
+    return [];
+  }
+
+  handleSlot(e: SlotEvent, fn: SlotCallback) {
+    const slot = e.target
+    if(slot === null) return;
+    
+    const slottedTexts: Text[] = slot.assignedNodes().filter(x => x.nodeType === Node.TEXT_NODE) as Text[]
+    const slottedEls: HTMLElement[] = slot.assignedNodes().filter(x => x.nodeType == Node.ELEMENT_NODE) as HTMLElement[]
+    this.slottedNodes.set(slot.name, {
+      elements: slottedEls,
+      texts: slottedTexts
+    })
+    requestAnimationFrame(() => fn())
+  }
 }
 
 /** A custom Element that handles slotting templates. */
