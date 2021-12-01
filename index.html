@@ -28,17 +28,17 @@
         main>div:before,.demo:before { content: "DEMO"; font-weight: 500; color: #fff; background:#FB5012; border-radius: 20px; padding: 3px 10px;}
         h2>code{ color: #996699;  } h2>code:before{content:"<";}h2>code:after{content:">";}
         nav { color: #888; position: fixed; top: 63px; display: none; left: 0px; padding: 20px; z-index: 40; background: #fff; } nav>a{display: block; color: #FB5012; font-weight: 500; padding: 5px 0; }
-        #M { display: none; float: right; } sup { font-size: 0.8rem; }
-        .nav>nav{display:block;} .ptr { cursor: pointer; }
-        @media screen and (max-width: 1200px) { nav{height: 90vh;} #M { display: inline-block; } main { grid-template-columns: 100%; } }
+        header .ptr { display: none; float: right; } sup { font-size: 0.8rem; }
+        .ptr { cursor: pointer; } .N>nav { display: block; }
+        @media screen and (max-width: 600px) { nav{height: 90vh; display: block;} .N>nav { display: none; } header .ptr { display: inline-block; } main { grid-template-columns: 100%; } }
     </style>
     <title>veef Web Component kit</title>
 </head>
-<body class="nav">
-    <header><div class="container"><v-icon name="Bolt"></v-icon> veef Web Components <v-icon id="M" class="ptr" onclick="document.body.classList.toggle('nav')" name="Menu"></v-icon></div></header>
+<body class="N">
+    <header><div class="container"><v-icon name="Bolt"></v-icon> veef Web Components <v-icon class="ptr" onclick="document.body.classList.toggle('N')" name="Menu"></v-icon></div></header>
 
-    <nav class="nav">
-        <p>Contents <v-icon onclick="document.body.classList.toggle('nav')" class="ptr" name="Close"></v-icon></p>
+    <nav>
+        <p>Contents <v-icon onclick="document.body.classList.toggle('N')" class="ptr" name="Close"></v-icon></p>
         <a href="#v-tree">v-tree</a>
         <a href="#v-search">v-search</a>
         <a href="#v-table">v-table</a>
