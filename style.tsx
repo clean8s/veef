@@ -11,15 +11,44 @@ import { fnCall, fnCallSetup } from './slottable';
 const renderChain: typeof preactRender = (x, y) => {
   preactRender(<>
   {x}
-  <slot key="_h_slot" name="h"></slot>
+  <slot key="_v_htm" name="h"></slot>
+  <slot key="_v_style" name="style"></slot>
+  <style id="_global_v_style"></style>
   </>, y);
   const thisBind = (y as ShadowRoot).host;
   const hSlot = y.querySelector(`slot[name="h"]`) as HTMLSlotElement;
+  const styleSlot = y.querySelector('slot[name="style"]') as HTMLSlotElement;
+  const styleEl = y.querySelector("#_global_v_style") as HTMLStyleElement;
+
+  styleSlot.addEventListener('slotchange', (e) => {
+    const S = styleSlot.assignedElements().filter(x => x.tagName.toLowerCase() === 'template')
+      .map(x => (x as HTMLTemplateElement).content.textContent).join("\n");
+      styleEl.textContent = S;
+  })
   hSlot.addEventListener('slotchange', (e) => {
     const slotEls = hSlot.assignedElements();
+    hSlot.assignedNodes().map(x => {
+        if(x instanceof HTMLTemplateElement) {
+          if(x.content.textContent != null) {
+            fnCallSetup(thisBind, x.content.textContent.trim())
+          }
+        }
+    })
     if(hSlot.hasAttribute('data-vf-load') && slotEls.length > 0) return;
     slotEls.map(x => {
-      fnCallSetup(thisBind, (x.textContent as string).trim())
+      if(x instanceof HTMLTemplateElement) return;
+      let source = ""
+      // console.log(x, x instanceof HTMLTemplateElement)
+      if(x.textContent === null) {
+        source = ""
+      } else {
+        source = x.textContent
+      }
+      if(source.trim().length === 0) {
+        console.error("Cannot parse your code at ", hSlot.getRootNode().host)
+        source = "()=>0"
+      }
+      fnCallSetup(thisBind, source.trim())
     });
     hSlot.setAttribute('data-vf-load', "1");
   })
@@ -74,11 +103,11 @@ export const renderWithCss: ((css: string) => typeof preactRender) = (cssStr: st
     thisSheet.replace(cssStr);
     //@ts-ignore
     (y as ShadowRoot).adoptedStyleSheets = [...adoptedSheets, thisSheet];
-    preactRender(x, y);
+    renderChain(x, y);
     return
   }
 
-  preactRender(
+  renderChain(
     <>
       <style>{objCss}</style>
       <style>{cssStr}</style>

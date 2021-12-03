@@ -1,7 +1,7 @@
 import React from 'react'
 import JSONTree from 'react-json-tree'
 import { render } from './style'
-import { fnCall, TmSlot } from './slottable'
+import { fnCall, Slottable, TmSlot } from './slottable'
 import { invertBase16Theme, invertTheme, Theme } from 'react-base16-styling';
 import { monokai, VeefTheme } from './icons/tree-theme'
 import { StylingFunction, Base16Theme  } from 'react-base16-styling';
@@ -21,23 +21,35 @@ type Handler = {
   value: any
 }
 
-export class Tree extends TmSlot {
+export class Tree extends Slottable {
   //@ts-ignore
   root: ShadowRoot
   constructor() {
     super()
     this.root = this.attachShadow({ mode: 'open' })
+    this.handlers = {
+      renderLabel(path: (string | number)[], type: string, isExpanded: boolean, canExpand: boolean) {
+        return <span>{path[0]}</span>
+      },
+      valueRender(friendlyValue: any, value: any, path: (string | number)[]) {
+        return <span>{friendlyValue}</span>
+      },
+      infoRender(type: string, fullValue: any, friendlyValue: string, path: (string | number)[]) {
+        return <span>{friendlyValue}</span>
+      },
+      initOpen(path: (string|number)[], data: any) {
+        return path.length < 2;
+      }
+    }
   }
-  handlers = {
-    renderLabel(path: (string | number)[], type: string, isExpanded: boolean, canExpand: boolean) {
-      return <span>{path[0]}</span>
-    },
-    valueRender(friendlyValue: any, value: any, path: (string | number)[]) {
-      return <span>{friendlyValue}</span>
-    },
-    infoRender(type: string, fullValue: any, friendlyValue: string, path: (string | number)[]) {
-      return <span>{friendlyValue}</span>
-    },
+  
+  handlers;
+
+  get initOpen() {
+    return this.handlers.initOpen;
+  }
+  set initOpen(fn: any) {
+    this.handlers.initOpen = fn;
   }
 
   connectedCallback() {
@@ -63,6 +75,10 @@ export class Tree extends TmSlot {
       return <>
       <style>
         {`
+        .vf-tree {
+          margin: 0;
+          padding: 10px;
+        }
         .arrow{
           font-size: 1px;
           letter-spacing: -1px;
@@ -79,6 +95,7 @@ export class Tree extends TmSlot {
       </style>
 
         <JSONTree
+          shouldExpandNode={(path, data) => this.initOpen(path, data)}
           labelRenderer={(path, type, isExpanded, canExpand) => {
             const args = { path, type, isExpanded, canExpand }
             let name = path[0]
@@ -177,6 +194,6 @@ export class Tree extends TmSlot {
   }
   
   static get observedAttributes() {
-    return ['data', 'dark', 'labelrender', 'inforender']
+    return ['data', 'dark', 'initopen']
   }
 }

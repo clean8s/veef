@@ -31,8 +31,11 @@ const clsGen = (cls: string) => {
   
 const getDefaultThemeStyling = (theme: Base16Theme): StylingConfig => {
   return {
-    tree: {...clsGen('vf-tree'),
-      padding: '10px'
+    tree: (s: any) => {
+      return {
+        style: {...s.style, margin: undefined, padding: undefined},
+        className: 'vf-tree',
+      };
     },
 
     value: clsGen('vf-tree-value'),

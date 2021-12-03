@@ -6,10 +6,6 @@ const {spawn} = require("child_process")
 function buildSite() {
     const buildh = async () => {
         console.log("loading");
-        spawn("yarn build", {
-            cwd: "..",
-            shell: true
-        });
         ["./web.tsx",  ...sync("*.{css,demo.js}")].map(x => {
             try {
                 delete require.cache[require.resolve(`./dist/${x}`.replace(/\.(js|css|tsx)/, ".js"))]

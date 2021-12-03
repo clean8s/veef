@@ -1,8 +1,8 @@
 import React from 'react'
 import { render } from './style'
-import { TmSlot } from './slottable'
+import { Slottable, TmSlot } from './slottable'
 
-export class Table extends TmSlot {
+export class Table extends Slottable {
   root: HTMLElement
   constructor() {
     super()
@@ -19,7 +19,7 @@ export class Table extends TmSlot {
   }
 
   static get observedAttributes() {
-    return ['selectable']
+    return ['selectable', 'autosort']
   }
 
   private _selectable = false;
@@ -31,6 +31,17 @@ export class Table extends TmSlot {
   set selectable(s: boolean) {
     this._selectable = s;
     this.render()
+  }
+
+  _autosort = 0;
+  set autosort(i: number) {
+    console.log(i)
+    this._autosort = i;
+    this.everSorted = false;
+    this.render()
+  }
+  get autosort() {
+    return this._autosort;
   }
 
   setActive(cell: HTMLTableCellElement) : void {
@@ -75,6 +86,8 @@ export class Table extends TmSlot {
       const getCellValue = (tr: HTMLTableRowElement, idx: number) : string => {
         if(typeof tr.children[idx] === 'undefined') return ''
         let td = tr.children[idx]
+
+        if(td.hasAttribute("data-sort")) return td.getAttribute("data-sort") as string;
         if(td.textContent === null) return ''
         return td.textContent.trim()
       }
@@ -116,8 +129,10 @@ export class Table extends TmSlot {
       this.setupSelect()
     }
 
-    if (!this.everSorted && '' in this.templates) {
-      this.firstHeader().click()
+    if (!this.everSorted && this.slottedByTag("", "table").length > 0) {
+      let idx = parseInt(this.autosort.toString());
+      if(!isNaN(idx) && idx >= 0)
+      this.headerColByIndex(idx).click()
     }
   }
 
@@ -134,10 +149,14 @@ export class Table extends TmSlot {
           if(!(e.target instanceof HTMLInputElement)) {
             c.checked = !c.checked;
           }
-          if(selectAll === true) {
-            ([...this.querySelectorAll('td.vf-checkbox input')] as HTMLInputElement[])
-              .map((x) => x.checked = c.checked)
-          }
+          const checkBoxes = ([...this.querySelectorAll('td.vf-checkbox input')] as HTMLInputElement[])
+          checkBoxes.forEach(x => {
+            if(selectAll === true) x.checked = c.checked;
+          })
+          const rows = checkBoxes.filter((x, idx) => idx != 0 && x.checked).map(x => x.closest('tr'));
+          this.dispatchEvent(new CustomEvent('rowselect', {
+            detail: rows
+          }));
         });
         return checkCol;
       }
@@ -145,8 +164,8 @@ export class Table extends TmSlot {
     }
   }
 
-  firstHeader() : HTMLElement {
-    const i = this.selectable ? 2 : 1;
+  headerColByIndex(n: number) : HTMLElement {
+    const i = n + (this.selectable ? 2 : 1);
     return this.querySelector(`tr:first-child>td:nth-child(${i})`) as HTMLElement;
   }
 

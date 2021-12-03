@@ -58,7 +58,7 @@ v-icon[all] {
 	color: #FB5012;
 }
 
-v-icon[data-intent="message"] {
+v-icon[data-veef="message"] {
 	width: 64px;
 	height: 64px;
 	color: #0066FF;
@@ -66,7 +66,7 @@ v-icon[data-intent="message"] {
 	margin: 0 auto;
 }
 
-button[data-intent] {
+button[data-veef] {
 	cursor: pointer;
 	display: inline-block;
 	width: auto;
@@ -76,8 +76,8 @@ button[data-intent] {
 	line-height: 1.5rem;
 	padding-top: 0.5rem;
 	padding-bottom: 0.5rem;
-	padding-left: 2rem;
-	padding-right: 2rem;
+	padding-left: 1rem;
+	padding-right: 1rem;
 	--tw-shadow-color: 0, 0, 0;
 	--tw-shadow: 0 4px 6px -1px rgba(var(--tw-shadow-color), 0.25), 0 2px 4px -1px rgba(var(--tw-shadow-color), 0.1);
 	box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
@@ -98,16 +98,16 @@ button[data-intent] {
 	--bg: 1;
 }
 
-button[data-intent="primary"] {
+button[data-veef="primary"] {
 	background-color: #3366CC;
 	color: #fff;
 }
 
-button[data-intent]:hover {
+button[data-veef]:hover {
 	--bg: 0.85;
 }
 
-button[data-intent]:focus {
+button[data-veef]:focus {
 	outline: 2px solid transparent;
 	outline-offset: 2px;
 	--tw-ring-offset-shadow: var(--tw-ring-inset) 0 0 0 var(--tw-ring-offset-width) var(--tw-ring-offset-color);
@@ -119,7 +119,7 @@ button[data-intent]:focus {
 	--tw-ring-color: rgba(99, 102, 241, var(--tw-ring-opacity));
 }
 
-section[data-intent="actions"] {
+section[data-veef="actions"] {
 	display: flex;
 	grid-gap: 1rem;
 	gap: 1rem;
@@ -127,8 +127,46 @@ section[data-intent="actions"] {
 	align-items: center;
 }
 
-section[data-intent="actions"] button {
+section[data-veef="actions"] button {
 	width: 100% !important;
+	display: block;
+}
+
+form[data-veef] {
+	--cols: 2;
+	grid-template-columns: repeat(var(--cols),minmax(0,1fr));
+	text-align: left;
+	display: grid;
+	gap: 1.5rem;
+}
+
+form[data-veef] * {
+	grid-column: var(--span);
+}
+
+form[data-veef] fieldset {
+	border: 0;
+	padding: 5px;
+	margin: 0;
+}
+form[data-veef] input {
+	border: 1px solid rgb(209, 213, 219);
+	box-shadow: rgba(0, 0, 0, 0.2) 0px 1px 2px 0px;
+	padding: 8px 12px;
+	border-radius: 4px;
+	line-height: 20px;
+	width: 100%;
+}
+
+form[data-veef] label {
+	color: rgb(55,65,81);
+	font-size: .875rem;
+    line-height: 1.25rem;
+	font-weight: 500;
+	display: block;
+}
+
+v-code {
 	display: block;
 }
 
@@ -154,7 +192,8 @@ v-table table tr:first-child {
 
 v-table td.vf-active {
     font-weight: 700;
-	background: #6699CC10;
+	background: rgba(172,207,241,0.32);
+	border: 1px solid rgb(195, 204, 221);
 }
 
 v-table tr:hover {

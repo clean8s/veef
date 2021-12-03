@@ -78,6 +78,41 @@ export abstract class Slottable extends HTMLElement {
   public htm(fn: (h: any)=>any) {
     return fn(html);
   }
+  
+    /**Parse attribute string to a likely more useful thing.
+   * basic JS literals get JSON.parse'd, empty attribute
+   * is considered a flag and is returned as true.
+  */
+     attributeChangedCallback(key: string, _: any, newVal: string) {
+       const props = Object.getPrototypeOf(this);
+       const names = Object.getOwnPropertyNames(props);
+       const prop = names.find(x => x.toLowerCase() === key);
+       
+    console.log(prop)
+       if(!prop) {
+         return
+       }
+       
+      if (typeof newVal === 'string' && newVal.trim().length === 0) {
+        //@ts-ignore
+        this[prop] = true
+      } else {
+        let err = false;
+        let jVal = newVal.trim()
+        try {
+          jVal = JSON.parse(newVal)
+        } catch (e) {
+          err = true;
+        }
+        if(!err) {
+          //@ts-ignore
+          this[prop] = jVal;
+        } else {
+          //@ts-ignore
+          this[prop] = fnCallSetup(this, `(h) => (${newVal.trim()})`)
+        }
+      }
+    }
 }
 
 /** A custom Element that handles slotting templates. */
@@ -140,7 +175,6 @@ export abstract class TmSlot extends HTMLElement {
   */
   attributeChangedCallback(key: string, _: any, newVal: string) {
     let obsAttr: string[] = this.getAttrList()
-    
     if (!obsAttr.find(x => x === key)) {
       return
     }
