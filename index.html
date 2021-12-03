@@ -8,16 +8,17 @@
     <meta property="og:url" content="http://bits.blogs.nytimes.com/2011/12/08/a-twitter-for-my-sister/" />
     <meta property="og:title" content="veef Web Components" />
     <meta property="og:description" content="Useful data-oriented HTML components via a single 60KB import." />
-    <meta property="og:image" content="https://clean8s.com/veef/og.png" />
+    <meta property="og:image" content="https://clean8s.com/veef/util/og.png" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code&amp;family=Inter:wght@200;400;500;600&amp;display=swap" rel="stylesheet">
     <script>
         let exports = {};
     </script>
     <script src="dist/index.js"></script>
     <style>
         /* You DON'T need this. This is the documentation CSS, not the components! */
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;
+        body { line-height: 1.5; tab-size: 4; font-size: 16px; color: rgb(31, 41, 55);
+            font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;
             margin: 0; padding: 0; } * { box-sizing: border-box; -webkit-font-smoothing: antialiased; text-rendering: optimizelegibility; }
         p { margin: 10px 0 30px;} aside { background: #eaeaea; padding: 20px; } a { text-decoration: none; color: #3366CC;}
         code { font-family: ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace;}
@@ -25,14 +26,15 @@
         .container { width: min(1000px, 80vw); margin: 0 auto; } .showcase { clear: both; }
         .showcase h2 { font-size: 2em; margin: 60px 0 15px; font-weight: 400; }
         .showcase h3 { border-left: 4px solid #555; padding-left: 0.5em; font-size: 1.1em;font-weight: 500; margin: 5px 0 15px; color: #555; }
-        main { align-items: center; display: grid; grid-template-columns: 1fr minmax(0,1fr); grid-gap: 20px; }
+        main { display: flex; width: 100%; max-height: 350px; overflow: auto; }
+        main>*{ width: 50%; flex-basis: 50%; }
         main>v-code:before{ content: "SOURCE"; font-weight: 500; color: #fff; background:#333333; border-radius: 20px; padding: 3px 10px; }
         main>div:before,.demo:before { content: "DEMO"; font-weight: 500; color: #fff; background:#FB5012; border-radius: 20px; padding: 3px 10px;}
         h2>code{ color: #996699;  } h2>code:before{content:"<";}h2>code:after{content:">";}
         nav { color: #888; position: fixed; top: 63px; display: none; left: 0px; padding: 20px; z-index: 40; background: #fff; } nav>a{display: block; color: #FB5012; font-weight: 500; padding: 5px 0; }
         header .ptr { display: none; float: right; } sup { font-size: 0.8rem; }
         .ptr { cursor: pointer; } .N>nav { display: block; }
-        @media screen and (max-width: 600px) { nav{height: 90vh; display: block;} .N>nav { display: none; } header .ptr { display: inline-block; } main { grid-template-columns: 100%; } }
+        @media screen and (max-width: 600px) { nav{height: 90vh; display: block;} .N>nav { display: none; } header .ptr { display: inline-block; } main { flex-direction: column; max-height: none; } main>* { width: 100%; flex-basis: 100%; } }
     </style>
     <title>veef Web Component kit</title>
 </head>
@@ -55,65 +57,115 @@
                     <v-icon name="Github"></v-icon><sup>&lt;60KB gzip</sup></a>
                 
         </h2>
-        <v-tabs></v-tabs>
         <v-code lang="html">
-            ~script type="module"~
-            import "https://unpkg.com/veef";
-            // you have now loaded every ~v-component~
-            // and its styles! note: attribute/property doc is yet to be complete.
-            ~/script~
+            ~script src="https://unpkg.com/veef"~~/script~
         </v-code>
+        <h2 id="v-tree"><b>v-json</b>: instant JSON object preview</h2>
 
-        <h2 id="v-tree"><b>v-tree</b>: instant JSON object preview</h2>
-
-        <main>
+        <v-tabs via="style">
+                <button role="tab" data-target=":scope .blah>.t1">
+                    <v-icon name="Bolt"></v-icon>
+                    Demo
+                </button>
+                <button role="tab" data-target=":scope .blah>.t2">
+                    <v-icon name="Code"></v-icon>
+                    Usage
+                </button>
         
-        <div>
-        <p>
-        Explore an API response by passing it to a &lt;v-tree&gt; .data:
-        </p>
-
-        <v-tree dark id="tree">
-        </v-tree>
-        </div>
-
-        <v-code lang="html">
-            ~v-tree id="tree"~~/v-tree~
-
-            ~script~
-            fetch("https://run.mocky.io/v3/7b1ccde5-01bf-4e12-9a23-d87ff910a0cd")
-             .then(x => x.json()).then(resp => {
-                tree.data = resp;
-            });
-            ~/script~
-        </v-code>
-
-        </main>
-
-        <script>
+        <div slot="content" class="blah">
+            <div class="t1">
+            A collapsible tree that 
+            can be instantiated with a one liner <code>&lt;v-json&gt;</code>.
+            It's useful for debugging REST APIs
+            or letting users easily explore nested structures.
+            Based around @redux/json-tree
+            <main>
+                <v-tree id="tree3"></v-tree>
+                <v-tree dark id="tree4"></v-tree>
+            </main>
+            Furthermore, the way nodes are rendered can be customized to make it
+            useful for specific structures:
+            <v-tree id="tree5" style="display: block; width: 250px; overflow: hidden; border-radius: 10px; margin: 20px auto;"></v-tree>
+        
+            </div>
+            <script>
             fetch("https://run.mocky.io/v3/7b1ccde5-01bf-4e12-9a23-d87ff910a0cd").then(x => x.json()).then(resp => {
-                tree.data = resp;
+                tree3.data = resp;
+                tree4.data = resp;
             });
-        </script>
-
-        <aside>
-        <h3>You can pass JSON directly too:</h3>
-        The data property can also be set using
-        HTML attributes, like this:
-        <v-code lang="html">
-            ~v-tree id="tree" data='{"some":"json"}'~~/v-tree~
-        </v-code>
-        </aside>
+                tree5.renderLabel = (handler) => {
+                    if(handler.path.length === 1)
+                    return html`<span><v-icon name="Menu"></v-icon> Menu-style JSON: {</span>`
+                    let icon = "CircleFilled";
+                    if(handler.type != "Number") {
+                    if( handler.path[0].toLowerCase() != handler.path[0]) {
+                        icon = handler.path[0]
+                    }
+                    if(handler.path[0] == "Music") {
+                        icon = "MusicNote"
+                    }
+                    }
+                    return html`<span><v-icon name=${icon}></v-icon> ${handler.path[0]}: {</span>`
+                }
+                tree5.renderInfo = (handler) => {
+                    return ""
+                }
+                tree5.dark = true;
+                tree5.theme = {
+                    background: "#FF6600",
+                    text: "#fff",
+                    str: "#FF9966",
+                    num: "#FF9966"
+                }
+                tree5.data = {
+                    Settings: {
+                        Wifi: {
+                            Help: "I want help",
+                            datalimit: "40GB"
+                        },
+                        Music: {
+                            Play: "ok",
+                            Stop: "ok"
+                        }
+                    },
+                    Folder: [
+                        1,2,3
+                    ]
+                }
+        
+            </script>
+            <div class="t2">
+            The v-json element needs an data attribute using HTML in order to load a document:
+            <v-code lang="html">
+                ~v-json data='[{"user": {"A": {"id": 581}}, "age": 22}]'~~/v-json~
+            </v-code>
+            You can also use JavaScript with the data property:
+            <v-code lang="html">
+                ~v-json id='v1'~~/v-json~
+                ~script~
+                  v1.data = ["my json", 1, 2];
+                  
+                  // or perform an AJAX API request...
+                  fetch("/my-api").then(r=>r.json()).then(response => {
+                    v1.data = response
+                  });
+                ~/script~
+            </v-code>
+            </div>
+        </div>
+        </v-tabs>
+    
 
         <h2 id="v-search"><b>v-search</b>: instant fuzzy search</h2>
-
-        <main>
-        <div>
+        <v-tabs>
+            <button data-target=".t1">Demo</button>
+            <button>Demo</button>
+            <div slot="content">
+        <div style="width: min(80vw,400px); margin: 30px auto">
             <p>
         Search Queen songs: (look at the page HTML to see the dataset)
             </p>
-            <v-search autofuzz="label"
-            rowrender="(row, highlight) => h`<v-icon name='Headset' style='color: red' /> ${highlight} <small style='margin: 0 10px; color:#999'>${row.value}</span>`">
+            <v-search>
                 <data value="song1">Bohemian Rhapsody (1975)</data>
                 <data value="song2">Under Pressure (with David Bowie) (1981)</data>
                 <data value="song3">Killer Queen (1974)</data>
@@ -164,6 +216,14 @@
                 <data value="song48">Scandal (1989)</data>
                 <data value="song49">The Invisible Man (1989)</data>
                 <data value="song50">The Miracle (1989)</data>
+                <script slot="h">
+                    (h) => {
+                        console.log(this)
+                        this.suggestions = [{x: 1}, {x: 3}, {x: 5}];
+                        this.itemRender = (x) => h`${x}`
+                        this.dataFilterKey = "x";
+                    }
+                </script>
         </v-search>
     </div>
     <v-code lang="html">
@@ -176,7 +236,6 @@
           ~/data~
         ~/v-search~
         </v-code>
-    </main>
 
     <aside>
 
@@ -223,11 +282,12 @@
     </p>
     Here's the example running live:
     <v-search id="s">
-        <script slot="setup">
-            (h) => {
+        <script slot="h">
+            ((h) => {
+                console.log(this)
                 this.data = [{flt: "example", i: ["item", "one"]}, {flt: "example2", i: ["item", "two"]}]
                 this.itemFilter = (i) => true;
-                this.itemRender = (i) => JSON.stringify(i);
+                this.itemRender = (i) => h`${JSON.stringify(i)}`
                 this.dataFilterKey = "flt";
                 this._lastRealValue = "ex"
 
@@ -240,10 +300,12 @@
                 //     ))
                 //     this.objToString = (x) => `Item ${x.value}: ${this.value}`;
                 // })
-            }
+            });
         </script>
     </v-search>
     </aside>
+    </div>
+    </v-tabs>
 
     <br/>
     <h2 id="v-table"><b>v-table</b>: just put &lt;table&gt; inside</h2>
@@ -354,7 +416,7 @@
 
     <h2 id="v-alert"><b>v-alert</b>: styled message boxes</h2>
     <main>
-        <div>
+        <div style="padding: 10px">
     <v-alert error>This is an error message. You can put <strong>whatever HTML</strong> you like.</v-alert>
     <v-alert warning>This is a warning. It means something, I think ...</v-alert>
     <v-alert success>This is a success!</v-alert>

@@ -2,7 +2,8 @@ import Fuse from 'fuse.js'
 import React from 'react'
 import FuzzyHighlighter, { Highlighter } from 'react-fuzzy-highlighter'
 import { render } from './style'
-import { fnCall, fnCallSetup, Slottable, TmSlot } from './slottable'
+import { fnCall, fnCallSetup, html, Slottable, TmSlot } from './slottable'
+import './util/types.d.ts'
 
 
 export type Component<T> = React.ComponentType<T>
@@ -45,7 +46,7 @@ class SearchField extends Slottable {
   }
 
   private _props = {
-    itemToString: ((i) => null) as ItemToStr,
+    itemToString: ((i) => JSON.stringify(i)) as ItemToStr,
     itemFilter: (i: Item) => true,
     itemRender: ((i: Item, hl: any) => JSON.stringify(i)) as ItemRender,
     data: [] as Item[],
@@ -60,7 +61,7 @@ class SearchField extends Slottable {
     }
   }
 
-  set dataFilterKey(k: string) {
+  set searchKey(k: string) {
     this._props.dataFilterKey = k;
     this.autofuzz = k;
   }
@@ -73,7 +74,7 @@ class SearchField extends Slottable {
     this._props.itemFilter = fn
   }
 
-  set itemRender(fn: ItemRender) {
+  set searchRender(fn: ItemRender) {
     this._props.itemRender = fn
   }
 
@@ -260,23 +261,17 @@ class SearchField extends Slottable {
   private render() {
     if (!this.root) return
 
-    if(!this.scriptSetup) {
-      // console.log(this.slottedNodes)
-      const scripts = this.slottedElements<HTMLScriptElement>("setup");
-      
-      if(scripts.length > 0)
-      this.scriptSetup = true;
+    // if(!this.scriptSetup) {
+    //   // console.log(this.slottedNodes)
+    //   const scripts = this.slottedAny("setup");
 
-      scripts.map(x => {
-        const src = x.textContent || "()=>0"
-        console.log(src)
-        fnCallSetup(this, src)
-      })
-    }
-    // if ('' in this.templates) {
-    //   let optTags = this.templates[''].filter(x => x.tagName.toLowerCase() === 'data')
-    //   if (optTags.length > 0) {
-    //   }
+    //   if(scripts.length > 0)
+    //   this.scriptSetup = true;
+
+    //   scripts.map(x => {
+    //     const src = x.textContent || "()=>0"
+    //     fnCallSetup(this, src)
+    //   })
     // }
 
     let handlers: Record<string, any> = {}
@@ -374,9 +369,36 @@ function loadComponents() {
   customElements.define('v-alert', Alert)
   customElements.define('v-code', Code);
   customElements.define('v-tabs', Tabs);
+
+  customElements.define('v-scope', class extends HTMLElement {
+    constructor() {
+      super()
+      this.root = this.attachShadow({mode: 'open'})
+      const sl = document.createElement('slot')
+      sl.addEventListener('slotchange', (e) => {
+        const myEv = new CustomEvent<{slotEvent: any}>('slotnotify', {
+          detail: {
+          slotEvent: e
+        }});
+
+         const V = Array.from(this.children).filter(x => x.tagName.toLowerCase().startsWith('v-'));
+         V.map(x => {
+           x.dispatchEvent(myEv);
+         })
+      })
+      this.root.append(sl)
+    }
+
+    root: ShadowRoot
+  })
 }
 
-export {Tree, SearchField, Dialog, Table, Alert, Code, Tabs};
+class VeefElement {
+  static h = html;
+}
+window.VeefElement = VeefElement;
+
+export {Tree, SearchField, Dialog, Table, Alert, Code, Tabs, VeefElement};
 
 // TODO: Make different versions of the library
 // one of which doesn't auto-load the components.

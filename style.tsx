@@ -6,7 +6,24 @@ import alertCss from './icons/alert.css'
 export {vendorCss, alertCss, windiCss};
 
 import { render as preactRender } from 'preact'
+import { fnCall, fnCallSetup } from './slottable';
 
+const renderChain: typeof preactRender = (x, y) => {
+  preactRender(<>
+  {x}
+  <slot key="_h_slot" name="h"></slot>
+  </>, y);
+  const thisBind = (y as ShadowRoot).host;
+  const hSlot = y.querySelector(`slot[name="h"]`) as HTMLSlotElement;
+  hSlot.addEventListener('slotchange', (e) => {
+    const slotEls = hSlot.assignedElements();
+    if(hSlot.hasAttribute('data-vf-load') && slotEls.length > 0) return;
+    slotEls.map(x => {
+      fnCallSetup(thisBind, (x.textContent as string).trim())
+    });
+    hSlot.setAttribute('data-vf-load', "1");
+  })
+}
 
 export const objCss = windiCss + vendorCss
 
@@ -38,10 +55,10 @@ export const render: typeof preactRender = (x, y) => {
   if(supportsStyles()) {
     //@ts-ignore
     (y as ShadowRoot).adoptedStyleSheets = adoptedSheets
-    preactRender(x, y);
+    renderChain(x, y);
     return
   }
-  preactRender(
+  renderChain(
     <>
       <style>{objCss}</style>
       {x}

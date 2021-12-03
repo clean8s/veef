@@ -40,10 +40,6 @@ export class Table extends TmSlot {
 
   render() {
     const sl = this.shadowRoot.querySelector("slot");
-    console.log("A", sl)
-    if(sl) {
-      console.log((sl as HTMLSlotElement).assignedNodes({flatten: true}))
-    }
     const parentPos = (c: HTMLElement): number => {
       //@ts-ignore
       return ([...c.parentElement.children] as HTMLElement[]).findIndex(x => x.isEqualNode(c))

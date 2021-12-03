@@ -6,6 +6,19 @@ v-search, v-tree, v-table, v-alert {
 	margin: 15px 0;
 }
 
+input[data-veef="toggle"] {
+	display: none;
+}
+*[data-veef="tab"] {
+	display: none;
+}
+input[data-veef="toggle"]:checked + *[data-veef="tab"] {
+	display: block !important;
+} 
+
+v-tree {
+	display: block;
+}
 v-alert {
 	display: block;
 }

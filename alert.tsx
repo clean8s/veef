@@ -1,6 +1,7 @@
 import React from 'react'
-import { render, alertCss } from './style'
-import { TmSlot } from './slottable'
+import { render, alertCss, renderWithCss } from './style'
+import { Slottable, TmSlot } from './slottable'
+import tabStyle from './icons/tabs.css';
 
 export class Alert extends TmSlot {
   root: HTMLElement
@@ -48,7 +49,7 @@ export class Alert extends TmSlot {
   }
 }
 
-export class Tabs extends TmSlot {
+export class Tabs extends Slottable {
   root: HTMLElement
   constructor() {
     super()
@@ -57,26 +58,54 @@ export class Tabs extends TmSlot {
 
   connectedCallback() {
     this.render()
+    this.slotSetup(this.root, () => this.render())
   }
 
   render() {
-    render(
+    renderWithCss(tabStyle)(
       <>
-      <div class="flex p-2 pb-0 mb-5 space-x-1 bg-[#eaeaea] rounded-t-xl" role="tablist" aria-orientation="horizontal">
-        <button  style="box-shadow: rgb(98 98 98 / 18%) 0px -2px 20px, rgb(183 183 183 / 25%) 0px -2px 3px" class="w-full py-2.5 text-sm leading-5 font-medium text-black
-        rounded-t-lg focus:outline-none focus:ring-2 ring-offset-2 ring-offset-blue-400
-        ring-white ring-opacity-60 bg-white hover:ring-2 hover:ring-offset-gray-300" id="headlessui-tabs-tab-1" role="tab" type="button" aria-selected="true" aria-controls="headlessui-tabs-panel-4">
-          Recent
-          </button>
-          <button
-          class="w-full py-2.5 text-sm leading-5 font-medium text-blue-700 rounded-t-lg
-          focus:outline-none focus:ring-2 ring-offset-2 ring-offset-blue-400 ring-white
-          ring-opacity-60 text-[#555] bg-[#eee] hover:bg-[#fff]" id="headlessui-tabs-tab-2" role="tab" type="button" aria-selected="false" tabindex="-1">
-            Popular</button>
+      <div id="" class="flex p-2 px-[1px] pb-0 space-x-1 border-b-1 border-[#ccc] bg-[#fff] rounded-t-xl" role="tablist" aria-orientation="horizontal">
+        <slot name=""></slot>
             </div>
+            <slot name="content"></slot>
       </>,
       this.root,
     )
+    const tabs = this.root.firstChild as HTMLDivElement;
+    Array.from(tabs.children).map(x => {
+        x.classList.contains('sl-btn') ? x.remove() : 0;
+    })
+
+    this.slottedAny("").map((all, i) => {
+      if(all.hasAttribute('data-veef-f1')) return;
+      all.addEventListener('click', () => {
+        this.slottedAny("").map((x, idx) => {
+          this.tabTargetToggle(x, idx === i)
+        })
+      });
+      all.setAttribute("data-veef-f1", "1")
+    })
+    this.slottedAny("")
+    .map((x, idx) => {
+      this.tabTargetToggle(x, idx === 0)
+    })
+  }
+
+
+  findTarget (x: HTMLElement) {
+    const trg = x.getAttribute("data-target");
+    return trg != null ? 
+      this.parentElement?.querySelector(trg) as HTMLElement : null;
+  }
+
+  tabTargetToggle (x: HTMLElement, desiredState: boolean) {
+    const tgt = this.findTarget(x);
+    if(tgt === null) return;
+
+    const wantedState = desiredState;
+    
+    x.classList.toggle("active", wantedState)
+    tgt.style.display = wantedState ? 'block' : 'none'
   }
 
   attributeChangedCallback(key: string, _: any, newVal: string) {
@@ -84,7 +113,7 @@ export class Tabs extends TmSlot {
   }
 
   static get observedAttributes() {
-    return []
+    return ['via']
   }
 }
 

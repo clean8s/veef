@@ -1,5 +1,6 @@
 import htm from 'htm'
 import { h as preactH } from 'preact'
+import { bool } from 'prop-types'
 import { SyntheticEvent } from 'react'
 //@ts-ignore
 export const html = htm.bind(preactH)
@@ -23,6 +24,19 @@ export function fnCallSetup(bindThis: any, source: string) : any {
   return new Function('h', `let code = ${source}; return code(h)`).bind(bindThis)(html)
 }
 
+export function literalOrString(src: string) : string | boolean | number | object {
+  if (typeof src === 'string' && src.trim().length === 0) {
+    return true
+  } else {
+    try {
+      return JSON.parse(src)
+    } catch (e) {
+      console.error(e)
+    }
+    return src
+  }
+}
+
 type SlotEvent = {target: EventTarget & HTMLSlotElement | null}
 type SlotCallback = () => void;
 
@@ -37,11 +51,15 @@ export abstract class Slottable extends HTMLElement {
 
   slottedNodes: Map<string, { elements: HTMLElement[], texts: Text[]}> = new Map();
 
-  public slottedElements<T extends HTMLElement>(slotName: string): T[] {
-    if(this.slottedNodes.has(slotName)) {
-      return this.slottedNodes.get(slotName)?.elements as T[];
-    }
-    return [];
+  public slottedAny(slotName: string): HTMLElement[] {
+    const nodes = this.slottedNodes.get(slotName)
+    if(typeof nodes === 'undefined') return [];
+    return nodes.elements;
+  }
+
+  public slottedByTag<T extends HTMLElement>(slotName: string, tagName: string) : T[] {
+    const filtered = this.slottedAny(slotName).filter(x => x.tagName.toLowerCase() === tagName.toLowerCase());
+    return filtered as T[];
   }
 
   handleSlot(e: SlotEvent, fn: SlotCallback) {
@@ -49,12 +67,16 @@ export abstract class Slottable extends HTMLElement {
     if(slot === null) return;
     
     const slottedTexts: Text[] = slot.assignedNodes().filter(x => x.nodeType === Node.TEXT_NODE) as Text[]
-    const slottedEls: HTMLElement[] = slot.assignedNodes().filter(x => x.nodeType == Node.ELEMENT_NODE) as HTMLElement[]
+    const slottedEls: HTMLElement[] = slot.assignedElements() as HTMLElement[];
     this.slottedNodes.set(slot.name, {
       elements: slottedEls,
       texts: slottedTexts
     })
     requestAnimationFrame(() => fn())
+  }
+
+  public htm(fn: (h: any)=>any) {
+    return fn(html);
   }
 }
 
@@ -62,6 +84,10 @@ export abstract class Slottable extends HTMLElement {
 export abstract class TmSlot extends HTMLElement {
   static isTemplate(x: HTMLElement) {
     return x.tagName.toLowerCase() === 'template'
+  }
+
+  public htm(fn: (h: any)=>any) {
+    return fn(html);
   }
   
   slotSetup(root: HTMLElement, updateCb: () => void) {

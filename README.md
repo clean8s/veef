@@ -8,7 +8,7 @@ import "https://unpkg.com/veef"; // should be under 60KB
 // you have now loaded every <v-component> and its styles.
 </script>
 ```
-<img src="og.png" width="50%">
+<img src="util/og.png" width="50%">
 
 **v-tree**: instant JSON object preview
 ---------------------------------------

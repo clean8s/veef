@@ -1,0 +1,40 @@
+
+::slotted(button) {
+display: block;
+--tw-bg-opacity: 1;
+background-color: rgba(238, 238, 238, var(--tw-bg-opacity));
+border-top-left-radius: 0.5rem;
+border-top-right-radius: 0.5rem;
+font-weight: 500;
+font-size: 0.875rem;
+line-height: 1.25rem;
+line-height: 1.25rem;
+margin-left: 3px;
+margin-right: 3px;
+padding-top: 0.625rem;
+padding-bottom: 0.625rem;
+--tw-ring-offset-opacity: 1;
+--tw-ring-offset-color: rgba(96, 165, 250, var(--tw-ring-offset-opacity));
+--tw-ring-offset-width: 2px;
+--tw-ring-opacity: 1;
+--tw-ring-color: rgba(255, 255, 255, var(--tw-ring-opacity));
+--tw-ring-opacity: 0.6;
+--tw-text-opacity: 1;
+--tw-text-opacity: 1;
+color: rgba(70, 70, 70, var(--tw-text-opacity));
+width: 100%;
+text-align: center;
+transition: 0.1s all;
+cursor: pointer;
+border: 0px solid transparent;
+border-bottom-width: 2px;
+user-select: none;
+}
+::slotted(*.active) {
+--tw-bg-opacity: 1;
+font-weight: 600;
+background-color: rgba(255, 255, 255, var(--tw-bg-opacity));
+border-bottom-color: rgb(37, 99, 235);
+color: rgba(0, 0, 0, var(--tw-text-opacity));
+box-shadow: rgba(0, 0, 0, 0.1) 0px 10px 15px -3px, rgba(0, 0, 0, 0.05) 0px 4px 6px -2px, #00000010 0 -10px 15px -3px;
+}

@@ -2,9 +2,24 @@ import React from 'react'
 import JSONTree from 'react-json-tree'
 import { render } from './style'
 import { fnCall, TmSlot } from './slottable'
-import { Theme } from 'react-base16-styling';
-import { monokai, VeefTheme } from './icons/tree-style'
+import { invertBase16Theme, invertTheme, Theme } from 'react-base16-styling';
+import { monokai, VeefTheme } from './icons/tree-theme'
+import { StylingFunction, Base16Theme  } from 'react-base16-styling';
 
+type TreeTheme = {
+  background: string,
+  text: string,
+  typeStr: string,
+  typeNum: string
+};
+
+type Handler = {
+  data: object,
+  type: string,
+  path: (string|number)[],
+  isExpanded: boolean,
+  value: any
+}
 
 export class Tree extends TmSlot {
   //@ts-ignore
@@ -28,6 +43,17 @@ export class Tree extends TmSlot {
   connectedCallback() {
     this.render()
     this.slotSetup(this.root as any as HTMLElement, () => this.render())
+  }
+
+  renderInfo(h: Handler) {
+    const itemN: string = h.type == 'Object' ? 
+      `object[${Object.keys(h.value).length}]` : h.type == 'Array' ? `array[${h.value.length}]` : '';
+    return itemN
+  }
+
+  renderLabel(h: Handler) 
+  {
+    return h.path[0]
   }
 
   render() {
@@ -55,19 +81,36 @@ export class Tree extends TmSlot {
         <JSONTree
           labelRenderer={(path, type, isExpanded, canExpand) => {
             const args = { path, type, isExpanded, canExpand }
-            return this.handlers.renderLabel(path, type, isExpanded, canExpand)
+            let name = path[0]
+            return this.renderLabel({
+              data: this.data,
+              isExpanded: isExpanded,
+              path: path,
+              type: type,
+              value: ""
+            });
+
+            // return this.handlers.renderLabel(path, type, isExpanded, canExpand)
           }}
           valueRenderer={(friendlyValue, value, ...path) => {
             const args = { friendlyValue, value, path }
             return this.handlers.valueRender(friendlyValue, value, path)
           }}
-          getItemString={(type, fullValue, itemType, itemStr, path) => {
-            const friendlyValue = `${type} (${itemStr})`
-
-            return this.handlers.infoRender(type, fullValue, friendlyValue, path)
+          getItemString={(type, fullValue, _, itemStr, path) => {
+            // const friendlyValue = `${type} (${itemStr})` 
+            const tree = fullValue
+            const l = fullValue instanceof Array ? fullValue.length : Object.keys(fullValue).length;
+            return <> {this.renderInfo({
+              data: this.data,
+              isExpanded: true,
+              path: path,
+              type: type,
+              value: fullValue
+            })} </>
+            // return this.handlers.infoRender(type, fullValue, friendlyValue, path)
           }}
 
-          theme={this._theme as any}
+          theme={this._theme }
           data={this.data}
           invertTheme={!this._darkMode}
         />
@@ -80,12 +123,17 @@ export class Tree extends TmSlot {
   }
 
   private get arrowColor() : string{
-    return `%23${monokai.base0D.substring(1)}`;
+    let theme = this._theme.extend as Base16Theme;
+    if(!this._darkMode) {
+      theme = invertBase16Theme(theme);
+    }
+    const hex = theme["base0D"];
+    return `%23${hex.substring(1)}`;
   }
 
   private _internalData: any = ''
 
-  private _theme = VeefTheme;
+  private _theme = VeefTheme(monokai);
   private _darkMode: boolean = false
 
   get data() {
@@ -101,9 +149,17 @@ export class Tree extends TmSlot {
     return this._theme
   }
 
-  set theme(v: Theme) {
+  set theme(v: Record<string, string>) {
     if (v == null || typeof v != 'object') return
-    this._theme = v
+    
+    let b16: Partial<Base16Theme> = {
+      base00: v.background || undefined,
+      base0D: v.text || undefined,
+      base0B: v.str || undefined,
+      base09: v.num || undefined
+    }
+    b16 = Object.fromEntries(Object.entries(b16).filter(([k, v]) => typeof v === 'string'));
+    this._theme = VeefTheme({...monokai, ...b16})
     this.render()
   }
 

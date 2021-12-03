@@ -31,7 +31,21 @@ it(`renders suggestions`, () => {
     f.itemRender = (i) => JSON.stringify(i);
     f.dataFilterKey = "flt";
     f._lastRealValue = "ex"
+    f.render()
+    // TODO: figure out why we need two renders
+    f.render()
     assert(f.shadowRoot.innerHTML.indexOf(`example`) !== -1)
+})
 
-    // assert(f.shadowRoot.innerHTML.length > 0)
+it(`doesnt render bad suggestions`, () => {
+    const f = new Veef.SearchField()
+    document.body.append(f);
+    f.data = [{flt: "example", i: ["item", "one"]}, {flt: "example2", i: ["item", "two"]}]
+    f.itemFilter = (i) => true;
+    f.itemRender = (i) => JSON.stringify(i);
+    f.dataFilterKey = "flt";
+    f._lastRealValue = "efaf135fXx"
+    f.render()
+    f.render()
+    assert(f.shadowRoot.innerHTML.indexOf(`example`) === -1)
 })
