@@ -2,6 +2,7 @@ import htm from 'htm'
 import { h as preactH } from 'preact'
 import { bool } from 'prop-types'
 import { SyntheticEvent } from 'react'
+import { render } from './style'
 //@ts-ignore
 export const html = htm.bind(preactH)
 
@@ -21,7 +22,11 @@ export function fnCall(bindThis: any, source: string, ...args: any[]): any {
  * where h is preact/htm 
  */
 export function fnCallSetup(bindThis: any, source: string) : any {
-  return new Function('h', `let code = ${source}; return code(h)`).bind(bindThis)(html)
+  return new Function('h', `let code = (${source}); return code(h)`).bind(bindThis)(html)
+}
+
+export function rawExecute(bindThis: any, source: string) : any {
+  return new Function('h', source).bind(bindThis)(html)
 }
 
 export function literalOrString(src: string) : string | boolean | number | object {
@@ -37,10 +42,44 @@ export function literalOrString(src: string) : string | boolean | number | objec
   }
 }
 
+// type Q<T> = new () => T extends HTMLElement ? T : never;
+export function Attrs<T extends new (...m: any[]) => HTMLElement >(attrList: string[], handler: (attr: string, from: string, to: string) => void) {
+  return (cls: T) : any => {
+    //@ts-ignore
+    cls.observedAttributes = attrList;
+    cls.prototype.attributeChangedCallback = function (attr: string, from: string, to: string) {
+      handler(attr, from, to)
+    };
+    class newClass extends cls {
+      constructor(...args: any[])  {
+        super(...args)
+      }
+      setupSuper(k: string, v: any) {
+        //@ts-ignore
+        super[k] = v;
+        //@ts-ignore
+        super.render()
+      }
+    };
+    cls.prototype.props.map(x => {
+      Object.defineProperty(newClass.prototype, x.substring(1), {
+        get() {
+          return this[x];
+        },
+        set(val: any) {
+          this.setupSuper(x, val)
+        }
+      })
+    })
+    return newClass
+  }
+}
+
+import React from 'react'
 type SlotEvent = {target: EventTarget & HTMLSlotElement | null}
 type SlotCallback = () => void;
 
-export abstract class Slottable extends HTMLElement {
+export class Slottable extends HTMLElement {
   slotSetup(root: HTMLElement, updateCb: SlotCallback) {
     let slots = [...root.querySelectorAll('slot')];
     slots.map(slot => {
@@ -62,15 +101,15 @@ export abstract class Slottable extends HTMLElement {
     return filtered as T[];
   }
 
+
   handleSlot(e: SlotEvent, fn: SlotCallback) {
     const slot = e.target
     if(slot === null) return;
-    
-    const slottedTexts: Text[] = slot.assignedNodes().filter(x => x.nodeType === Node.TEXT_NODE) as Text[]
-    const slottedEls: HTMLElement[] = slot.assignedElements() as HTMLElement[];
+    const slottedTexts: Text[] = slot.assignedNodes({flatten: true}).filter(x => x.nodeType === Node.TEXT_NODE) as Text[]
+    const slottedEls: HTMLElement[] = slot.assignedElements({flatten: true}) as HTMLElement[];
     this.slottedNodes.set(slot.name, {
       elements: slottedEls,
-      texts: slottedTexts
+      texts: slottedTexts,
     })
     requestAnimationFrame(() => fn())
   }

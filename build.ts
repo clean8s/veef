@@ -29,11 +29,16 @@ async function generateStyles(html: string) {
 
 import { sync as globSync } from 'glob'
 
+type ResolveArgs = {importer: string, path: string};
 
 let preactAlias = {
   name: 'preact-alias',
   setup(build: any) {
     let path = require('path')
+
+    // build.onStart(() => {
+    //   console.log(build)
+    // })
     
     let jsfiles = globSync('**/*.tsx', {
       dot: false,
@@ -41,10 +46,39 @@ let preactAlias = {
       ignore: ['.git/*', 'node_modules/**/*'],
     })
     
-    build.onResolve({ filter: /^virtual:windi$/ }, (args: { importer: any }) => {
+    build.onResolve({ filter: /^virtual:material-icons$/ }, (args: ResolveArgs) => {
+      const script: string = fs.readFileSync(args.importer as string, 'utf8');
+      const iconList = Array.from(script.matchAll(/icon_[a-zA-Z0-9_-]+/g)).map((match: string[]) => {
+        return match[0].replace('icon_', '')
+        // console.log(icon)
+      })
+
+      // console.log(args)
+      return {
+        path: args.path.replace('virtual:', ''),
+        namespace: 'material-icons',
+        pluginData: iconList
+      }
+    })
+
+    build.onResolve({ filter: /^virtual:windi$/ }, (args: ResolveArgs) => {
+      // const srcJs = fs.readFileSync(args.importer as string, 'utf8')
+
       return {
         path: args.importer,
         namespace: 'windi',
+      }
+    })
+
+    build.onLoad({ filter: /.*/, namespace: 'material-icons' }, async (x: {pluginData: string[]}) => {
+      let icons: Record<string, string> = {};
+      const imps = x.pluginData.map(icon => {
+        const content = fs.readFileSync(`node_modules/@material-design-icons/svg/filled/${icon}.svg`, 'utf8');
+        icons["icon_" + icon] = content;
+        // return `export icon_${icon} = ${JSON.stringify(content)};`
+      });
+      return {
+        contents:       `export default icons = ${JSON.stringify(icons)}`,
       }
     })
     build.onLoad({ filter: /.*/, namespace: 'windi' }, async (args: { path: string }) => {
@@ -54,7 +88,10 @@ let preactAlias = {
         return fs.readFileSync(x, 'utf8')
       }).join('\n')
       const css = await generateStyles(srcjs)
-      const f = 'export default ' + JSON.stringify(css)
+      const f = `
+      const windicss = ${JSON.stringify(css)};
+      export default windicss;
+      `
       return {
         contents: f,
       }
@@ -85,21 +122,21 @@ const htmlTransform =  (html: string) => {
   .replace(`<script src="dist/index.mjs"></script>`, "")
 }
 
-if(out > 0) {
-  const maybeOut = process.argv[out + 1];
-  if(maybeOut) {
-    outputDir = maybeOut;
-    const htmlCopy = fs.readFileSync('index.html', 'utf8');
-    fs.writeFileSync(path.join(outputDir, 'index.html'), htmlTransform(htmlCopy));
-  }
-}
+// if(out > 0) {
+//   const maybeOut = process.argv[out + 1];
+//   if(maybeOut) {
+//     outputDir = maybeOut;
+//     const htmlCopy = fs.readFileSync('index.html', 'utf8');
+//     fs.writeFileSync(path.join(outputDir, 'index.html'), htmlTransform(htmlCopy));
+//   }
+// }
 const isDebug = 'watch' in opts;
 
 (['esm', 'cjs']).map(fmt => {
   const outf = path.join(outputDir, 'index.' + (fmt == 'esm' ? 'mjs' : 'js'));
   console.log(`Building ${fmt} into ${outf}...`)
   require('esbuild').build({
-    entryPoints: ['index.tsx'],
+    entryPoints: ['src/index.tsx'],
     bundle: true,
     minify: !isDebug,
     keepNames: isDebug,

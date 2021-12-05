@@ -9,7 +9,13 @@ declare module "preact" {
         'v-tree': any,
         'v-dialog': any,
         'v-table': any,
-        'v-code': any
+        'v-code': any,
+        'template': any
+        }
+        interface IntrinsicAttributes {
+            dangerouslySetInnerHTML?: {
+                __html: string;
+            };
         }
     }
 }

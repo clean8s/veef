@@ -33,13 +33,24 @@ const getDefaultThemeStyling = (theme: Base16Theme): StylingConfig => {
   return {
     tree: (s: any) => {
       return {
-        style: {...s.style, margin: undefined, padding: undefined},
+        style: {...s.style, margin: undefined, padding: undefined, background: '#282c34'},
         className: 'vf-tree',
       };
     },
 
-    value: clsGen('vf-tree-value'),
+    value: (s, x, y, z) => {
+      return {
+        style: {...s.style, 'margin-left': '1.2em'},
+        className: `vf-tree-value-${JSON.stringify([x,y, z])}`,
+      };
+    },
 
+    label: (s, x, y) => {
+      return {
+        style: {...s.style},
+        className: `vf-tree-label`,
+      }
+    },
     // label: {
     //   display: 'inline-block',
     //   color: colors.LABEL_COLOR,
@@ -75,6 +86,7 @@ const getDefaultThemeStyling = (theme: Base16Theme): StylingConfig => {
     nestedNodeItemString: ({ style }, keyPath, nodeType, expanded) => ({
       style: {
         ...style,
+        
       },
       className: 'vf-tree-item-string',
     }),

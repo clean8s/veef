@@ -1,6 +1,6 @@
 import { render } from 'preact'
 import React from 'react'
-import IconLibrary, { IconComponent, IconKey, IconNames } from './lib/icons'
+import IconLibrary, { IconComponent, IconKey } from './lib/icons'
 
 customElements.define(
   'v-icon',
@@ -23,10 +23,13 @@ customElements.define(
         render(
           <div style='display: flex; flex-wrap: wrap;'>
             {Object.keys(IconLibrary).map(x => {
-              return <div style='margin: 15px 15px;text-align: center'>
+              let maybeLine = null;
+              
+              if(x === 'Youtube' || x === 'Close' || x == 'Github') maybeLine = <div style="flex-basis: 100%; height:10px; border-bottom: 1px solid #bcbcbc;" />
+              return <>{maybeLine}<div style='margin: 15px 15px;text-align: center'>
                 <v-icon name={x} style='width: 40px; height: 40px' />
                 <div style='font-weight: 500; color: #333'>{x}</div>
-              </div>
+              </div></>
             })}
           </div>,
           this,

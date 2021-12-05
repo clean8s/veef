@@ -3,21 +3,24 @@ const { fstat, readFileSync, rmSync } =  require("fs")
 const {sync} = require("glob")
 const {spawn} = require("child_process")
 
+const getEntries = () => {
+    return ["./main.tsx",  ...sync("*.{css,demo.js}"), ...sync("assets/*") ]
+}
 function buildSite() {
     const buildh = async () => {
         console.log("loading");
-        ["./web.tsx",  ...sync("*.{css,demo.js}")].map(x => {
+        getEntries().map(x => {
             try {
-                delete require.cache[require.resolve(`./dist/${x}`.replace(/\.(js|css|tsx)/, ".js"))]
+                delete require.cache[require.resolve(`./dist/${x}`.replace(/\.\w{2,4}$/, ".js"))]
             }catch(err) {
-                console.log(err)
+                // console.log(err)
             }
         });
-        require("./dist/web.js")
+        require("./dist/main.js")
     }
 
     build({
-        entryPoints: ["./web.tsx",  ...sync("*.{css,demo.js}") ],
+        entryPoints: getEntries(),
         watch: true,
         target: "node12",
         outdir: 'dist',
@@ -26,7 +29,10 @@ function buildSite() {
         format: "cjs",
         loader: {
             ".demo.js": "text",
-            ".css": "text"
+            ".jsx": "text",
+            ".css": "text",
+            ".html": "text",
+            ".json": "text"
         },
         jsxFactory: "h",
         jsxFragment: "Fragment",

@@ -1,0 +1,65 @@
+
+    {
+        "airports":[
+           {
+              "name":"London",
+              "code":"LHR",
+              "country":"UK"
+           },
+           {
+              "name":"Paris",
+              "code":"CDG",
+              "country":"France"
+           },
+             {
+                "name":"New York",
+                "code":"JFK",
+                "country":"USA"
+                },
+                {
+                "name":"Tokyo",
+                "code":"HND",
+                "country":"Japan"
+                },
+                {
+                "name":"Sydney",
+                "code":"SYD",
+                "country":"Australia"
+                },
+                {
+                "name":"Dubai",
+                "code":"DXB",
+                "country":"UAE"
+                },
+                {
+                "name":"Rome",
+                "code":"FCO",
+                "country":"Italy"
+                }
+    
+        ],
+        "weather":[
+           {
+              "date":"2018-05-06",
+              "temperatureC":1,
+              "summary":"Freezing",
+              "temperatureF":33
+           },
+           {
+              "date":"2018-05-07",
+              "temperatureC":14,
+              "summary":"Bracing",
+              "temperatureF":57
+           },
+           {
+              "date":"2018-05-08",
+              "temperatureC":-13,
+              "summary":"Freezing",
+              "temperatureF":9
+           }
+        ],
+        "status": 200,
+        "currentLocation": "London",
+        "language": "en-US"
+     }  
+                     

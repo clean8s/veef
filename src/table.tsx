@@ -126,7 +126,11 @@ export class Table extends Slottable {
     )
 
     if(this.selectable) {
+      this.wasSelectable = true;
       this.setupSelect()
+    } else if(this.wasSelectable) {
+      this.wasSelectable = false;
+      this.removeSelect()
     }
 
     if (!this.everSorted && this.slottedByTag("", "table").length > 0) {
@@ -134,6 +138,11 @@ export class Table extends Slottable {
       if(!isNaN(idx) && idx >= 0)
       this.headerColByIndex(idx).click()
     }
+  }
+  wasSelectable = false;
+
+  removeSelect() {
+    Array.from(this.querySelectorAll('td,th')).filter(x => x.classList.contains('vf-checkbox')).map(x => x.remove());
   }
 
   setupSelect() {

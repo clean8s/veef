@@ -3,7 +3,7 @@ import React from 'react'
 import { TmSlot } from './slottable'
 //@ts-ignore
 import Prism from "prism-es6"
-import codeCss from './icons/syntax-hl.css'
+import codeCss from '../icons/syntax-hl.css'
 
 export class Code extends TmSlot {
     root: HTMLElement

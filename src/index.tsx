@@ -1,9 +1,12 @@
 import Fuse from 'fuse.js'
 import React from 'react'
 import FuzzyHighlighter, { Highlighter } from 'react-fuzzy-highlighter'
-import { render } from './style'
-import { fnCall, fnCallSetup, html, Slottable, TmSlot } from './slottable'
-import './util/types.d.ts'
+import { genCss, render, renderWithCss } from './style'
+import { Attrs, fnCall, fnCallSetup, html, Props, PropsLoad, Slottable, TmSlot } from './slottable'
+import '../util/types.d.ts'
+import '../icons/el'
+import {render as preactRender} from "preact"
+import {render as pss} from "preact-render-to-string"
 
 
 export type Component<T> = React.ComponentType<T>
@@ -29,7 +32,7 @@ function fuzzy(data: object[], keys: any, query: string, maxResults?: number) {
 // itemRender (item) => VNode
 // onPick 
 // .data = item[]
-// .dataFilterKey = string
+// .searchKey = string
 
 type Item = object;
 type ItemToStr = (item: Item) => string | null;
@@ -37,22 +40,48 @@ type ItemTransform = (items: Item[]) => Item[];
 type ItemRender = (item: Item, hl: any) => VNode;
 type ItemPick = CustomEvent<Item>;
 
+@Attrs(["q"], (attr) => {
+  console.log(attr)
+})
 class SearchField extends Slottable {
   private root: HTMLElement
 
+  // @attr{}
+
+  attributeChangedCallback(name: string, oldVal: string, newVal: string) {
+    console.log(name)
+  }
 
   constructor() {
     super()
     this.root = this.attachShadow({ mode: 'open' }) as any as HTMLElement
   }
+  handlers: Record<string, any> = {};
 
-  private _props = {
-    itemToString: ((i) => JSON.stringify(i)) as ItemToStr,
-    itemTransform: (i: Item[]) => i,
-    itemRender: ((i: Item, hl: any) => <span>{JSON.stringify(i)}</span>) as ItemRender,
-    data: [] as Item[],
-    dataFilterKey: "",
-    placeholder: "Search..."
+  connectedCallback() {
+    this.render()
+    this.slotSetup(this.root, () => this.slotted());
+    (['onInput', 'onChange', 'onBlur', 'onFocus', 'onContextMenu', 'onSelect', 'onKeyUp', 'onKeyDown', 'onKeyPress'])
+    .map(ev => {
+      this.handlers[ev] = (e: Event) => this.handleNativeInput(e)
+    });
+  }
+
+  slotted() {
+    // let handlers: Record<string, any> = {};
+
+    this.slottedAny("input").map(x => {
+      Object.entries(this.handlers).map(([ev, fn]) => {
+        x.removeEventListener(ev.substring(2).toLowerCase(), fn);
+        x.addEventListener(ev.substring(2).toLowerCase(), fn); 
+        // console.log(x)
+      });
+    });
+    // this.render();
+    // this.root.querySelector("#mAutoComplete")?.innerHTML = pss(this.autocomplete())
+    
+    // preactRender(pss(this.autocomplete()), this.root.querySelector("#mAutoComplete"));
+    // preactRender(this.autocomplete()
   }
 
   private _events = {
@@ -63,35 +92,19 @@ class SearchField extends Slottable {
     }
   }
 
-  set searchKey(k: string) {
-    this._props.dataFilterKey = k;
-    this.autofuzz = k;
-  }
+  _itemToString = ((i) => JSON.stringify(i)) as ItemToStr;
+  _itemTransform = (i: Item[]) => i;
+  _itemRender = ((i: Item, hl: any) => this._searchKey != "" ? hl : (<span>{JSON.stringify(i)}</span>) ) as ItemRender;
+  _data = [] as Item[];
+  _placeholder = "Hello"
+  _searchKey = ""
 
-  set itemToString(fn: ItemToStr) {
-    this._props.itemToString = fn
-  }
-
-  set itemTransform(fn: ItemTransform) {
-    this._props.itemTransform = fn
-  }
-
-  set searchRender(fn: ItemRender) {
-    this._props.itemRender = fn
-  }
-
-  set data(items: Item[]) {
-    this._props.data = items;
-    this.render() 
-  }
-
-  connectedCallback() {
-    this.render()
-    this.slotSetup(this.root, () => this.render())
+  get props() {
+    return ["_itemToString", "_itemTransform", "_itemRender", "_data", "_searchKey", "_placeholder"]
   }
 
   private fuzzyRenderer(WindiItem: Component<WindiProps>): any {
-    if (this.autofuzz == null) return
+    if (this._searchKey == "") return
     
     return (<FuzzyHighlighter
       query={this._lastRealValue}
@@ -103,7 +116,7 @@ class SearchField extends Slottable {
         location: 0,
         distance: 100,
         minMatchCharLength: 1,
-        keys: [this.autofuzz],
+        keys: [this._searchKey],
       }}
     >
       {props => {
@@ -113,7 +126,7 @@ class SearchField extends Slottable {
         }
 
         return (formattedResults.map((opt, idx) => {
-          const row = this._props.itemRender(opt.item, <Highlighter text={opt.formatted[this._props.dataFilterKey]} />)
+          const row = this._itemRender(opt.item, <Highlighter text={opt.formatted[this._searchKey]} />)
           return (
             <WindiItem idx={idx}>{row}</WindiItem>
           )
@@ -122,45 +135,26 @@ class SearchField extends Slottable {
     </FuzzyHighlighter>)
   }
 
-  public autofuzz: string | null = null;
-
-  set placeholder(s: string) {
-    this._props.placeholder = s;
-    console.log('ok bitch')
-    this.render()
-  }
-
   myFuzzy() : ItemTransform {
-    return (x) => fuzzy(x, [this._props.dataFilterKey], this._lastRealValue).map(x => x.item)
-    // const results: Item[] =  fuzzy(this._props.data, [this._props.dataFilterKey], this._lastRealValue).map(x => x.item);
-    
-    // const getKey = (i: Item) => {
-    //   return (i as any)[this._props.dataFilterKey];
-    // }
-
-    // return (R: Item) => (typeof results.find(y => getKey(y) === getKey(R))) != 'undefined';
+    return (x) => fuzzy(x, [this._searchKey], this._lastRealValue).map(x => x.item)
   }
 
   private transformChain() : ItemTransform[] {
     let all: ItemTransform[] = [];
-    all.push(this._props.itemTransform);
-    if(this._props.dataFilterKey) {
+    all.push(this._itemTransform);
+    if(this._searchKey) {
       all.push(this.myFuzzy())
     }
     return all;
   } 
 
   get filteredData(): Item[] {
-    let res = this._props.data;
+    let res = this._data;
     
     this.transformChain().forEach((fn: ItemTransform) => {
       res = fn(res);
     });
     return res;
-  }
-
-  static get observedAttributes() {
-    return ['options', 'autofuzz', 'objtostring', 'placeholder', 'searchKey', 'data', 'searchrender']
   }
 
   private handleNativeInput(e: Event) {
@@ -206,7 +200,7 @@ class SearchField extends Slottable {
   // puts an Item into <input> if Item.toString()
   // is defined. if not, it returns false
   private putSuggestionIntoField(item: Item): boolean {
-    const maybeStr = this._props.itemToString(item);
+    const maybeStr = this._itemToString(item);
     if(maybeStr === null) {
       // the item cannot be put into text fields
       return false
@@ -220,7 +214,7 @@ class SearchField extends Slottable {
     if (idx >= this.filteredData.length) return
     
     const item = this.filteredData[idx]
-    // const inpText = this._props.itemToString(this.suggestions[idx]);
+    // const inpText = this._itemToString(this.suggestions[idx]);
     if(!this.putSuggestionIntoField(item)) {
 
     }
@@ -239,9 +233,7 @@ class SearchField extends Slottable {
 
   public moveSelect(delta: number) {
     this.selectedIndex += delta
-    console.log("before", this.selectedIndex)
     this.selectedIndex = (this.selectedIndex % (this.filteredData.length + 1))
-    console.log("after", this.selectedIndex)
     if (this.selectedIndex == this.filteredData.length || this.selectedIndex == -1) {
       this.value = this._lastRealValue
     } else {
@@ -266,41 +258,56 @@ class SearchField extends Slottable {
   }
 
   public get input() {
-    return this.root.querySelector('input') as HTMLInputElement
+    const inpSlot = this.slottedByTag("input", "input")
+    console.log(inpSlot)
+    const i = inpSlot.find(x => x.id != "default");
+    if(!i) {
+      return inpSlot[0];
+    }
+    return i;
+    if(inpSlot.length === 0) {
+      return this.slotDefault("input");
+    }
+    return inpSlot[inpSlot.length - 1];
   }
 
-  private scriptSetup = false;
   private render() {
-    if (!this.root) return
+    // if (!this.root) return
+    // let handlers: Record<string, any> = {};
 
-    let handlers: Record<string, any> = {}
-    ;(['onInput', 'onChange', 'onBlur', 'onFocus', 'onContextMenu', 'onSelect', 'onKeyUp', 'onKeyDown', 'onKeyPress'])
-      .map(x => {
-        handlers[x] = (e: Event) => this.handleNativeInput(e)
-      })
+    // (['onInput', 'onChange', 'onBlur', 'onFocus', 'onContextMenu', 'onSelect', 'onKeyUp', 'onKeyDown', 'onKeyPress'])
+    // .map(ev => {
+    //   // x.addEventListener(ev.substring(2).toLowerCase(), (e) => this.handleNativeInput(e))
+    //   handlers[ev] = (e: Event) => this.handleNativeInput(e)
+    // });
 
-    render(
+    // this.slottedByTag("input", "input").map(x => {
+    //   if(x.hasAttribute("vf-setup"))  return;
+    //   Object.entries(handlers).map(([k, v]) => x.addEventListener(k.substring(2).toLowerCase(), v))
+    //   x.setAttribute('vf-setup', '1');
+    // })
+    // let def = <input type="text" {...handlers} id="default" slot="input"/>;
+    // if(this.slottedByTag("input", "input").length > 1) {
+    //   def = <></>;
+    // }
+
+    const myCss = "input,::slotted(input) { " + genCss("main-input w-full rounded p-2 outline-none focus:ring-2 focus:sibling:ring-2") + "}"
+    renderWithCss(myCss)(
       <div class='flex flex-col relative input-wrapper-root'>
-        <div class='flex input-wrapper'>
-          <input
-            {...handlers}
-            class='main-input w-full rounded p-2 outline-none focus:ring-2 focus:sibling:ring-2'
-            type='text'
-            placeholder={this._props.placeholder}
-          />
+        <div class='flex input-wrapper imp'>
+          <slot name='input'>
+          <input type="text" id="default" slot="input"/>
+            </slot>
+
           <button class='cursor-pointer w-auto flex rounded-r justify-end items-center text-blue-500 p-2 hover:text-blue-400 right-button'>
             <slot name="icon"><v-icon class='text-blue-500' name='Search'></v-icon></slot>
           </button>
         </div>
 
         {this.autocomplete()}
-        <div class='hidden'>
-          <slot name='setup'></slot>
-          <slot></slot>
-        </div>
       </div>,
       this.root,
-    )
+    );
   }
 
   public hideSuggestions = false
@@ -329,13 +336,13 @@ class SearchField extends Slottable {
     let optList: VNode = []
     if(this.filteredData.length === 0 || this.hideSuggestions) return <></>;
 
-    if(this._props.dataFilterKey) {
+    if(this._searchKey) {
       optList = this.fuzzyRenderer(WindiItem)
     } else {
       optList = this.filteredData.map((x, idx) => {
-        return <WindiItem idx={idx}>{this._props.itemRender(x, <></>)}</WindiItem>
+        return <WindiItem idx={idx}>{this._itemRender(x, <></>)}</WindiItem>
       })
-      // optList = this._props.itemRender(this.filteredData, null)
+      // optList = this._itemRender(this.filteredData, null)
     }
 
     return <div
@@ -353,10 +360,8 @@ class SearchField extends Slottable {
     </div>
   }
 }
-
-import './icons/el'
-
-import { Alert, Tabs } from './alert'
+import {Tabs } from "./tabs"
+import { Alert } from './alert'
 import { Code } from './codehl'
 import { Dialog } from './dialog'
 import { Table } from './table'

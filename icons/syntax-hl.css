@@ -2,7 +2,7 @@ code[class*="language-"],
 pre[class*="language-"] {
   color: #ABB2BF;
   background: none;
-  font-family: Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
   text-align: left;
   white-space: pre;
   word-spacing: normal;
@@ -39,7 +39,6 @@ code[class*="language-"]::selection, code[class*="language-"] ::selection {
 /* Code blocks */
 pre[class*="language-"] {
   padding: 1em;
-  margin: .5em 0;
   overflow: auto;
 }
 

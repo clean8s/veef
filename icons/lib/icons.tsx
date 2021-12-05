@@ -31,10 +31,29 @@ import Circle from '@material-design-icons/svg/filled/radio_button_unchecked.svg
 import Save from '@material-design-icons/svg/filled/save.svg'
 import Stop from '@material-design-icons/svg/filled/stop.svg'
 import Disabled from '@material-design-icons/svg/outlined/disabled_visible.svg'
+import TeamGroup from '@material-design-icons/svg/filled/groups.svg'
 
 import Error from '@material-design-icons/svg/filled/error.svg'
 import Notification from '@material-design-icons/svg/filled/notifications.svg'
 import Person from '@material-design-icons/svg/filled/person.svg'
+
+import CreditCard from '@material-design-icons/svg/filled/credit_card.svg'
+import Key from '@material-design-icons/svg/filled/vpn_key.svg'
+import Lock from "@material-design-icons/svg/filled/lock.svg";
+import Job from '@material-design-icons/svg/filled/work.svg'
+import Calendar from '@material-design-icons/svg/filled/calendar_month.svg'
+import Like from '@material-design-icons/svg/filled/thumb_up.svg'
+import Dislike from '@material-design-icons/svg/filled/thumb_down.svg'
+import Email from '@material-design-icons/svg/filled/alternate_email.svg'
+import Phone from '@material-design-icons/svg/filled/phone.svg'
+import Star from '@material-design-icons/svg/filled/star.svg'
+import Speaker from '@material-design-icons/svg/filled/volume_up.svg'
+import SpeakerOff from '@material-design-icons/svg/filled/volume_off.svg'
+import CloudLine from '@material-design-icons/svg/filled/cloud.svg'
+import Sun from '@material-design-icons/svg/filled/light_mode.svg'
+import Brush from '@material-design-icons/svg/filled/brush.svg'
+import Verified from '@material-design-icons/svg/filled/verified.svg'
+import matIcons from 'virtual:material-icons'
 
 import BrandSvgStrings from './brands'
 import HeroIconStrings from './heroicons'
@@ -50,7 +69,7 @@ export function sized(icon: string, extra?: object): IconComponent {
   }
 
   const component = (props: {}): React.ReactElement => {
-    return ParseSvgString(icon, { style: 'width: 100%; height: 100%; fill: currentColor;', ...extra })
+    return CreateSvgElement(icon, { style: 'width: 100%; height: 100%; fill: currentColor;', ...extra })
   }
 
   return component
@@ -68,8 +87,10 @@ const brandIcons: { [k in keyof typeof BrandSvgStrings]: IconComponent } = Objec
 import Repeat from '@material-design-icons/svg/filled/repeat.svg'
 import Headset from '@material-design-icons/svg/filled/headset.svg'
 import MusicNote from '@material-design-icons/svg/filled/audiotrack.svg'
+import { progIcons } from './programmingIcons'
 
-const IconLibrary = {
+const LibraryUnordered = {
+  ...extraIcons,
   'Home': sized(Home),
   'Add': sized(Add),
   'Search': sized(Search),
@@ -78,8 +99,14 @@ const IconLibrary = {
   'Edit': sized(Edit),
   'Save': sized(Save),
   'Pin': sized(Pin),
+  'TeamGroup': sized(TeamGroup),
+  'Job': sized(Job),
   'Person': sized(Person),
+  'Calendar': sized(Calendar),
   'Notification': sized(Notification),
+  'Cloud': sized(CloudLine),
+  'Email': sized(Email),
+  'Phone': sized(Phone),
   'Close': sized(Close),
   'Menu': sized(Menu),
   'Expand': sized(Expand),
@@ -89,7 +116,6 @@ const IconLibrary = {
   'Logout': sized(Logout),
   'Login': sized(Login),
   'List': sized(List),
-  'Like': sized(Favorite),
   'Bold': sized(Bold),
   'Italic': sized(Italic),
   'Circle': sized(Circle),
@@ -100,29 +126,63 @@ const IconLibrary = {
   'Repeat': sized(Repeat),
   'Headset': sized(Headset),
   'MusicNote': sized(MusicNote),
+  'Brush': sized(Brush),
   'Delete': sized(Delete),
   'Help': sized(Help),
   'Error': sized(Error),
   'Disabled': sized(Disabled),
+  'CreditCard': sized(CreditCard),
+  'Key': sized(Key),
+  'Lock': sized(Lock),
+  'Speaker': sized(Speaker),
+  'SpeakerOff': sized(SpeakerOff),
+  'Sun': sized(Sun),
 
   ...heroIcons,
   ...brandIcons,
-  ...extraIcons,
+  'Verified': sized(Verified),
+  'Heart': sized(Favorite),
+  'Like': sized(Like),
+  'Dislike': sized(Dislike),
+  'Star': sized(Star),
+  ...progIcons,
+}
+function reorder() {
+  let IconLibraryEntries = Object.entries(LibraryUnordered);
+  let positions = Object.fromEntries(Object.keys(LibraryUnordered).map((k, idx) => [k, idx]))
+  positions["Moon"] = positions["Sun"];
+  ["Left", "Right", "Down", "Up"].map(x => {
+    positions[x] = positions["RightChevron"];
+  })
+  positions["Help"] = positions["Info"];
+  positions["Error"] = positions["Info"]
+  positions["Link"] = positions["Italic"]
+  positions["Copy"] = positions["Italic"]
+  positions["DotsVertical"] = positions["Close"]
+  positions["Dots"] = positions["Close"]
+  positions["Delete"] = positions["Save"]
+  positions["Github"] = positions["Php"] 
+  positions["Chat"]  = positions["Phone"]
+  positions["Video"] = positions["Chat"]
+  positions["Photo"] = positions["Chat"]
+  IconLibraryEntries.sort((a, b) => {
+    const k1 = a[0];
+    const k2 = b[0];
+    return  positions[k1] - positions[k2];
+  })
+  return Object.fromEntries(IconLibraryEntries) as { [k in keyof typeof LibraryUnordered]: IconComponent }
 }
 
-export const ParseSvgString = (svgString: any, wantedProps: object): ReactElement => {
+const IconLibrary = reorder()
+export { IconLibrary }
+export default IconLibrary
+
+
+export const CreateSvgElement = (svgString: any, wantedProps: object): ReactElement => {
   // return svgString;
   const [_, viewBox, svgStr] = svgString.match(/<svg.*?viewBox="(.*?)".*?>(.*?)<\/svg>/s) as string[]
   //@ts-ignore
   return <svg dangerouslySetInnerHTML={{ __html: svgStr }} {...wantedProps} viewBox={viewBox} />
 }
 
-type IconToIcon = { [k in IconKey]: string }
-export const IconNames: IconToIcon = Object.fromEntries(
-  ([...Object.keys(IconLibrary)] as IconKey[]).map((x: IconKey) => [x, x]),
-) as IconToIcon
-
 export type IconKey = keyof typeof IconLibrary
-export { IconLibrary }
-
-export default IconLibrary

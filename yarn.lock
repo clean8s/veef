@@ -42,10 +42,10 @@
   dependencies:
     "@cspotcode/source-map-consumer" "0.8.0"
 
-"@material-design-icons/svg@^0.10.3":
-  version "0.10.3"
-  resolved "https://registry.yarnpkg.com/@material-design-icons/svg/-/svg-0.10.3.tgz#b6c9f857e743c0c9619aa8af415aeb35781c9532"
-  integrity sha512-qo7eLzywoNX0yjvajmJGU2oOHyKuBehLgPbgimBXc2aFX5DTM62Kl9Xn9uV59IY0LYZWlue3blyBu90RbDt0iw==
+"@material-design-icons/svg@^0.10.4":
+  version "0.10.4"
+  resolved "https://registry.yarnpkg.com/@material-design-icons/svg/-/svg-0.10.4.tgz#f83ba0db6f34a68c375ce2caf0656bafae4a8434"
+  integrity sha512-NLxE0H4zX/LEjPxJ+DRR/7FOUrY7cpPgW7DbK5Ux7KmJixN2y8q9oHR/3bS31KuLTt8/AEP8InycjViQGbb7cg==
 
 "@nodelib/fs.scandir@2.1.5":
   version "2.1.5"

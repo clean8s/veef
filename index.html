@@ -16,8 +16,16 @@
       let exports = {};
     </script>
     <script src="./dist/index.js"></script>
+    <title>veef Web Component kit</title>
     <style>
-      /* You DON'T need this. This is the documentation CSS, not the components! */
+      /* fallback */
+v-code {
+    white-space: pre;
+    font-family: monospace;
+    overflow: auto;
+} 
+
+/* You DON'T need this. This is the documentation CSS, not the components! */
 body { line-height: 1.5; tab-size: 4; font-size: 16px; color: rgb(31, 41, 55);
     font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;
     margin: 0; padding: 0; } * { box-sizing: border-box; -webkit-font-smoothing: antialiased; text-rendering: optimizelegibility; }
@@ -28,9 +36,10 @@ header { background: #FB5012; position: sticky; inset: 0; bottom: auto; color: #
 .showcase>div {scroll-margin-top: 5em;}
 .showcase h2 { font-size: 2em; margin: 60px 0 15px; font-weight: 400; }
 .showcase h3 { border-left: 4px solid #555; padding-left: 0.5em; font-size: 1.1em;font-weight: 500; margin: 5px 0 15px; color: #555; }
-main { display: flex; width: 100%; max-height: 500px; overflow: auto; }
-main>*{ width: 50%; flex-basis: 50%; }
-main>v-code:before{ content: "SOURCE"; font-weight: 500; color: #fff; background:#333333; border-radius: 20px; padding: 3px 10px; }
+main { display: flex; width: 100%; }
+main>*{ width: 50%; flex-basis: 50%; padding: 5px; }
+v-code { margin: 0 10px; }
+main>v-code[lang="html"]:before{ content: "SOURCE"; font-weight: 500; color: #fff; background:#333333; border-radius: 20px; padding: 3px 10px; }
 main>div:before,.demo:before { content: "DEMO"; font-weight: 500; color: #fff; background:#FB5012; border-radius: 20px; padding: 3px 10px;}
 h2>code{ color: #996699;  } h2>code:before{content:"<";}h2>code:after{content:">";}
 nav { color: #888; position: fixed; top: 63px; display: none; left: 0px; padding: 20px; z-index: 40; background: #fff; } nav>a{display: block; color: #FB5012; font-weight: 500; padding: 5px 0; }
@@ -39,9 +48,16 @@ header .ptr { display: none; float: right; } sup { font-size: 0.8rem; }
 @media screen and (max-width: 600px) { nav{height: 90vh; display: block;} .N>nav { display: none; } header .ptr { display: inline-block; } main { flex-direction: column; max-height: none; } main>* { width: 100%; flex-basis: 100%; } }
 code { background: #282c34; padding: 3px 5px; color: #fff; border-radius: 5px;
     font-family: Consolas, Monaco, "Andale Mono", "Ubuntu Mono", monospace;
+} .text-center { text-align: center; } .pad { padding: var(--y, 0) var(--x, 0); } .x-1 { --x: 10px; } .x-2 { --x: 20px; } .y-1 { --y: 10px; } .y-2 { --y: 20px; } 
+* { --color: #FB5012; --color-b: #55555535; --color-f: #913a0080; --color-rgb: 255,102,0; }
+article { max-width: 500px; margin: 0 auto; }
+/* fallback */
+v-code {
+    white-space: pre;
+    font-family: monospace;
 }
+
     </style>
-    <title>veef Web Component kit</title>
   </head>
 
   <body class="N">
@@ -69,224 +85,47 @@ code { background: #282c34; padding: 3px 5px; color: #fff; border-radius: 5px;
       </a><a href="#license">License</a>
     </nav>
     <div class="container showcase">
-      <h3><strong>Web Components</strong> is a suite of Web APIs for making interactive components that are just HTML <code>&lt;tags&gt;</code>.</h3>
-      <h3>Since they are just usual HTML, they are perfect for non-SPA frameworks like Django, Rails, Laravel.<br />And you don't need to include build steps or tons of heavy frameworks, stylesheets and scripts.</h3>
+      <h3 class="pad y-2"><strong>Web Components</strong> is a suite of Web APIs for making interactive components that are native HTML <code>&lt;elements&gt;</code>.</h3>
+      <h3 class="pad y-2">They work really well with non-SPA Django, Rails, Laravel. <br />veef contains several components, and you can use the React API and fall back to native controls if JavaScript isn't enabled.</h3>
       <div id="v-search">
-        <h2><b>&lt;v-search&gt;</b> smart fuzzy search</h2>
-        <v-tabs via="style"><button role="tab" data-target=":scope .blah .t1">
+        <h2><b>&lt;v-search&gt;</b> <span style="color: #777; font-size: 1.3rem">smart fuzzy search</span></h2>
+        <v-tabs via="style"><button slot="tab" role="tab" data-target=":scope .blah .t1">
             <v-icon name="Bolt"></v-icon> Demo
-          </button><button role="tab" data-target=":scope .blah .t2">
+          </button><button slot="tab" role="tab" data-target=":scope .blah .t2">
             <v-icon name="Code"></v-icon> Code &amp; customization
           </button>
-          <div slot="content" class="blah" style="border: 1px solid #ddd; margin: 0 3px; padding: 20px;">
-            <div>
-              <div class="t1" style="margin: 50px auto; max-width: 500px">This <code>v-search</code> has 50 Queen songs that it autocompletes. You can type <strong>boehman</strong> and you'll still find <strong>Bohemian</strong>!<v-search>
-                  <script slot="h">
-                    (h) => {
-                      this.data = [{
-                        "name": "Bohemian Rhapsody (1975)",
-                        "value": "song-1"
-                      }, {
-                        "name": "Under Pressure (with David Bowie) (1981)",
-                        "value": "song-2"
-                      }, {
-                        "name": "Killer Queen (1974)",
-                        "value": "song-3"
-                      }, {
-                        "name": "Radio Ga Ga (1984)",
-                        "value": "song-4"
-                      }, {
-                        "name": "Seven Seas of Rhye (1974)",
-                        "value": "song-5"
-                      }, {
-                        "name": "Another One Bites the Dust (1980)",
-                        "value": "song-6"
-                      }, {
-                        "name": "Don’t Stop Me Now (1979)",
-                        "value": "song-7"
-                      }, {
-                        "name": "We Will Rock You (1977)",
-                        "value": "song-8"
-                      }, {
-                        "name": "You’re My Best Friend (1976)",
-                        "value": "song-9"
-                      }, {
-                        "name": "Somebody to Love (1976)",
-                        "value": "song-10"
-                      }, {
-                        "name": "We Are the Champions (1977)",
-                        "value": "song-11"
-                      }, {
-                        "name": "Love of My Life (live at Festhalle Frankfurt, 2 February 1979) (1979)",
-                        "value": "song-12"
-                      }, {
-                        "name": "Spread Your Wings (1978)",
-                        "value": "song-13"
-                      }, {
-                        "name": "I Want to Break Free (1984)",
-                        "value": "song-14"
-                      }, {
-                        "name": "Who Wants to Live Forever (1986)",
-                        "value": "song-15"
-                      }, {
-                        "name": "Tie Your Mother Down (1977)",
-                        "value": "song-16"
-                      }, {
-                        "name": "Crazy Little Thing Called Love (1979)",
-                        "value": "song-17"
-                      }, {
-                        "name": "These Are the Days of Our Lives (1991)",
-                        "value": "song-18"
-                      }, {
-                        "name": "Now I’m Here (1975)",
-                        "value": "song-19"
-                      }, {
-                        "name": "Bicycle Race (1978)",
-                        "value": "song-20"
-                      }, {
-                        "name": "Fat Bottomed Girls (1978)",
-                        "value": "song-21"
-                      }, {
-                        "name": "The Show Must Go On (1991)",
-                        "value": "song-22"
-                      }, {
-                        "name": "Keep Yourself Alive (1973)",
-                        "value": "song-23"
-                      }, {
-                        "name": "Too Much Love Will Kill You (1996)",
-                        "value": "song-24"
-                      }, {
-                        "name": "Good Old Fashioned Lover Boy (1977)",
-                        "value": "song-25"
-                      }, {
-                        "name": "One Vision (1985)",
-                        "value": "song-26"
-                      }, {
-                        "name": "Play the Game (1980)",
-                        "value": "song-27"
-                      }, {
-                        "name": "I Want It All (1989)",
-                        "value": "song-28"
-                      }, {
-                        "name": "A Kind of Magic (1986)",
-                        "value": "song-29"
-                      }, {
-                        "name": "Save Me (1980)",
-                        "value": "song-30"
-                      }, {
-                        "name": "Hammer to Fall (1984)",
-                        "value": "song-31"
-                      }, {
-                        "name": "You Don’t Fool Me (1996)",
-                        "value": "song-32"
-                      }, {
-                        "name": "Let Me Live (1996)",
-                        "value": "song-33"
-                      }, {
-                        "name": "Back Chat (1982)",
-                        "value": "song-34"
-                      }, {
-                        "name": "A Winter’s Tale (1995)",
-                        "value": "song-35"
-                      }, {
-                        "name": "Innuendo (1991)",
-                        "value": "song-36"
-                      }, {
-                        "name": "Flash (1980)",
-                        "value": "song-37"
-                      }, {
-                        "name": "I’m Going Slightly Mad (1991)",
-                        "value": "song-38"
-                      }, {
-                        "name": "Thank God It’s Christmas (1984)",
-                        "value": "song-39"
-                      }, {
-                        "name": "Las Palabras de Amor (the Words of Love) (1982)",
-                        "value": "song-40"
-                      }, {
-                        "name": "It’s a Hard Life (1984)",
-                        "value": "song-41"
-                      }, {
-                        "name": "Breakthru (1989)",
-                        "value": "song-42"
-                      }, {
-                        "name": "Friends Will Be Friends (1986)",
-                        "value": "song-43"
-                      }, {
-                        "name": "Heaven for Everyone (1995)",
-                        "value": "song-44"
-                      }, {
-                        "name": "No One But You (Only the Good Die Young) (1998)",
-                        "value": "song-45"
-                      }, {
-                        "name": "Headlong (1991)",
-                        "value": "song-46"
-                      }, {
-                        "name": "Body Language (1982)",
-                        "value": "song-47"
-                      }, {
-                        "name": "Scandal (1989)",
-                        "value": "song-48"
-                      }, {
-                        "name": "The Invisible Man (1989)",
-                        "value": "song-49"
-                      }, {
-                        "name": "The Miracle (1989)",
-                        "value": "song-50"
-                      }];
-                      this.searchKey = "name" // yoo
-                      this.searchRender = (item, hl) => {
-                        return h`<span><v-icon name="Headset" /> ${hl}</span>`
-                      }
-                    }
-                  </script>
-                </v-search><br /><br />You can customize the behaviour and you can customize <strong>different parts </strong>of the element using <code>slot=&quot;&quot;</code> and write your own filter and rendering logic.<v-search><template slot="style">
-                    <style>
-                      .main-input {
-                        background: #333;
-                        color: #fff;
-                      }
+          <div>
+            <div style="margin: 50px auto; max-width: 500px; font-size: 1.2rem;">This <code>v-search</code> has 50 Queen songs that it autocompletes. You can type <strong>boehman</strong> and you'll still find <strong>Bohemian</strong>!<v-search>
 
-                      .main-input::placeholder {
-                        color: #ccc;
-                      }
-
-                      .input-wrapper {
-                        background: #333;
-                      }
-
-                      .suggestion span {
-                        color: #333;
-                      }
-                    </style>
-                  </template>
-                  <v-icon style="color:#FF6666" slot="icon" name="Like"></v-icon>
-                  <script slot="h">
-                    (h) => this.placeholder = 'Some other placeholder'
-                  </script>
-                  <script slot="h">
-                    (h) => {
-                      this.data = [];
-                      this.itemTransform = (i) => {
-                        return this.value.length != 0 ? i : [];
-                      }
-                      this.addEventListener('input', () => {
-                        this.data = ["You are typing: " + this.value, "Or are you...?"]
-                      })
-                    }
-                  </script>
-                </v-search>
-              </div>
-              <div class="t2">
-                <div><strong>data</strong> <code>object[]</code>
-                  <div>the items you want to autocomplete</div>
-                </div>
-                <div><strong>searchKey</strong> <code>string</code>
-                  <div>each item object must contain this key which will be used for indexing and filtering</div>
-                </div>
-                <div><strong>searchRender</strong> <code>(item: object) =&gt; htm</code>
-                  <div>renders a single item</div>
-                </div><v-code lang="html">&lt;v-search&gt;
+                <template slot="h">this.data = [{"name":"Bohemian Rhapsody (1975)","value":"song-1"},{"name":"Under Pressure (with David Bowie) (1981)","value":"song-2"},{"name":"Killer Queen (1974)","value":"song-3"},{"name":"Radio Ga Ga (1984)","value":"song-4"},{"name":"Seven Seas of Rhye (1974)","value":"song-5"},{"name":"Another One Bites the Dust (1980)","value":"song-6"},{"name":"Don’t Stop Me Now (1979)","value":"song-7"},{"name":"We Will Rock You (1977)","value":"song-8"},{"name":"You’re My Best Friend (1976)","value":"song-9"},{"name":"Somebody to Love (1976)","value":"song-10"},{"name":"We Are the Champions (1977)","value":"song-11"},{"name":"Love of My Life (live at Festhalle Frankfurt, 2 February 1979) (1979)","value":"song-12"},{"name":"Spread Your Wings (1978)","value":"song-13"},{"name":"I Want to Break Free (1984)","value":"song-14"},{"name":"Who Wants to Live Forever (1986)","value":"song-15"},{"name":"Tie Your Mother Down (1977)","value":"song-16"},{"name":"Crazy Little Thing Called Love (1979)","value":"song-17"},{"name":"These Are the Days of Our Lives (1991)","value":"song-18"},{"name":"Now I’m Here (1975)","value":"song-19"},{"name":"Bicycle Race (1978)","value":"song-20"},{"name":"Fat Bottomed Girls (1978)","value":"song-21"},{"name":"The Show Must Go On (1991)","value":"song-22"},{"name":"Keep Yourself Alive (1973)","value":"song-23"},{"name":"Too Much Love Will Kill You (1996)","value":"song-24"},{"name":"Good Old Fashioned Lover Boy (1977)","value":"song-25"},{"name":"One Vision (1985)","value":"song-26"},{"name":"Play the Game (1980)","value":"song-27"},{"name":"I Want It All (1989)","value":"song-28"},{"name":"A Kind of Magic (1986)","value":"song-29"},{"name":"Save Me (1980)","value":"song-30"},{"name":"Hammer to Fall (1984)","value":"song-31"},{"name":"You Don’t Fool Me (1996)","value":"song-32"},{"name":"Let Me Live (1996)","value":"song-33"},{"name":"Back Chat (1982)","value":"song-34"},{"name":"A Winter’s Tale (1995)","value":"song-35"},{"name":"Innuendo (1991)","value":"song-36"},{"name":"Flash (1980)","value":"song-37"},{"name":"I’m Going Slightly Mad (1991)","value":"song-38"},{"name":"Thank God It’s Christmas (1984)","value":"song-39"},{"name":"Las Palabras de Amor (the Words of Love) (1982)","value":"song-40"},{"name":"It’s a Hard Life (1984)","value":"song-41"},{"name":"Breakthru (1989)","value":"song-42"},{"name":"Friends Will Be Friends (1986)","value":"song-43"},{"name":"Heaven for Everyone (1995)","value":"song-44"},{"name":"No One But You (Only the Good Die Young) (1998)","value":"song-45"},{"name":"Headlong (1991)","value":"song-46"},{"name":"Body Language (1982)","value":"song-47"},{"name":"Scandal (1989)","value":"song-48"},{"name":"The Invisible Man (1989)","value":"song-49"},{"name":"The Miracle (1989)","value":"song-50"}];
+                  this.searchKey = "name"
+                  this.searchRender = (item, hl) => {
+                  return h`<span><v-icon name="Headset" /> ${hl}</span>`
+                  }</template>
+              </v-search><br /><br />You can customize the style and write your own filter and rendering logic.<v-search><template slot="style">
+                  .main-input::placeholder { color: #ccc; }
+                  .input-wrapper { background: #333; }
+                  .suggestion span { color: #333; }
+                </template><input class="main-input" style="background: #333; font-size: 1.2rem; color: #fff; font-family: Inter;" type="text" slot="input" placeholder="sup" />
+                <v-icon style="color:#FF6666" slot="icon" name="Heart"></v-icon><template slot="h">
+                  this.data = [];
+                  this.addEventListener('input', (e) => {
+                  this.data = [this.value];
+                  });
+                </template>
+              </v-search>
+            </div>
+          </div>
+          <div class="t2">
+            <div><strong>data</strong> <code>object[]</code>
+              <div>the items you want to autocomplete</div>
+            </div>
+            <div><strong>searchKey</strong> <code>string</code>
+              <div>each item object must contain this key which will be used for indexing and filtering</div>
+            </div>
+            <div><strong>searchRender</strong> <code>(item: object) =&gt; htm</code>
+              <div>renders a single item</div>
+            </div><v-code lang="html">&lt;v-search&gt;
 (h) =&gt; {
     this.data = [{&quot;name&quot;:&quot;Bohemian Rhapsody (1975)&quot;,&quot;value&quot;:&quot;song-1&quot;},{&quot;name&quot;:&quot;Under Pressure (with David Bowie) (1981)&quot;,&quot;value&quot;:&quot;song-2&quot;},{&quot;name&quot;:&quot;Killer Queen (1974)&quot;,&quot;value&quot;:&quot;song-3&quot;},{&quot;name&quot;:&quot;Radio Ga Ga (1984)&quot;,&quot;value&quot;:&quot;song-4&quot;},{&quot;name&quot;:&quot;Seven Seas of Rhye (1974)&quot;,&quot;value&quot;:&quot;song-5&quot;},{&quot;name&quot;:&quot;Another One Bites the Dust (1980)&quot;,&quot;value&quot;:&quot;song-6&quot;},{&quot;name&quot;:&quot;Don’t Stop Me Now (1979)&quot;,&quot;value&quot;:&quot;song-7&quot;},{&quot;name&quot;:&quot;We Will Rock You (1977)&quot;,&quot;value&quot;:&quot;song-8&quot;},{&quot;name&quot;:&quot;You’re My Best Friend (1976)&quot;,&quot;value&quot;:&quot;song-9&quot;},{&quot;name&quot;:&quot;Somebody to Love (1976)&quot;,&quot;value&quot;:&quot;song-10&quot;},{&quot;name&quot;:&quot;We Are the Champions (1977)&quot;,&quot;value&quot;:&quot;song-11&quot;},{&quot;name&quot;:&quot;Love of My Life (live at Festhalle Frankfurt, 2 February 1979) (1979)&quot;,&quot;value&quot;:&quot;song-12&quot;},{&quot;name&quot;:&quot;Spread Your Wings (1978)&quot;,&quot;value&quot;:&quot;song-13&quot;},{&quot;name&quot;:&quot;I Want to Break Free (1984)&quot;,&quot;value&quot;:&quot;song-14&quot;},{&quot;name&quot;:&quot;Who Wants to Live Forever (1986)&quot;,&quot;value&quot;:&quot;song-15&quot;},{&quot;name&quot;:&quot;Tie Your Mother Down (1977)&quot;,&quot;value&quot;:&quot;song-16&quot;},{&quot;name&quot;:&quot;Crazy Little Thing Called Love (1979)&quot;,&quot;value&quot;:&quot;song-17&quot;},{&quot;name&quot;:&quot;These Are the Days of Our Lives (1991)&quot;,&quot;value&quot;:&quot;song-18&quot;},{&quot;name&quot;:&quot;Now I’m Here (1975)&quot;,&quot;value&quot;:&quot;song-19&quot;},{&quot;name&quot;:&quot;Bicycle Race (1978)&quot;,&quot;value&quot;:&quot;song-20&quot;},{&quot;name&quot;:&quot;Fat Bottomed Girls (1978)&quot;,&quot;value&quot;:&quot;song-21&quot;},{&quot;name&quot;:&quot;The Show Must Go On (1991)&quot;,&quot;value&quot;:&quot;song-22&quot;},{&quot;name&quot;:&quot;Keep Yourself Alive (1973)&quot;,&quot;value&quot;:&quot;song-23&quot;},{&quot;name&quot;:&quot;Too Much Love Will Kill You (1996)&quot;,&quot;value&quot;:&quot;song-24&quot;},{&quot;name&quot;:&quot;Good Old Fashioned Lover Boy (1977)&quot;,&quot;value&quot;:&quot;song-25&quot;},{&quot;name&quot;:&quot;One Vision (1985)&quot;,&quot;value&quot;:&quot;song-26&quot;},{&quot;name&quot;:&quot;Play the Game (1980)&quot;,&quot;value&quot;:&quot;song-27&quot;},{&quot;name&quot;:&quot;I Want It All (1989)&quot;,&quot;value&quot;:&quot;song-28&quot;},{&quot;name&quot;:&quot;A Kind of Magic (1986)&quot;,&quot;value&quot;:&quot;song-29&quot;},{&quot;name&quot;:&quot;Save Me (1980)&quot;,&quot;value&quot;:&quot;song-30&quot;},{&quot;name&quot;:&quot;Hammer to Fall (1984)&quot;,&quot;value&quot;:&quot;song-31&quot;},{&quot;name&quot;:&quot;You Don’t Fool Me (1996)&quot;,&quot;value&quot;:&quot;song-32&quot;},{&quot;name&quot;:&quot;Let Me Live (1996)&quot;,&quot;value&quot;:&quot;song-33&quot;},{&quot;name&quot;:&quot;Back Chat (1982)&quot;,&quot;value&quot;:&quot;song-34&quot;},{&quot;name&quot;:&quot;A Winter’s Tale (1995)&quot;,&quot;value&quot;:&quot;song-35&quot;},{&quot;name&quot;:&quot;Innuendo (1991)&quot;,&quot;value&quot;:&quot;song-36&quot;},{&quot;name&quot;:&quot;Flash (1980)&quot;,&quot;value&quot;:&quot;song-37&quot;},{&quot;name&quot;:&quot;I’m Going Slightly Mad (1991)&quot;,&quot;value&quot;:&quot;song-38&quot;},{&quot;name&quot;:&quot;Thank God It’s Christmas (1984)&quot;,&quot;value&quot;:&quot;song-39&quot;},{&quot;name&quot;:&quot;Las Palabras de Amor (the Words of Love) (1982)&quot;,&quot;value&quot;:&quot;song-40&quot;},{&quot;name&quot;:&quot;It’s a Hard Life (1984)&quot;,&quot;value&quot;:&quot;song-41&quot;},{&quot;name&quot;:&quot;Breakthru (1989)&quot;,&quot;value&quot;:&quot;song-42&quot;},{&quot;name&quot;:&quot;Friends Will Be Friends (1986)&quot;,&quot;value&quot;:&quot;song-43&quot;},{&quot;name&quot;:&quot;Heaven for Everyone (1995)&quot;,&quot;value&quot;:&quot;song-44&quot;},{&quot;name&quot;:&quot;No One But You (Only the Good Die Young) (1998)&quot;,&quot;value&quot;:&quot;song-45&quot;},{&quot;name&quot;:&quot;Headlong (1991)&quot;,&quot;value&quot;:&quot;song-46&quot;},{&quot;name&quot;:&quot;Body Language (1982)&quot;,&quot;value&quot;:&quot;song-47&quot;},{&quot;name&quot;:&quot;Scandal (1989)&quot;,&quot;value&quot;:&quot;song-48&quot;},{&quot;name&quot;:&quot;The Invisible Man (1989)&quot;,&quot;value&quot;:&quot;song-49&quot;},{&quot;name&quot;:&quot;The Miracle (1989)&quot;,&quot;value&quot;:&quot;song-50&quot;}];
     this.searchKey = &quot;name&quot; // yoo
@@ -294,171 +133,178 @@ code { background: #282c34; padding: 3px 5px; color: #fff; border-radius: 5px;
         return h`&lt;span&gt;&lt;v-icon name=&quot;Headset&quot; /&gt; ${hl}&lt;/span&gt;`
     }
 }&lt;/v-search&gt;</v-code>
-              </div>
-            </div>
           </div>
         </v-tabs>
       </div>
       <div id="v-dialog">
-        <h2><b>&lt;v-dialog&gt;</b> </h2>
-        <v-tabs via="style"><button role="tab" data-target=":scope .blah .t1">
+        <h2><b>&lt;v-dialog&gt;</b> <span style="color: #777; font-size: 1.3rem"></span></h2>
+        <v-tabs via="style"><button slot="tab" role="tab" data-target=":scope .blah .t1">
             <v-icon name="Bolt"></v-icon> Demo
           </button>
-          <div slot="content" class="blah" style="border: 1px solid #ddd; margin: 0 3px; padding: 20px;">
-            <main>
-              <div class="t1">
-                <v-dialog id="d1">
-                  <v-icon name="Delete" data-veef="message"></v-icon>
-                  <div>
-                    <h1>Some title</h1>
-                    <h3>Arbitrary HTML. The border on the left happens because the host page has full control over the styling of the dialog (which happens to add a border) while the rest is controlled by veef.</h3>
-                  </div>
-                  <section data-veef="actions"><button data-veef="primary" onclick="d1.open = false">Okay</button><button data-veef onclick="d1.open = false">Meh</button></section>
-                </v-dialog>
-                <v-dialog id="d2">
-                  <div>
-                    <form data-veef style="--cols: 2;">
-                      <fieldset><label>Some name</label><input /></fieldset>
-                      <fieldset><label>Some date</label><input type="date" /></fieldset>
-                      <fieldset style="--span: span 2;"><label>Something else</label><input /></fieldset>
-                      <div></div>
-                    </form>
-                  </div>
-                  <section data-veef="actions"><button data-veef="primary" onclick="d2.open = false">Okay</button></section>
-                </v-dialog>
-                <p>Try closing it with <code>Esc</code>, the close icon or the area behind the modal.<br /><br /><button data-veef="primary" onclick="d1.open = true">
-                    <v-icon name="Menu"></v-icon> Open dialog
-                  </button><br /><br /><button data-veef="primary" onclick="d2.open = true">
-                    <v-icon name="Edit"></v-icon> Open dialog with a form
-                  </button></p>
-              </div><v-code lang="html">
-        ~v-dialog id=&quot;dlg1&quot;~
-          Some HTML
-        ~/v-dialog~
-        ~script~
-          dlg1.open = true;
-        ~/script~</v-code>
-            </main>
+          <div>
+            <article class="pad x-2 text-center">Try closing it with <code>Esc</code>, the close icon or the area behind the modal.<br /><br /><button is="veef" primary onclick="d1.open = true">
+                <v-icon name="Menu"></v-icon> Open dialog
+              </button>
+              <hr /><button is="veef" onclick="d2.open = true">
+                <v-icon name="Edit"></v-icon> Open dialog with a form
+              </button>
+            </article>
+            <v-dialog id="d1">
+              <v-icon name="Delete" data-veef="message"></v-icon>
+              <div>
+                <h1>Some title</h1>
+                <h3>Arbitrary HTML. The border on the left happens because the host page has full control over the styling of the dialog (which happens to add a border) while the rest is controlled by veef.</h3>
+              </div>
+              <section data-veef="actions"><button is="veef" primary onclick="d1.open = false">Okay</button><button is="veef" onclick="d1.open = false">Meh</button></section>
+            </v-dialog>
+            <v-dialog id="d2">
+              <div>
+                <form is="veef" style="--cols: 2;">
+                  <fieldset><label>Some name</label><input /></fieldset>
+                  <fieldset><label>Some date</label><input type="date" /></fieldset>
+                  <fieldset style="--span: span 2;"><label>Something else</label><input /></fieldset>
+                  <div></div>
+                </form>
+              </div>
+              <section data-veef="actions"><button is="veef" onclick="d2.open = false">Okay</button></section>
+            </v-dialog>
           </div>
         </v-tabs>
       </div>
       <div id="v-table">
-        <h2><b>&lt;v-table&gt;</b> <span><small style='font-size: 0.65em'>enhances any <code>table</code>, <code>tr</code>, <code>td</code></small></span></h2>
-        <v-tabs via="style"><button role="tab" data-target=":scope .blah .t1">
+        <h2><b>&lt;v-table&gt;</b> <span style="color: #777; font-size: 1.3rem"><span>enhances any <code>table</code>, <code>tr</code>, <code>td</code></span></span></h2>
+        <v-tabs via="style"><button slot="tab" role="tab" data-target=":scope .blah .t1">
             <v-icon name="Bolt"></v-icon> Demo
-          </button><button role="tab" data-target=":scope .blah .t2">
+          </button><button slot="tab" role="tab" data-target=":scope .blah .t2">
             <v-icon name="Code"></v-icon> Code &amp; customization
           </button>
-          <div slot="content" class="blah" style="border: 1px solid #ddd; margin: 0 3px; padding: 20px;">
-            <div class="t1"><code id="dsc" style="display: inline-block">Selected rows: none</code>
-              <v-table selectable id="tbl" autosort="2" class="t1">
-                <table>
-                  <tr>
-                    <td>Some num</td>
-                    <td>Some date</td>
-                    <td>Some name</td>
-                  </tr>
-                  <tr>
-                    <td>3</td>
-                    <td>20/01/2020</td>
-                    <td data-sort="2"><strong>Custom sort</strong>: <v-icon style="color: #FF3333" name="CircleFilled"></v-icon>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>5367</td>
-                    <td>10/01/2020</td>
-                    <td data-sort="1"><strong>Custom sort</strong>: <v-icon style="color: #CC0000" name="CircleFilled"></v-icon>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>251</td>
-                    <td>5/05/2022</td>
-                    <td data-sort="3"><strong>Custom sort</strong>: <v-icon style="color: #FF9999" name="CircleFilled"></v-icon>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>938141</td>
-                    <td>01/01/1999</td>
-                    <td data-sort="4"><strong>Custom sort</strong>: <v-icon style="color: #f5dada" name="CircleFilled"></v-icon>
-                    </td>
-                  </tr>
-                </table>
-              </v-table>
-              <script>
-                tbl.addEventListener('rowselect', (e) => {
-                  dsc.innerText = "Selected rows: " + (e.detail.map(x => x.children[1].innerText).join(", ") || "none")
-                })
-              </script>
-            </div>
-            <div class="t2">Event: <br /><strong>rowselect:</strong> activated on any checkbox click and has <code>e.detail</code> which is <code>HTMLTableRow[]</code>. <br />
-              <hr />Attributes: <br /><strong>selectable</strong> <br /><strong>sortable</strong> <br /><strong>autosort=&quot;column index&quot;</strong><br />Custom sort: <code>data-sort</code>
-            </div>
+          <div class="t1">
+            <article class="text-center pad y-2">Try custom sort by clicking <strong style="color: var(--color)">on the third column.</strong>.</article>
+            <v-table selectable id="tbl" autosort="0" class="t1">
+              <table>
+                <tr>
+                  <td>Some num</td>
+                  <td>Some date</td>
+                  <td>Some color</td>
+                </tr>
+                <tr>
+                  <td>3</td>
+                  <td>20/01/2020</td>
+                  <td data-sort="2">
+                    <v-icon style="color: #FF3333" name="CircleFilled"></v-icon>
+                  </td>
+                </tr>
+                <tr>
+                  <td>5367</td>
+                  <td>10/01/2020</td>
+                  <td data-sort="1">
+                    <v-icon style="color: #CC0000" name="CircleFilled"></v-icon>
+                  </td>
+                </tr>
+                <tr>
+                  <td>251</td>
+                  <td>5/05/2022</td>
+                  <td data-sort="3">
+                    <v-icon style="color: #FF9999" name="CircleFilled"></v-icon>
+                  </td>
+                </tr>
+                <tr>
+                  <td>938141</td>
+                  <td>01/01/1999</td>
+                  <td data-sort="4">
+                    <v-icon style="color: #f5dada" name="CircleFilled"></v-icon>
+                  </td>
+                </tr>
+              </table>
+            </v-table>
+            <script>
+              tbl.addEventListener('rowselect', (e) => {
+                dsc.innerText = "Selected rows: " + (e.detail.map(x => x.children[1].innerText).join(", ") || "none")
+              })
+            </script>
+          </div>
+          <div class="t2">Event: <br /><strong>rowselect:</strong> activated on any checkbox click and has <code>e.detail</code> which is <code>HTMLTableRow[]</code>. <br />
+            <hr />Attributes: <br /><strong>selectable</strong> <br /><strong>sortable</strong> <br /><strong>autosort=&quot;column index&quot;</strong><br />Custom sort: <code>data-sort</code>
           </div>
         </v-tabs>
       </div>
       <div id="v-tree">
-        <h2><b>&lt;v-tree&gt;</b> </h2>
-        <v-tabs via="style"><button role="tab" data-target=":scope .blah .t1">
+        <h2><b>&lt;v-tree&gt;</b> <span style="color: #777; font-size: 1.3rem"></span></h2>
+        <v-tabs via="style"><button slot="tab" role="tab" data-target=":scope .blah .t1">
             <v-icon name="Bolt"></v-icon> Demo
-          </button><button role="tab" data-target=":scope .blah .t2">
+          </button><button slot="tab" role="tab" data-target=":scope .blah .t2">
             <v-icon name="Code"></v-icon> Code &amp; customization
           </button>
-          <div slot="content" class="blah" style="border: 1px solid #ddd; margin: 0 3px; padding: 20px;">
-            <div>
-              <div class="t1">A collapsible tree that can be instantiated with a one liner <code>v-json</code>. It's useful for debugging REST APIs or letting users easily explore nested structures. Based around @redux/json-tree<main>
-                  <v-tree id="tree3"></v-tree>
-                  <v-tree dark id="tree4"></v-tree>
-                </main>Furthermore, the way nodes are rendered can be customized to make it useful for specific structures:<v-tree id="tree5" initopen="(path,val)=&gt; path.length &lt; 3" style="display: block; max-width: 450px; overflow: hidden;
+          <div class="t1">A collapsible tree that can be instantiated with a one liner <code>v-json</code>. It's useful for debugging REST APIs or letting users easily explore nested structures. Based around @redux/json-tree<main>
+              <v-tree dark id="tree3"></v-tree><v-code id="jsonData" lang="js" style="max-height: 180px; overflow: auto;">
+    {
+        &quot;airports&quot;:[
+           {
+              &quot;name&quot;:&quot;London&quot;,
+              &quot;code&quot;:&quot;LHR&quot;,
+              &quot;country&quot;:&quot;UK&quot;
+           },
+           {
+              &quot;name&quot;:&quot;Paris&quot;,
+              &quot;code&quot;:&quot;CDG&quot;,
+              &quot;country&quot;:&quot;France&quot;
+           },
+             {
+                &quot;name&quot;:&quot;New York&quot;,
+                &quot;code&quot;:&quot;JFK&quot;,
+                &quot;country&quot;:&quot;USA&quot;
+                },
+                {
+                &quot;name&quot;:&quot;Tokyo&quot;,
+                &quot;code&quot;:&quot;HND&quot;,
+                &quot;country&quot;:&quot;Japan&quot;
+                },
+                {
+                &quot;name&quot;:&quot;Sydney&quot;,
+                &quot;code&quot;:&quot;SYD&quot;,
+                &quot;country&quot;:&quot;Australia&quot;
+                },
+                {
+                &quot;name&quot;:&quot;Dubai&quot;,
+                &quot;code&quot;:&quot;DXB&quot;,
+                &quot;country&quot;:&quot;UAE&quot;
+                },
+                {
+                &quot;name&quot;:&quot;Rome&quot;,
+                &quot;code&quot;:&quot;FCO&quot;,
+                &quot;country&quot;:&quot;Italy&quot;
+                }
+    
+        ],
+        &quot;weather&quot;:[
+           {
+              &quot;date&quot;:&quot;2018-05-06&quot;,
+              &quot;temperatureC&quot;:1,
+              &quot;summary&quot;:&quot;Freezing&quot;,
+              &quot;temperatureF&quot;:33
+           },
+           {
+              &quot;date&quot;:&quot;2018-05-07&quot;,
+              &quot;temperatureC&quot;:14,
+              &quot;summary&quot;:&quot;Bracing&quot;,
+              &quot;temperatureF&quot;:57
+           },
+           {
+              &quot;date&quot;:&quot;2018-05-08&quot;,
+              &quot;temperatureC&quot;:-13,
+              &quot;summary&quot;:&quot;Freezing&quot;,
+              &quot;temperatureF&quot;:9
+           }
+        ],
+        &quot;status&quot;: 200,
+        &quot;currentLocation&quot;: &quot;London&quot;,
+        &quot;language&quot;: &quot;en-US&quot;
+     }  
+                     </v-code>
+            </main>Furthermore, the way nodes are rendered can be customized to make it useful for specific structures:<v-tree id="tree5" initopen="(path,val)=&gt; path.length &lt; 3" style="display: block; max-width: 450px; overflow: hidden;
          border-radius: 10px; margin: 20px auto;"></v-tree>
-              </div>
-              <script>
-                fetch("https://run.mocky.io/v3/7b1ccde5-01bf-4e12-9a23-d87ff910a0cd").then(x => x.json()).then(resp => {
-                  tree3.data = resp;
-                  tree4.data = resp;
-                });
-                tree5.renderLabel = (handler) => {
-                  let h = VeefElement.h;
-                  if (handler.path.length === 1)
-                    return h`<span><v-icon name="Menu"></v-icon> Menu-style JSON: {</span>`
-                  let icon = "CircleFilled";
-                  if (handler.type != "Number") {
-                    if (handler.path[0].toLowerCase() != handler.path[0]) {
-                      icon = handler.path[0]
-                    }
-                    if (handler.path[0] == "Music") {
-                      icon = "MusicNote"
-                    }
-                  }
-                  return h`<span><v-icon name=${icon}></v-icon> ${handler.path[0]}: {</span>`
-                }
-                tree5.renderInfo = (handler) => {
-                  return ""
-                }
-                tree5.dark = true;
-                tree5.theme = {
-                  background: "#FF6600",
-                  text: "#fff",
-                  str: "#FF9966",
-                  num: "#FF9966"
-                }
-                tree5.data = {
-                  Settings: {
-                    Wifi: {
-                      Help: "I want help",
-                      datalimit: "40GB"
-                    },
-                    Music: {
-                      Play: "ok",
-                      Stop: "ok"
-                    }
-                  },
-                  Folder: [
-                    1, 2, 3
-                  ]
-                }
-              </script>
-            </div>
-            <div class="t2">The most simple way to use it is to supply a JSON string as an attribute:<v-code lang="html">
+          </div>
+          <div class="t2">The most simple way to use it is to supply a JSON string as an attribute:<v-code lang="html">
                 &lt;v-tree data='{&quot;some&quot;:&quot;json&quot;}'&gt;&lt;/v-tree&gt;
                 </v-code>You can also flip the color scheme by setting the dark attribute:<v-code lang="html">
                 &lt;v-tree dark data='{&quot;some&quot;:&quot;json&quot;}'&gt;&lt;/v-tree&gt;
@@ -469,68 +315,141 @@ code { background: #282c34; padding: 3px 5px; color: #fff; border-radius: 5px;
               tree5.renderLabel = (handler) =&gt; {
             }
             &lt;/script&gt;
-            </v-code></div>
+            </v-code> <script>
+              // fetch("https://run.mocky.io/v3/7b1ccde5-01bf-4e12-9a23-d87ff910a0cd").then(x => x.json()).then(resp => {
+              //     tree3.data = resp;
+              //     tree4.data = resp;
+              // });
+              tree3.data = JSON.parse(jsonData.textContent.replace(/\/\/.+$/gm, ""));
+              tree5.renderLabel = (handler) => {
+                let h = VeefElement.h;
+                if (handler.path.length === 1)
+                  return h`<span><v-icon name="Menu"></v-icon> Menu-style JSON: {</span>`
+                let icon = "CircleFilled";
+                if (handler.type != "Number") {
+                  if (handler.path[0].toLowerCase() != handler.path[0]) {
+                    icon = handler.path[0]
+                  }
+                  if (handler.path[0] == "Music") {
+                    icon = "MusicNote"
+                  }
+                }
+                return h`<span><v-icon name=${icon}></v-icon> ${handler.path[0]}: {</span>`
+              }
+              tree5.renderInfo = (handler) => {
+                return ""
+              }
+              tree5.dark = true;
+              tree5.theme = {
+                background: "#FF6600",
+                text: "#fff",
+                str: "#FF9966",
+                num: "#FF9966"
+              }
+              tree5.data = {
+                Settings: {
+                  Wifi: {
+                    Help: "I want help",
+                    datalimit: "40GB"
+                  },
+                  Music: {
+                    Play: "ok",
+                    Stop: "ok"
+                  }
+                },
+                Folder: [
+                  1, 2, 3
+                ]
+              }
+            </script>
           </div>
         </v-tabs>
       </div>
       <div id="v-icon">
-        <h2><b>&lt;v-icon&gt;</b> </h2>
-        <v-tabs via="style"><button role="tab" data-target=":scope .blah .t1">
+        <h2><b>&lt;v-icon&gt;</b> <span style="color: #777; font-size: 1.3rem"></span></h2>
+        <v-tabs via="style"><button slot="tab" role="tab" data-target=":scope .blah .t1">
             <v-icon name="Bolt"></v-icon> Demo
-          </button><button role="tab" data-target=":scope .blah .t2">
+          </button><button slot="tab" role="tab" data-target=":scope .blah .t2">
             <v-icon name="Code"></v-icon> Code &amp; customization
           </button>
-          <div slot="content" class="blah" style="border: 1px solid #ddd; margin: 0 3px; padding: 20px;">
-            <div>
-              <div class="t1">The syntax is just <code>&lt;v-icon name=&quot;IconName&quot;&gt;&lt;/v-icon&gt;</code>.<ul>
-                  <li>The color comes from the text color of the parent.</li>
-                  <li>The size comes from the CSS width/height of the element.</li>
-                </ul><br />
-                <aside>If you forget the names of the icons, you can just use &lt;v-icon all&gt; and it will show all the icons like in the demo below:</aside>
-                <v-icon all></v-icon>
-              </div>
-            </div>
+          <div class="t1">
+            <div class="pad y-2 text-center">v-icons contains a small curated list of icons.</div>
+            <v-icon all></v-icon>
+          </div>
+          <div>The syntax is just <code>&lt;v-icon name=&quot;IconName&quot;&gt;&lt;/v-icon&gt;</code>.<ul>
+              <li>The color comes from the text color of the parent.</li>
+              <li>The size comes from the CSS width/height of the element.</li>
+            </ul><br />
+            <aside>If you forget the names of the icons, you can just use &lt;v-icon all&gt; and it will show all the icons like in the demo below:</aside>
           </div>
         </v-tabs>
       </div>
       <div id="v-tabs">
-        <h2><b>&lt;v-tabs&gt;</b> </h2>
-        <v-tabs via="style"><button role="tab" data-target=":scope .blah .t1">
+        <h2><b>&lt;v-tabs&gt;</b> <span style="color: #777; font-size: 1.3rem"></span></h2>
+        <v-tabs via="style"><button slot="tab" role="tab" data-target=":scope .blah .t1">
             <v-icon name="Bolt"></v-icon> Demo
           </button>
-          <div slot="content" class="blah" style="border: 1px solid #ddd; margin: 0 3px; padding: 20px;">
-            <div>
+          <div class="t1"><button is="veef" id="createTab">Create tab</button>
+            <v-tabs id="tabDemo"><button slot="tab" data-target=".t1">Some really really long label</button><button slot="tab" data-target=".t2">And another really really long one</button><button slot="tab" data-target=".t3">A short one</button>
               <div class="t1">
-                <v-tabs><button data-target=".t1">A</button><button data-target=".t2">B</button><button data-target=".t3">C</button>
-                  <div slot="content">Some content<div class="t1"></div>
-                    <div class="t2"></div>
-                    <div class="t3"></div>
-                  </div>
-                </v-tabs>
+                <h1 class="text-center">Tab 1</h1>
+                <p class="text-center">You got here because the tab <code>target</code> selector matches the content.</p>
               </div>
-            </div>
+              <div class="t2 text-center">
+                <h1 class="text-center">Tab 2</h1>
+                <p>Something.</p>
+              </div>
+              <div class="t3 text-center">
+                <h1>Tab 3</h1>
+                <p>Nothing interesting anymore.</p>
+              </div>
+            </v-tabs>
+            <script>
+              document.addEventListener("DOMContentLoaded", () => {
+                createTab.addEventListener('click', () => {
+                  const btn = document.createElement("button");
+                  btn.slot = "tab";
+
+                  const vtabs = createTab.nextElementSibling;
+                  const i = Array.from(vtabs.querySelectorAll('button')).length + 1;
+                  btn.textContent = "Tab";
+                  let bq = Array.from(tabDemo.querySelectorAll("button"))
+                  bq[bq.length - 1].after(btn)
+
+                  const tab = document.createElement("div");
+                  // tab.style.display = 'none'
+                  tab.innerHTML = `<h1>This is tab #${i}</h1>`
+                  tab.style.display = 'none'
+                  tabDemo.append(tab)
+                })
+              })
+            </script>
           </div>
         </v-tabs>
       </div>
       <div id="v-alert">
-        <h2><b>&lt;v-alert&gt;</b> </h2>
-        <v-tabs via="style"><button role="tab" data-target=":scope .blah .t1">
+        <h2><b>&lt;v-alert&gt;</b> <span style="color: #777; font-size: 1.3rem"></span></h2>
+        <v-tabs via="style"><button slot="tab" role="tab" data-target=":scope .blah .t1">
             <v-icon name="Bolt"></v-icon> Demo
           </button>
-          <div slot="content" class="blah" style="border: 1px solid #ddd; margin: 0 3px; padding: 20px;">
+          <div>
             <main>
-              <div style="padding: 10px">
+              <div style="padding: 10px; flex-basis: 40%; width: 40%;">
                 <div class="t1"></div>
                 <v-alert error>This is an error message. You can put <strong>whatever HTML</strong> you like.</v-alert>
                 <v-alert warning>This is a warning. It means something, I think ...</v-alert>
                 <v-alert success>This is a success!</v-alert>
                 <v-alert info>This is an alert, a classic.</v-alert>
-              </div><v-code lang="html">
-            ~v-alert success~Put any HTML here.~/v-alert~
-            ~v-alert warning~Put any HTML here.~/v-alert~
-            ~v-alert error~Put any HTML here.~/v-alert~
-            ~v-alert info~Put any HTML here.~/v-alert~
-        </v-code>
+              </div>
+              <div><button is="veef" primary id="toasty">Create toast</button>
+                <script>
+                  toasty.onclick = () => {
+                    let t = document.createElement('div');
+                    t.innerHTML = "<v-alert success toast>Hello</v-alert>"
+                    document.body.append(t)
+                  }
+                </script>
+              </div>
             </main>
           </div>
         </v-tabs>

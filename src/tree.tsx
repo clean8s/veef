@@ -3,7 +3,7 @@ import JSONTree from 'react-json-tree'
 import { render } from './style'
 import { fnCall, Slottable, TmSlot } from './slottable'
 import { invertBase16Theme, invertTheme, Theme } from 'react-base16-styling';
-import { monokai, VeefTheme } from './icons/tree-theme'
+import { monokai, VeefTheme } from '../icons/tree-theme'
 import { StylingFunction, Base16Theme  } from 'react-base16-styling';
 
 type TreeTheme = {
