@@ -90,6 +90,7 @@ v-grid, v-controls {
 	text-align: left;
 	display: flex;
 	flex-wrap: wrap;
+	align-items: center;
 	/* gap: 1.5rem; */
 }
 v-grid > *, v-controls > * {
@@ -151,7 +152,7 @@ v-icon[data-veef="message"] {
 	margin: 0 auto;
 }
 
-v-controls button, button[is="veef"] {
+v-controls button, button[is="veef"], *[is="v-primary"], *[is="v-secondary"] {
 	font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;
 	cursor: pointer;
 	display: inline-block;
@@ -184,7 +185,7 @@ v-controls button, button[is="veef"] {
 	--bg: 1;
 }
 
-button[is="v-primary"], button[is="veef"][primary] {
+*[is="v-primary"], button[is="veef"][primary] {
 	background-color: var(--color, #3366CC);
 	color: #fff;
 }

@@ -66,24 +66,7 @@ export class Code extends TmSlot {
         return x;
       }).join("\n").trim()
     }
-  
-    htmlify(code: string) {
-      let out = '';
-      let opened = false;
-      while(1) {
-        let t = code.indexOf('~');
-        if(t == -1) {
-          out += code;
-          break;
-        } else {
-          out += code.substring(0, t);
-          out += opened ? '>' : '<';
-          opened = !opened;
-          code = code.substring(t + 1);
-        }
-      }
-      return out
-    }
+
   
     render() {
       renderWithCss(codeCss)(
@@ -105,9 +88,6 @@ export class Code extends TmSlot {
      slot.addEventListener('slotchange', e => {
       const langClass = `language-${this._lang}`
       let code = this.dedent(this.textContent || "")
-      if(this._lang === 'html') {
-        code = this.htmlify(code)
-      }
       codeEl.textContent = code;
       codeEl.setAttribute('class', langClass)
       Prism.highlightElement(codeEl, false);

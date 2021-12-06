@@ -37,7 +37,6 @@ const renderChain: typeof preactRender = (x, y) => {
     slotEls.map(x => {
       if(!(x instanceof HTMLTemplateElement)) return;
       // if(x.tagName.toLowerCase() !== 'template') return;
-      
       if(x.content.textContent == null || x.content.textContent.trim().length == 0){
         const mut = new MutationObserver((e) => {
           const M = e.find(x => Array.from(x.addedNodes).find(x => x instanceof HTMLScriptElement));

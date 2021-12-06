@@ -46,10 +46,8 @@ type ItemPick = CustomEvent<Item>;
 class SearchField extends Slottable {
   private root: HTMLElement
 
-  // @attr{}
-
-  attributeChangedCallback(name: string, oldVal: string, newVal: string) {
-    console.log(name)
+  get props() {
+    return ["_itemToString", "_itemTransform", "_itemRender", "_data", "_searchKey", "_placeholder"]
   }
 
   constructor() {
@@ -98,10 +96,6 @@ class SearchField extends Slottable {
   _data = [] as Item[];
   _placeholder = "Hello"
   _searchKey = ""
-
-  get props() {
-    return ["_itemToString", "_itemTransform", "_itemRender", "_data", "_searchKey", "_placeholder"]
-  }
 
   private fuzzyRenderer(WindiItem: Component<WindiProps>): any {
     if (this._searchKey == "") return
@@ -171,6 +165,10 @@ class SearchField extends Slottable {
     }
     if (e.type === 'focus') {
       this.hideSuggestions = false
+      if(window.innerWidth < 600) {
+      this.input.scrollIntoView();
+      window.scrollBy(0, -100);
+      }
       this.render()
     }
 
@@ -272,12 +270,12 @@ class SearchField extends Slottable {
     const myCss = "input,::slotted(input) { " + genCss("main-input w-full rounded p-2 outline-none focus:ring-2 focus:sibling:ring-2") + "}"
     renderWithCss("")(
       <div class='flex flex-col relative input-wrapper-root'>
-        <div class='flex input-wrapper imp'>
+        <div part="input-wrapper" class='flex input-wrapper imp'>
           <slot name='input'>
           <input type="text" id="default" part="defaultinput" placeholder="Search..." slot="input"/>
             </slot>
 
-          <button class='cursor-pointer w-auto flex rounded-r justify-end items-center text-blue-500 p-2 hover:text-blue-400 right-button'>
+          <button part="right-button" class='cursor-pointer w-auto flex rounded-r justify-end items-center text-blue-500 p-2 hover:text-blue-400 right-button'>
             <slot name="icon"><v-icon class='text-blue-500' name='Search'></v-icon></slot>
           </button>
         </div>

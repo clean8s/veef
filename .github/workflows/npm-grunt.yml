@@ -2,7 +2,7 @@ name: Yarn build
 
 on:
   push:
-    branches: [ nopush ]
+    branches: [ v2 ]
   workflow_dispatch:
     inputs: {}
 
@@ -19,7 +19,7 @@ jobs:
     - name: Build
       run: |
         yarn
-        yarn build git
+        yarn build
     - name: Deploy
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -28,8 +28,8 @@ jobs:
         git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
         git remote set-url --push origin https://fikisipi:$GITHUB_TOKEN@github.com/clean8s/veef
         git checkout -b gh-pages
-        ls | grep -v -E "(git|CNAME|png)" | xargs rm -rf
-        mv -t . git-dist/*
+        ls | grep -v -E "(dist|CNAME|png)" | xargs rm -rf
+        mv -t . dist/*
         git add -A
         git commit -m "Deploy web"
         git push -u --force origin gh-pages 

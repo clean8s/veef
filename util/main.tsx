@@ -6,6 +6,26 @@ import prettyPrint from "pretty"
 import nunjucks from "nunjucks"
 const qq = '`'
 
+function Docs(props: {children?: any}) {
+    return <>
+    <div style="padding: 20px; font-size: 1.1em">
+    {props.children}
+    </div>
+    </>
+}
+function DocSection(props: {children: any}) {
+    return <h2 style="text-align: left; padding-left: 15px; margin: 10px 0; font-size: 1.3em; border-left: 5px solid var(--color);">{props.children}</h2>
+}
+
+function DocAttr(props: {name: string, type: string, children: any}) {
+    return <div>
+        <strong>{props.name}</strong>
+        <code>{props.type}</code>
+        <br/>
+        {props.children} 
+        </div>
+}
+
 class MyLoader {
     // TODO: use a proper custom block definition
     getSource(name: string) {
@@ -28,9 +48,9 @@ class MyLoader {
 
 const env = new nunjucks.Environment(new MyLoader())
 
-const demo = (x, doSlot?: boolean, returnContent?: boolean) => {
-    if(returnContent === true) return require(`./${x}.demo`)
-    return <script {...(doSlot ? {slot: "h"}: {})} dangerouslySetInnerHTML={{__html: require(`./${x}.demo`)}} />
+function code(snippet: string, lang?: string) {
+    const snip = snippet.replaceAll("~", "`");
+    return <v-code lang={lang || "html"} style="margin: 20px 0;">{snippet}</v-code>
 }
 
 function Table() {
@@ -81,6 +101,37 @@ tbl.addEventListener('rowselect', (e) => {
 `}} />
 </div>
 <div class="t2">
+    <Docs>
+    <DocSection>Putting your &lt;table&gt; in v-table</DocSection>
+    To make your table interactive, you need to put your table as a child:
+    {code(`
+    <v-table>
+      <table>
+        <tr>
+          <th>Col 1</th>
+          <th>Col 2</th>
+        </tr>
+        <tr>
+          <th>Row 1, 1</th>
+          <th>Row 1, 2</th>
+        </tr>
+      </table>
+    </v-table>
+    `)}
+    <DocSection>Selection event</DocSection>
+    You can use JavaScript to detect when a row is selected with the <code>rowselect</code> event.
+    A list of all rows is available in <code>event.detail</code>.
+    {code(`
+    <v-table id="myTable"> <table> .. </table> </div>
+    <script>
+    var t = document.getElementById('myTable');
+    t.addEventListener('rowselect', (e) => {
+        console.log(e.detail);
+        // list of rows
+    });
+    </script>
+    `)}
+    </Docs>
     Event: <br/>
     <strong>rowselect:</strong> activated on any checkbox click and has <code>e.detail</code> which is <code>HTMLTableRow[]</code>. <br/>
     <hr />
@@ -127,7 +178,8 @@ function Tabs() {
 }
 
 function Alert() {
-    return <div>
+    return <>
+    <div>
     <v-grid cols="2">
         <div><div class='t1'></div>
     <v-alert error="">This is an error message. You can put <strong>whatever HTML</strong> you like.</v-alert>
@@ -144,8 +196,8 @@ function Alert() {
             </div>
             <div>
                 <label>Duration</label>
-                <v-grid cols="4" center>
-                <input v-span="3" type="range" id="toastRange" min="300" max="10000" step="100" value="1500" ></input>
+                <v-grid cols="3" center>
+                <input v-span="2" style="max-width: 120px" type="range" id="toastRange" min="300" max="10000" step="100" value="1500" ></input>
                 <span v-span="1" id="toastRangeLabel" />
                 </v-grid>
             </div>
@@ -161,7 +213,26 @@ function Alert() {
             ~v-alert error~Put any HTML here.~/v-alert~
             ~v-alert info~Put any HTML here.~/v-alert~
         `}</v-code> */}
-    </v-grid></div>;
+    </v-grid>
+    </div>
+    <div>
+        <Docs>
+            To display an alert:
+            {code(`
+            <v-alert success>Some HTML here</v-alert>
+            <v-alert warning>Some HTML here</v-alert>
+            <v-alert error>Some HTML here</v-alert>
+            <v-alert info>Some HTML here</v-alert>`)}
+            <DocSection>Toasts</DocSection>
+            Toasts are a special kind of alerts displayed in the bottom right corner of the screen
+            for a limited amount of time.
+            <br/><br/>
+            To create a toast, you need to put the <code>toast="1"</code> attribute in HTML
+            or set the <code>toastElement.toast = true</code> JavaScript property. The duration
+            is set similarly (<code>duration</code>)
+        </Docs>
+        </div>
+    </>;
 }
 
 function App() {
@@ -173,15 +244,13 @@ function App() {
         <button onclick={`document.body.setAttribute('data-theme', 'dark')`}>dark mode</button>
     </nav>
 
-    <div class="container showcase">
-    <Component name="v-search" C={Search} info="smart fuzzy search"/>
-    <Component name="v-dialog" C={Dialog} nocustom/>
+    <Component name="v-search" C={Search} info="smart fuzzy autocomplete"/>
+    <Component name="v-dialog" C={Dialog} info="modals over the screen" />
     <Component name="v-table" C={Table} info="enhances any <code>table</code>, <code>tr</code>, <code>td</code>" rawinfo={true} />
-    <Component name="v-tree" C={Tree}/>
-    <Component name="v-icon" C={Icons}/>
+    <Component name="v-tree" C={Tree} info="collapse/expand nested JSON" />
+    <Component name="v-icon" C={Icons} info="A small collection of icons" />
     <Component name="v-tabs" C={Tabs} nocustom/>
-    <Component name="v-alert" C={Alert} nocustom/>
-    </div>
+    <Component name="v-alert" C={Alert} />
     </>
 }
 
@@ -267,7 +336,6 @@ function Dialog() {
          <div>
          <form>
              <v-controls cols="2">
-
              <div>
              <label>Some name</label>
              <input />
@@ -288,6 +356,42 @@ function Dialog() {
          </section>
      </v-dialog>
      </div>
+     <div>
+         <Docs>
+             The only thing needed to make a dialog is the HTML inside it.
+             Example:
+        {code(`
+        <v-dialog id="myDialog">
+        This is a <b>dialog</b>
+        </v-dialog>
+        `)}
+        <DocSection>Opening/closing a dialog</DocSection>
+        In order to open a dialog you can either use the <code>open="1"</code> HTML attribute or
+        the <code>element.open</code> JavaScript property:
+        {code(`
+        document.getElementById('myDialog').open = true;
+        // or <v-dialog open="true" ...
+        `, 'javascript')}
+        <DocSection>Styling</DocSection>
+        The <code>v-dialog</code> element uses the original style of the children you pass to it, and then centers the
+        children evenly. <br/>
+
+        It can also center and stretch buttons for actions, which can be done using the slot <code>slot="actions"</code>. A full example
+        with icons, text and actions:
+        {code(`
+                    <v-dialog id="d1">
+                    <v-icon name="Delete" data-veef="message"></v-icon>
+                    <div>
+                      <h1>Some title</h1>
+                      <h3>Arbitrary HTML. The border on the left happens because the host page has full control over the styling of the dialog (which happens to add a border) while the rest is controlled by veef.</h3>
+                    </div>
+                    <section slot="actions">
+                      <button primary onclick="d1.open = false">Okay</button>
+                      <button onclick="d1.open = false">Meh</button></section>
+                  </v-dialog>`)}
+        
+        </Docs>
+     </div>
      </>
 }
 
@@ -307,7 +411,7 @@ function Search() {
         </v-search>
         <br/><br/>
         You can customize the style and write your own filter and rendering logic.
-        <v-search>
+        <v-search class="dark-input">
             <Template template="searchStyle" tagName="style"></Template>
             <input class="main-input" type="text"
             slot="input" placeholder="Enter something here..."/>
@@ -359,14 +463,29 @@ function Icons() {
             </div><v-icon all></v-icon>
     </div>
     <div>
-    The syntax is just <code>{`<v-icon name="IconName"></v-icon>`}</code>.
-        <ul>
-<li>The color comes from the text color of the parent.</li>
-<li>The size comes from the CSS width/height of the element.</li>
-</ul>
-<br/>
-<aside>If you forget the names of the icons, you can just use {`<v-icon all>`} and it will show all the icons like in the demo below:</aside>
-
+        <Docs>
+            The syntax for showing an icon:
+            {code(`
+            <v-icon name="Calendar"></v-icon>
+            `)}
+            Note that you must close the tag: <code>&lt;/v-icon&gt;</code> because of how Web Component API works.
+            <DocSection>Changing color</DocSection>
+            The icons inherit the text color from CSS. If your parent or the v-icon itself have a 
+            <code>color: #ff0000</code>, the icon will be red.
+            <DocSection>Changing size</DocSection>
+            The icons can be resized using the CSS <code>width</code> and <code>height</code> properties:
+            {code(`
+            <style>
+            v-icon {
+                width: 50px;
+                height: 50px;
+            }
+            </style>
+            `)}
+            
+            <DocSection>A cool trick</DocSection>
+            If you ever forget the name of an icon, you can use <code>&lt;v-icon all&gt;&lt;/v-icon&gt;</code> icon to show all the icons.
+            </Docs>
     </div>
     </>
 
@@ -404,11 +523,15 @@ ${env.render("footer", {})}
 
 write("../index.html")
 
-type ArbitraryProp = {[key in keyof JSX.IntrinsicAttributes]: any} & {[key in "slot"]: any}
-function Template(props: {template: string, tagName: string, context?: object} & Partial<ArbitraryProp>) {
+type ArbitraryProp = Record<keyof HTMLElement, any> & {slot: any}
+function Template(props: {template: string, tagName?: string, context?: object} & Partial<ArbitraryProp>) {
     // let Tag = tag
     const {template, tagName, context, ...rest} = props
-    let Tag = tagName;
+    let fallback = "template"
+    if(Object.keys(rest).find(x => x.startsWith("_"))) {
+       fallback = Object.keys(rest).find(x => x.startsWith("_"))?.substring(1) as string; 
+    }  
+    let Tag = tagName || fallback;
     const tpl = env.render(template, context || {})
     return <Tag dangerouslySetInnerHTML={{__html: tpl }} {...rest}></Tag>
 }

@@ -3,8 +3,8 @@
     <meta name="og:image" content="summary" />
     <meta name="twitter:card" content="summary" />
     <meta name="twitter:creator" content="@fikisipi" />
-    <meta property="og:url" content="http://bits.blogs.nytimes.com/2011/12/08/a-twitter-for-my-sister/" />
-    <meta property="og:title" content="veef Web Components" />
+    <meta property="og:url" content="https://clean8s.com/veef/" />
+    <meta property="og:title" content="veef: Web Components + preact UI kit" />
     <meta property="og:description" content="Useful data-oriented HTML components via a single 60KB import." />
     <meta property="og:image" content="https://clean8s.com/veef/og.png" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -13,7 +13,7 @@
         let exports = {};
     </script>
     <script src="./dist/index.js"></script>
-    <title>veef: Web Component + preact UI kit</title>
+    <title>veef: Web Components + preact UI kit</title>
     <style>
 /* You DON'T need this. This is the documentation CSS, not the components! */
 body { line-height: 1.5; tab-size: 4; font-size: 16px; color: rgb(31, 41, 55);
@@ -39,12 +39,18 @@ h2>code{ color: #996699;  } h2>code:before{content:"<";}h2>code:after{content:">
 nav { color: #888; position: fixed; top: 0px; bottom: 0; width: var(--sidebar); box-shadow: 0px 0px 10px rgba(0,0,0,0.2); left: 0px; padding: 20px; z-index: 40; background: #fff; } nav>a{display: block; color: #FB5012; font-weight: 500; padding: 5px 0; }
 header .ptr { display: none; float: right; } sup { font-size: 0.8rem; }
 .ptr { cursor: pointer; }
-@media screen and (max-width: 600px) { body{--sidebar:0; } nav{ width: 80vw; display: block;} .N>nav { display: none; } header .ptr { display: inline-block; } main { flex-direction: column; max-height: none; } main>* { width: 100%; flex-basis: 100%; } }
+@media screen and (max-width: 600px) { body{--sidebar:0; } nav{ width: 80vw; display: block;} .N nav { display: none; } header .ptr { display: inline-block; } main { flex-direction: column; max-height: none; } main>* { width: 100%; flex-basis: 100%; } }
 code { background: #282c34; padding: 3px 5px; color: #fff; border-radius: 5px;
     font-family: Consolas, Monaco, "Andale Mono", "Ubuntu Mono", monospace;
 } .text-center { text-align: center; } .pad { padding: var(--y, 0) var(--x, 0); } .x-1 { --x: 10px; } .x-2 { --x: 20px; } .y-1 { --y: 10px; } .y-2 { --y: 20px; } 
 body { --color: rgb(var(--color-rgb));  --color-bg: 255,255,255; --color-b: #55555535; --color-f: #913a0080; --color-hs: 24 100%; --color-rgb: 255,102,0; }
 article { max-width: 500px; margin: 0 auto; }
+.guide {
+    line-height: 1.7;
+}
+.guide>ul {
+    line-height: 2.2;
+}
 .pros>div {
     display: flex;
     font-size: 1.2rem;
@@ -64,8 +70,8 @@ body[data-theme="dark"] header {
 body[data-theme="dark"]  {
     color: #fff;
     background: #333;
-    --color:#0066CC;
-    --color-hs: 210 100%;
+    --color:#FF3333;
+    --color-hs: 0 81%;
 }
 body[data-theme="dark"] v-tabs::part(around) {
     border-color: #444;
@@ -109,7 +115,7 @@ body[data-theme="dark"] input.my-input {
         </header>
         <div style="" class="hero">
             <div class="container">
-        <h3 style="margin: 0; font-size: 3rem; letter-spacing: -0.025em; line-height: 1; border: 0;">Interactive components based on the <strong>Web Components</strong> API
+        <h3 style="margin: 0; font-size: 3rem; letter-spacing: -0.025em; line-height: 1; border: 0;">Reusable UI controls based on the <strong>Web Components</strong> API
             and <span style="color: #6633CC">preact</span>.
             </h3>
                 <v-grid cols="3" class="pros">
@@ -121,18 +127,32 @@ body[data-theme="dark"] input.my-input {
                 </v-grid>
                 </v-grid>
                 <div style="font-weight: 500; text-align: center; font-size: 1.1rem; margin: 20px 0;">
-                To install, just include <code>&lt;script src="https://unpkg.com/veef"&gt;&lt;/script&gt;</code>
+                To install, just include <code>&lt;script src="https://unpkg.com/veef"&gt;&lt;/script&gt;</code> <br/>
+                To support non-JavaScript browsers, use the Style polyfill.
                 </div>
         </div>
     </div>
+    <div class="container showcase pad y-2">
+    <v-grid cols="2">
+    <div><a href="#guide-web-components" style="width: 100%" is="v-primary">
+        <v-icon name="RightChevron"></v-icon>
+        Learn the Web Components<br/>and preact syntax</a></div>
+    <div><a href="#v-search" style="width: 100%" is="v-primary">
+        <v-icon name="RightChevron"></v-icon>
+        See the demos</button></a>
+    </div>
+    </v-grid>
 {% endtpl %}
 
 {% tpl "queen" %}
 <script>
 this.data = [{"name":"Bohemian Rhapsody (1975)","value":"song-1"},{"name":"Under Pressure (with David Bowie) (1981)","value":"song-2"},{"name":"Killer Queen (1974)","value":"song-3"},{"name":"Radio Ga Ga (1984)","value":"song-4"},{"name":"Seven Seas of Rhye (1974)","value":"song-5"},{"name":"Another One Bites the Dust (1980)","value":"song-6"},{"name":"Don’t Stop Me Now (1979)","value":"song-7"},{"name":"We Will Rock You (1977)","value":"song-8"},{"name":"You’re My Best Friend (1976)","value":"song-9"},{"name":"Somebody to Love (1976)","value":"song-10"},{"name":"We Are the Champions (1977)","value":"song-11"},{"name":"Love of My Life (live at Festhalle Frankfurt, 2 February 1979) (1979)","value":"song-12"},{"name":"Spread Your Wings (1978)","value":"song-13"},{"name":"I Want to Break Free (1984)","value":"song-14"},{"name":"Who Wants to Live Forever (1986)","value":"song-15"},{"name":"Tie Your Mother Down (1977)","value":"song-16"},{"name":"Crazy Little Thing Called Love (1979)","value":"song-17"},{"name":"These Are the Days of Our Lives (1991)","value":"song-18"},{"name":"Now I’m Here (1975)","value":"song-19"},{"name":"Bicycle Race (1978)","value":"song-20"},{"name":"Fat Bottomed Girls (1978)","value":"song-21"},{"name":"The Show Must Go On (1991)","value":"song-22"},{"name":"Keep Yourself Alive (1973)","value":"song-23"},{"name":"Too Much Love Will Kill You (1996)","value":"song-24"},{"name":"Good Old Fashioned Lover Boy (1977)","value":"song-25"},{"name":"One Vision (1985)","value":"song-26"},{"name":"Play the Game (1980)","value":"song-27"},{"name":"I Want It All (1989)","value":"song-28"},{"name":"A Kind of Magic (1986)","value":"song-29"},{"name":"Save Me (1980)","value":"song-30"},{"name":"Hammer to Fall (1984)","value":"song-31"},{"name":"You Don’t Fool Me (1996)","value":"song-32"},{"name":"Let Me Live (1996)","value":"song-33"},{"name":"Back Chat (1982)","value":"song-34"},{"name":"A Winter’s Tale (1995)","value":"song-35"},{"name":"Innuendo (1991)","value":"song-36"},{"name":"Flash (1980)","value":"song-37"},{"name":"I’m Going Slightly Mad (1991)","value":"song-38"},{"name":"Thank God It’s Christmas (1984)","value":"song-39"},{"name":"Las Palabras de Amor (the Words of Love) (1982)","value":"song-40"},{"name":"It’s a Hard Life (1984)","value":"song-41"},{"name":"Breakthru (1989)","value":"song-42"},{"name":"Friends Will Be Friends (1986)","value":"song-43"},{"name":"Heaven for Everyone (1995)","value":"song-44"},{"name":"No One But You (Only the Good Die Young) (1998)","value":"song-45"},{"name":"Headlong (1991)","value":"song-46"},{"name":"Body Language (1982)","value":"song-47"},{"name":"Scandal (1989)","value":"song-48"},{"name":"The Invisible Man (1989)","value":"song-49"},{"name":"The Miracle (1989)","value":"song-50"}];
 this.searchKey = "name"
-this.searchRender = (item, hl) => {
+this.itemRender = (item, hl) => {
     return h`<span><v-icon name="Headset" /> ${hl}</span>`
+}
+this.itemToString = (item) => {
+    return item.name
 }
 </script>
 {% endtpl %}
@@ -171,13 +191,71 @@ document.addEventListener("DOMContentLoaded", () => {
 {% endtpl %}
 
 {% tpl "searchStyle" %}
-.main-input { background: #333; font-size: 1.2rem; color: #fff; font-family: Inter; }
-.main-input::placeholder { color: #aaa; }
+.dark-input input { background: #333; font-size: 1.2rem; color: #fff; font-family: Inter; }
+.dark-input input::placeholder { color: #aaa; }
 .input-wrapper { background: #333; }
 .suggestion span { color: #333; }
+.dark-input::part(right-button), .dark-input::part(input-wrapper) {
+    background: #333;
+}
 {% endtpl %}
 
 {% tpl "footer" %}
+<div class="guide" style="font-size: 1.2em">
+<h2 id="guide-web-components">Web Components and preact</h2>
+Web Components are a suite of APIs that let you create custom HTML tags. You can read the specification <a href="https://developer.mozilla.org/en-US/docs/Web/Web_Components">here</a>.
+
+The most important parts to know are:
+<ul>
+    <li>The syntax is same as usual tags: <code>&lt;v-icon&gt;</code>, <code>&lt;somelibrary-blah&gt;</code> etc.</li>
+    <li>Some components have children and some don't</li>
+    <li>All components need to have their tags closed (even empty ones), unlike <code>&lt;br/&gt;</code> or <code>&lt;link&gt;</code></li>
+    <li>An author of Web Component can make them have them appear and behave the way he wants.
+        However, if JavaScript is disabled they will just display the standard HTML content without
+        dynamic events and interactions.
+    </li>
+</ul>
+
+<h3>Component children and slotting</h3>
+A single component can contain children that are placed at different places. For example,
+you could program a dialog component can have a title part, a content part and action buttons:
+<br/><br/>
+<v-code lang="html">
+    &lt;some-dialog&gt;
+      &lt;div slot="title" class="mytitle"&gt; Dialog title &lt;/div&gt;
+      &lt;div slot="content"&gt; ..  &lt;/div&gt;
+      &lt;input slot="button" type="button"&gt; Cancel &lt;/input&gt;
+    &lt;some-dialog&gt;
+</v-code>
+<br/>
+To specify where you want to put a child, you use the <code>slot=""</code> attribute. That
+attribute is supported on all tags in the browser.
+By default, all elements in a page have an empty string <code>""</code> as the default slot.
+<ul>
+    <li>Multiple elements can be put in the same slot.</li>
+    <li>The author of the component <strong>decides which slots are supported</strong> and how they appear
+        in the final product.</li>
+</ul>
+
+<h3>preact syntax</h3>
+Some of the slots in veef accept preact code. <a href="https://preactjs.com/">preact</a> is a 3KB library based around the React API
+for building user interfaces.
+<br/><br/>
+It can be used in webpages without transpiling using <strong>HTM template literals</strong> as
+<a href="https://preactjs.com/guide/v10/getting-started/#alternatives-to-jsx">described in their tutorials</a>.
+For example, if you want to render a list of strings in your browser, you can use the following JavaScript:
+<br/><br/>
+<v-code lang="javascript">
+let strs = ["one", "two", "three"];
+let content = strs.map(str => {
+    return h`&lt;li&gt;${str}&lt;/li&gt;`
+})
+
+render(h`&lt;ul&gt;${content}&lt;/ul&gt;`, document.body);
+</v-code>
+<br/><br/>
+</div>
+
 <script>
     let rangeHdl = (e) => {
         Veef.render(toastRangeLabel, h => {
