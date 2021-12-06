@@ -128,8 +128,8 @@ function Tabs() {
 
 function Alert() {
     return <div>
-    <main>
-        <div style="padding: 10px; flex-basis: 40%; width: 40%;"><div class='t1'></div>
+    <v-grid cols="2">
+        <div><div class='t1'></div>
     <v-alert error="">This is an error message. You can put <strong>whatever HTML</strong> you like.</v-alert>
     <v-alert warning="">This is a warning. It means something, I think ...</v-alert>
     <v-alert success="">This is a success!</v-alert>
@@ -140,16 +140,16 @@ function Alert() {
         <v-controls cols="2">
             <div>
                 <label>Message</label>
-            <input type="text" id="toastMsg" />
+            <input type="text" id="toastMsg" value="Some message" />
             </div>
             <div>
                 <label>Duration</label>
                 <v-grid cols="4" center>
-                <input cols="3" type="range" id="toastRange" min="300" max="10000" step="100" value="1500" ></input>
-                <span cols="1" id="toastRangeLabel" />
+                <input v-span="3" type="range" id="toastRange" min="300" max="10000" step="100" value="1500" ></input>
+                <span v-span="1" id="toastRangeLabel" />
                 </v-grid>
             </div>
-            <div cols="2">
+            <div v-span="2">
                 <button is="v-primary" type="submit" style="width: 100%">Create toast</button>
             </div>
         </v-controls>
@@ -161,7 +161,7 @@ function Alert() {
             ~v-alert error~Put any HTML here.~/v-alert~
             ~v-alert info~Put any HTML here.~/v-alert~
         `}</v-code> */}
-    </main></div>;
+    </v-grid></div>;
 }
 
 function App() {
@@ -258,31 +258,32 @@ function Dialog() {
          </h3>
          </div>
          
-         <section data-veef="actions">
+         <section slot="actions">
              <button is="veef" primary onclick="d1.open = false">Okay</button>
              <button is="veef" onclick="d1.open = false">Meh</button>
          </section>
      </v-dialog>
      <v-dialog id="d2">
          <div>
-         <form is="veef" style="--cols: 2;">
-             <fieldset>
+         <form>
+             <v-controls cols="2">
+
+             <div>
              <label>Some name</label>
-             <input  />
-             </fieldset>
-             <fieldset>
+             <input />
+             </div>
+             <div>
              <label>Some date</label>
              <input type="date"/>
-             </fieldset>
-             <fieldset style="--span: span 2;">
+             </div>
+             <div v-span="2">
                  <label>Something else</label>
                  <input />
-             </fieldset>
-         <div>
-         </div>
+             </div>
+             </v-controls>
              </form>
          </div>
-         <section data-veef="actions">
+         <section slot="actions">
              <button is="veef" onclick="d2.open = false">Okay</button>
          </section>
      </v-dialog>
@@ -299,7 +300,8 @@ function Search() {
     return <><div>
         <div style="margin: 50px auto; max-width: 500px; font-size: 1.2rem;">
             This <code>v-search</code> has 50 Queen songs that it autocompletes.
-            You can type <strong>boehman</strong> and you'll still find <strong>Bohemian</strong>!
+            You can type <strong>bo<span style="color: red">eh</span>man</strong> and you'll
+            still find <strong>Bohemian Rhapsody</strong>!
         <v-search>
             <Template template="queen" tagName="template" slot="h"></Template>
         </v-search>
@@ -375,8 +377,7 @@ let BASE = `
 
 <!DOCTYPE html>
 <html lang="en">
-${render(<Template tagName="head" template="head" />)}
-${env.render("full", {}).trim()}
+${env.render("head", {}).trim()}
 ${render(<App />)}
 ${env.render("footer", {})}
 </body>
@@ -392,7 +393,7 @@ ${env.render("footer", {})}
     BASE = prettyPrint(BASE).replaceAll('/*code-ref*/', (_: any) => {
         idx++;
         return origs[idx]
-    }).replaceAll('/*style-ref*/', require('./assets/main'))
+    })
 
     BASE = BASE.replaceAll(/<style>(.*?)<\/style>/gs, (s: string, arg: string) => {
         return `<style>${arg.replaceAll(/$\s*/gsm, "")}</style>`;

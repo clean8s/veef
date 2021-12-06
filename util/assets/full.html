@@ -47,9 +47,10 @@ body { --color: rgb(var(--color-rgb));  --color-bg: 255,255,255; --color-b: #555
 article { max-width: 500px; margin: 0 auto; }
 .pros>div {
     display: flex;
-    width: 30%;
     font-size: 1.2rem;
     align-items: center;
+    width: 250px;
+    margin: 1rem 0;
 }
 .pros>div v-icon {
     flex-shrink: 0;
@@ -100,6 +101,30 @@ body[data-theme="dark"] input.my-input {
     background: #999;
 }
     </style>
+    <body class="N">
+        <header>
+        <div class="container"><v-icon name="Bolt"></v-icon> veef Web Component kit
+            <span style="background:#fff; color: var(--color); padding: 0 3px;">alpha</span>
+        <v-icon class="ptr" onclick="document.body.classList.toggle('N')" name="Menu"></v-icon></div>
+        </header>
+        <div style="" class="hero">
+            <div class="container">
+        <h3 style="margin: 0; font-size: 3rem; letter-spacing: -0.025em; line-height: 1; border: 0;">Interactive components based on the <strong>Web Components</strong> API
+            and <span style="color: #6633CC">preact</span>.
+            </h3>
+                <v-grid cols="3" class="pros">
+                <div><v-icon name="Html5"></v-icon> The content remains readable without JavaScript!</div>
+                <div><v-icon name="Cube"></v-icon> No build process, npm or transpiling needed. </div>
+                <div>
+                    <v-icon name="Star"></v-icon>
+                    They work extremely well with non-SPA frameworks like Django, Rails, Laravel</div>
+                </v-grid>
+                </v-grid>
+                <div style="font-weight: 500; text-align: center; font-size: 1.1rem; margin: 20px 0;">
+                To install, just include <code>&lt;script src="https://unpkg.com/veef"&gt;&lt;/script&gt;</code>
+                </div>
+        </div>
+    </div>
 {% endtpl %}
 
 {% tpl "queen" %}
@@ -152,36 +177,12 @@ document.addEventListener("DOMContentLoaded", () => {
 .suggestion span { color: #333; }
 {% endtpl %}
 
-<body class="N">
-    <header>
-    <div class="container"><v-icon name="Bolt"></v-icon> veef Web Component kit
-        <span style="background:#fff; color: var(--color); padding: 0 3px;">alpha</span>
-    <v-icon class="ptr" onclick="document.body.classList.toggle('N')" name="Menu"></v-icon></div>
-    </header>
-    <div style="" class="hero">
-        <div class="container">
-    <h3 style="margin: 0; font-size: 3rem; letter-spacing: -0.025em; line-height: 1; border: 0;">Interactive components based on the <strong>Web Components</strong> API
-        and <span style="color: #6633CC">preact</span>.
-        </h3>
-        <div style="display: flex; flex-wrap: wrap; justify-content: space-between;" class="pros">
-            <div><v-icon name="Html5"></v-icon> The content remains readable without JavaScript!</div>
-            <div><v-icon name="Cube"></v-icon> No build process, npm or transpiling needed. </div>
-            <div>
-                <v-icon name="Star"></v-icon>
-                They work extremely well with non-SPA frameworks like Django, Rails, Laravel</div>
-            </div>
-            <div style="font-weight: 500; text-align: center; font-size: 1.1rem; margin: 20px 0;">
-            To install, just include <code>&lt;script src="https://unpkg.com/veef"&gt;&lt;/script&gt;</code>
-            </div>
-    </div>
-</div>
-
 {% tpl "footer" %}
 <script>
     let rangeHdl = (e) => {
-        Veef.html(h => {
-            Veef.render(h`<span>${toastRange.value}ms</span>`, toastRangeLabel)
-        });
+        Veef.render(toastRangeLabel, h => {
+            return h`<span>${toastRange.value}ms</span>`
+        })
     };
     rangeHdl();
     toastRange.addEventListener("input", rangeHdl);
@@ -190,10 +191,9 @@ document.addEventListener("DOMContentLoaded", () => {
     e.preventDefault();
     // let t = document.createElement('div');
     // document.body.append(t)
-    Veef.html(h => {
-        const dom = Veef.renderDom(h`<v-alert success="1" toast="1" duration="${toastRange.value}">${toastMsg.value}</v-alert>`);
-        document.body.append(...dom);
-    })
+    
+    const dom = Veef.renderDom(Veef.h`<v-alert success="1" toast="1" duration="${toastRange.value}">${toastMsg.value}</v-alert>`);
+    document.body.append(...dom);
     
     return false;
     }

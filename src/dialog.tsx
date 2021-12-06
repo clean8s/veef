@@ -1,5 +1,5 @@
 import React from 'react'
-import { render } from './style'
+import { render, renderWithCss } from './style'
 import { TmSlot } from './slottable'
 
 export class Dialog extends TmSlot {
@@ -50,7 +50,20 @@ export class Dialog extends TmSlot {
       }
       // console.log(e.composedPath())
     }
-    render(
+    const slotCss = `
+    ::slotted(*[slot="actions"]){
+    display: flex;
+    grid-gap: 1rem;
+    gap: 1rem;
+    justify-content: space-between;
+    align-items: center;
+    }
+    ::slotted(*[slot="actions"]) > *{
+    	width: 100% !important;
+	    display: block; 
+    }
+    `
+    renderWithCss("")(
       <div onClick={click} class='inset-0 fixed bg-[rgba(0,0,0,0.5)] z-50'>
         <div
           id='v-popup' part="popupMain"
@@ -62,6 +75,7 @@ export class Dialog extends TmSlot {
           <div class='w-full h-full text-center mainthing'>
             <div class='flex h-full flex-col justify-between'>
               <slot></slot>
+              <slot name="actions"></slot>
             </div>
           </div>
         </div>

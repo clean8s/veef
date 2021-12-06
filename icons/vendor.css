@@ -24,6 +24,7 @@ v-tree {
 	display: block;
 }
 v-alert {
+	min-width: 200px;
 	display: block;
 	transition: opacity 0.3s ease-in-out;
 }
@@ -65,38 +66,58 @@ v-icon[all] {
 	color: var(--color, #0066FF);
 }
 
-section[data-veef="actions"] {
+v-dialog *[slot="actions"]{
 	display: flex;
 	grid-gap: 1rem;
 	gap: 1rem;
+	margin-top: 15px;
 	justify-content: space-between;
 	align-items: center;
 }
+v-dialog *[slot="actions"] > *{
+	width: 100% !important;
+	display: block; 
+}
 
-section[data-veef="actions"] button {
+/* section[data-veef="actions"] button {
 	width: 100% !important;
 	display: block;
-}
+} */
 
 
 v-grid, v-controls {	
-	grid-template-columns: repeat(var(--cols, 1),minmax(0,1fr));
+	/* grid-template-columns: repeat(auto-fit, minmax(calc(300px * 1/var(--cols)), 1fr)); */
 	text-align: left;
-	display: grid;
-	gap: 1.5rem;
+	display: flex;
+	flex-wrap: wrap;
+	/* gap: 1.5rem; */
+}
+v-grid > *, v-controls > * {
+	padding: 0.5rem;
+	margin: 0 !important;
 }
 v-grid[center] {
 	align-items: center;
+}
+v-controls>*:not([v-span]), v-grid>*:not([v-span]) {
+	flex-basis: calc(100% / var(--cols));
+	flex-grow: 1;
+}
+v-controls>*[v-span], v-grid>*[v-span] {
+	flex-grow: var(--v-span);
+	/* flex-basis: calc(100% * var(--v-span) / var(--cols));
+	flex-shrink: 1;
+	flex-grow: 0; */
 }
 
 *[cols="1"] { --cols: 1; } *[cols="2"]{ --cols: 2; }  *[cols="3"]{ --cols: 3; }   *[cols="4"]{ --cols: 4;}   *[cols="5"]{ --cols: 5;}  
 *[cols="6"]{ --cols: 6;} *[cols="7"]{ --cols: 7;}   *[cols="8"]{ --cols: 8;}   *[cols="9"]{ --cols: 9;}  
 
-v-controls *[cols], v-grid *[cols] {
-	grid-column:  span var(--cols);
-}
 
-v-controls input[type="text"], v-controls input[type="number"], v-controls input[type="password"], v-controls input[type="email"], v-controls input[type="date"], v-controls input[type="time"], v-controls input[type="datetime-local"], v-controls input[type="month"], v-controls input[type="week"], v-controls input[type="search"], v-controls input[type="tel"], v-controls input[type="url"], v-controls input[type="file"], v-controls select, v-controls textarea {
+*[v-span="1"] { --v-span: 1; } *[v-span="2"]{ --v-span: 2; }  *[v-span="3"]{ --v-span: 3; }   *[v-span="4"]{ --v-span: 4;}   *[v-span="5"]{ --v-span: 5;}  
+*[v-span="6"]{ --v-span: 6;} *[v-span="7"]{ --v-span: 7;}   *[v-span="8"]{ --v-span: 8;}   *[v-span="9"]{ --v-span: 9;}  
+
+v-controls input:not([type]), v-controls input[type="text"], v-controls input[type="number"], v-controls input[type="password"], v-controls input[type="email"], v-controls input[type="date"], v-controls input[type="time"], v-controls input[type="datetime-local"], v-controls input[type="month"], v-controls input[type="week"], v-controls input[type="search"], v-controls input[type="tel"], v-controls input[type="url"], v-controls input[type="file"], v-controls select, v-controls textarea {
 	border: 1px solid rgb(209, 213, 219);
 	box-shadow: rgba(0, 0, 0, 0.2) 0px 1px 2px 0px;
 	padding: 8px 12px;

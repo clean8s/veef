@@ -338,76 +338,14 @@ class SearchField extends Slottable {
     </div>
   }
 }
-import {Tabs } from "./tabs"
-import { Alert } from './alert'
-import { Code } from './codehl'
-import { Dialog } from './dialog'
-import { Table } from './table'
-import { Tree } from './tree'
 
-function loadComponents() {
-  customElements.define('v-tree', Tree)
-  customElements.define('v-search', SearchField)
-  customElements.define('v-dialog', Dialog)
-  customElements.define('v-table', Table)
-  customElements.define('v-alert', Alert)
-  customElements.define('v-code', Code);
-  customElements.define('v-tabs', Tabs);
 
-  customElements.define('v-controls', class extends HTMLElement {
-    constructor() {
-      super()
-    }
-  });
-
-  customElements.define('v-scope', class extends HTMLElement {
-    constructor() {
-      super()
-      this.root = this.attachShadow({mode: 'open'})
-      const sl = document.createElement('slot')
-      sl.addEventListener('slotchange', (e) => {
-        const myEv = new CustomEvent<{slotEvent: any}>('slotnotify', {
-          detail: {
-          slotEvent: e
-        }});
-
-         const V = Array.from(this.children).filter(x => x.tagName.toLowerCase().startsWith('v-'));
-         V.map(x => {
-           x.dispatchEvent(myEv);
-         })
-      })
-      this.root.append(sl)
-    }
-
-    root: ShadowRoot
-  })
-}
-
-class VeefElement {
-  static h = html;
-}
-window.VeefElement = VeefElement;
-
-class Veef {
-  static html(fn: any) {
-    fn(html)
-  }
-  static render(node: any, domElement: HTMLElement) {
-    preactRender(node, domElement)
-  }
-  static renderDom(node: any) {
-    const emptyEl = document.createElement("div");
-    preactRender(node, emptyEl)
-    return Array.from(emptyEl.childNodes)
-  }
-}
-
-window.Veef = Veef;
-
+import {Tree, Dialog, Table, Alert, Code, Tabs, VeefElement, loadComponents} from "./veef";
+loadComponents({'v-search': SearchField})
 export {Tree, SearchField, Dialog, Table, Alert, Code, Tabs, VeefElement};
 
 // TODO: Make different versions of the library
 // one of which doesn't auto-load the components.
-loadComponents()
+// loadComponents()
 
 type WindiProps = { idx: number, children?: any }

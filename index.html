@@ -1,24 +1,21 @@
 <!DOCTYPE html>
 <html lang="en">
-
-  <head>
-    <link rel="shortcut icon" href="data:image/gif;base64,R0lGODlhEAAQAJEAAAAAAP////tQEgAAACH/C05FVFNDQVBFMi4wAwEAAAAh+QQEAAAAACwAAAAAEAAQAAACK5QFGct8mEBrL6oZqpVT735sERWKV1aanGcu7OemcGy0ZD07MgfiZw/hYQoAOw==" />
-    <meta name="og:image" content="summary" />
-    <meta name="twitter:card" content="summary" />
-    <meta name="twitter:creator" content="@fikisipi" />
-    <meta property="og:url" content="http://bits.blogs.nytimes.com/2011/12/08/a-twitter-for-my-sister/" />
-    <meta property="og:title" content="veef Web Components" />
-    <meta property="og:description" content="Useful data-oriented HTML components via a single 60KB import." />
-    <meta property="og:image" content="https://clean8s.com/veef/og.png" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="https://fonts.googleapis.com/css2?family=Fira+Code&amp;family=Inter:wght@200;400;500;600&amp;display=swap" rel="stylesheet">
-    <script>
-      let exports = {};
-    </script>
-    <script src="./dist/index.js"></script>
-    <title>veef: Web Component + preact UI kit</title>
-    <style>/* You DON'T need this. This is the documentation CSS, not the components! */body {line-height: 1.5;tab-size: 4;font-size: 16px;color: rgb(31, 41, 55);font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;margin: 0;padding: 0;}* {box-sizing: border-box;-webkit-font-smoothing: antialiased;text-rendering: optimizelegibility;}p {margin: 10px 0 30px;}aside {background: #eaeaea;padding: 20px;}a {text-decoration: none;color: #3366CC;}code {font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;}header {background: hsl(var(--color-hs) 50%);position: sticky;inset: 0;bottom: auto;color: #fff;z-index: 40;padding: 20px 0;font-weight: 600;letter-spacing: 0.05em;}body {--sidebar: 200px;padding-left: var(--sidebar);}.container {width: 90%;max-width: 1000px;margin: 0 auto;}.showcase {clear: both;}.showcase>div {scroll-margin-top: 5em;}.showcase h2 {font-size: 2em;margin: 60px 0 15px;font-weight: 400;}.showcase h3 {border-left: 4px solid #555;padding-left: 0.5em;font-size: 1.1em;font-weight: 500;margin: 5px 0 15px;color: #555;}main {display: flex;width: 100%;}main>* {width: 50%;flex-basis: 50%;padding: 5px;}v-code {margin: 0 10px;}main>v-code[lang="html"]:before {content: "SOURCE";font-weight: 500;color: #fff;background: #333333;border-radius: 20px;padding: 3px 10px;}main>div:before,.demo:before {content: "DEMO";font-weight: 500;color: #fff;background: #FB5012;border-radius: 20px;padding: 3px 10px;}h2>code {color: #996699;}h2>code:before {content: "<";}h2>code:after {content: ">";}nav {color: #888;position: fixed;top: 0px;bottom: 0;width: var(--sidebar);box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);left: 0px;padding: 20px;z-index: 40;background: #fff;}nav>a {display: block;color: #FB5012;font-weight: 500;padding: 5px 0;}header .ptr {display: none;float: right;}sup {font-size: 0.8rem;}.ptr {cursor: pointer;}@media screen and (max-width: 600px) {body {--sidebar: 0;}nav {width: 80vw;display: block;}.N>nav {display: none;}header .ptr {display: inline-block;}main {flex-direction: column;max-height: none;}main>* {width: 100%;flex-basis: 100%;}}code {background: #282c34;padding: 3px 5px;color: #fff;border-radius: 5px;font-family: Consolas, Monaco, "Andale Mono", "Ubuntu Mono", monospace;}.text-center {text-align: center;}.pad {padding: var(--y, 0) var(--x, 0);}.x-1 {--x: 10px;}.x-2 {--x: 20px;}.y-1 {--y: 10px;}.y-2 {--y: 20px;}body {--color: rgb(var(--color-rgb));--color-bg: 255, 255, 255;--color-b: #55555535;--color-f: #913a0080;--color-hs: 24 100%;--color-rgb: 255, 102, 0;}article {max-width: 500px;margin: 0 auto;}.pros>div {display: flex;width: 30%;font-size: 1.2rem;align-items: center;}.pros>div v-icon {flex-shrink: 0;font-size: 1.5rem;margin-right: 0.5rem;color: var(--color);}body[data-theme="dark"] header {background: hsl(var(--color-hs) 40%);}body[data-theme="dark"] {color: #fff;background: #333;--color: #0066CC;--color-hs: 210 100%;}body[data-theme="dark"] v-tabs::part(around) {border-color: #444;}body[data-theme="dark"] v-tabs::part(tabwrap) {border-color: #444;}.hero {background: #eee;padding: 2rem 0;}body[data-theme="dark"] .hero {background: #444;}body[data-theme="dark"] v-tabs>button {background: #444;color: #fff;}body[data-theme="dark"] v-table td {background: #444;border-color: #333;}body[data-theme="dark"] v-table tr {color: #fff;}body[data-theme="dark"] nav {background: #282828;}body[data-theme="dark"] v-icon .allIconsLabel {color: #ccc;}body[data-theme="dark"] v-icon .separator {border-color: #5a5a5a;}body[data-theme="dark"] input.my-input {background: #999;}</style>
-  </head>
+  <link rel="shortcut icon" href="data:image/gif;base64,R0lGODlhEAAQAJEAAAAAAP////tQEgAAACH/C05FVFNDQVBFMi4wAwEAAAAh+QQEAAAAACwAAAAAEAAQAAACK5QFGct8mEBrL6oZqpVT735sERWKV1aanGcu7OemcGy0ZD07MgfiZw/hYQoAOw==" />
+  <meta name="og:image" content="summary" />
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:creator" content="@fikisipi" />
+  <meta property="og:url" content="http://bits.blogs.nytimes.com/2011/12/08/a-twitter-for-my-sister/" />
+  <meta property="og:title" content="veef Web Components" />
+  <meta property="og:description" content="Useful data-oriented HTML components via a single 60KB import." />
+  <meta property="og:image" content="https://clean8s.com/veef/og.png" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code&amp;family=Inter:wght@200;400;500;600&amp;display=swap" rel="stylesheet">
+  <script>
+    let exports = {};
+  </script>
+  <script src="./dist/index.js"></script>
+  <title>veef: Web Component + preact UI kit</title>
+  <style>/* You DON'T need this. This is the documentation CSS, not the components! */body {line-height: 1.5;tab-size: 4;font-size: 16px;color: rgb(31, 41, 55);font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;margin: 0;padding: 0;}* {box-sizing: border-box;-webkit-font-smoothing: antialiased;text-rendering: optimizelegibility;}p {margin: 10px 0 30px;}aside {background: #eaeaea;padding: 20px;}a {text-decoration: none;color: #3366CC;}code {font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;}header {background: hsl(var(--color-hs) 50%);position: sticky;inset: 0;bottom: auto;color: #fff;z-index: 40;padding: 20px 0;font-weight: 600;letter-spacing: 0.05em;}body {--sidebar: 200px;padding-left: var(--sidebar);}.container {width: 90%;max-width: 1000px;margin: 0 auto;}.showcase {clear: both;}.showcase>div {scroll-margin-top: 5em;}.showcase h2 {font-size: 2em;margin: 60px 0 15px;font-weight: 400;}.showcase h3 {border-left: 4px solid #555;padding-left: 0.5em;font-size: 1.1em;font-weight: 500;margin: 5px 0 15px;color: #555;}main {display: flex;width: 100%;}main>* {width: 50%;flex-basis: 50%;padding: 5px;}v-code {margin: 0 10px;}main>v-code[lang="html"]:before {content: "SOURCE";font-weight: 500;color: #fff;background: #333333;border-radius: 20px;padding: 3px 10px;}main>div:before,.demo:before {content: "DEMO";font-weight: 500;color: #fff;background: #FB5012;border-radius: 20px;padding: 3px 10px;}h2>code {color: #996699;}h2>code:before {content: "<";}h2>code:after {content: ">";}nav {color: #888;position: fixed;top: 0px;bottom: 0;width: var(--sidebar);box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);left: 0px;padding: 20px;z-index: 40;background: #fff;}nav>a {display: block;color: #FB5012;font-weight: 500;padding: 5px 0;}header .ptr {display: none;float: right;}sup {font-size: 0.8rem;}.ptr {cursor: pointer;}@media screen and (max-width: 600px) {body {--sidebar: 0;}nav {width: 80vw;display: block;}.N>nav {display: none;}header .ptr {display: inline-block;}main {flex-direction: column;max-height: none;}main>* {width: 100%;flex-basis: 100%;}}code {background: #282c34;padding: 3px 5px;color: #fff;border-radius: 5px;font-family: Consolas, Monaco, "Andale Mono", "Ubuntu Mono", monospace;}.text-center {text-align: center;}.pad {padding: var(--y, 0) var(--x, 0);}.x-1 {--x: 10px;}.x-2 {--x: 20px;}.y-1 {--y: 10px;}.y-2 {--y: 20px;}body {--color: rgb(var(--color-rgb));--color-bg: 255, 255, 255;--color-b: #55555535;--color-f: #913a0080;--color-hs: 24 100%;--color-rgb: 255, 102, 0;}article {max-width: 500px;margin: 0 auto;}.pros>div {display: flex;font-size: 1.2rem;align-items: center;width: 250px;margin: 1rem 0;}.pros>div v-icon {flex-shrink: 0;font-size: 1.5rem;margin-right: 0.5rem;color: var(--color);}body[data-theme="dark"] header {background: hsl(var(--color-hs) 40%);}body[data-theme="dark"] {color: #fff;background: #333;--color: #0066CC;--color-hs: 210 100%;}body[data-theme="dark"] v-tabs::part(around) {border-color: #444;}body[data-theme="dark"] v-tabs::part(tabwrap) {border-color: #444;}.hero {background: #eee;padding: 2rem 0;}body[data-theme="dark"] .hero {background: #444;}body[data-theme="dark"] v-tabs>button {background: #444;color: #fff;}body[data-theme="dark"] v-table td {background: #444;border-color: #333;}body[data-theme="dark"] v-table tr {color: #fff;}body[data-theme="dark"] nav {background: #282828;}body[data-theme="dark"] v-icon .allIconsLabel {color: #ccc;}body[data-theme="dark"] v-icon .separator {border-color: #5a5a5a;}body[data-theme="dark"] input.my-input {background: #999;}</style>
 
   <body class="N">
     <header>
@@ -33,7 +30,7 @@
         <h3 style="margin: 0; font-size: 3rem; letter-spacing: -0.025em; line-height: 1; border: 0;">Interactive components based on the <strong>Web Components</strong> API
           and <span style="color: #6633CC">preact</span>.
         </h3>
-        <div style="display: flex; flex-wrap: wrap; justify-content: space-between;" class="pros">
+        <v-grid cols="3" class="pros">
           <div>
             <v-icon name="Html5"></v-icon> The content remains readable without JavaScript!
           </div>
@@ -44,7 +41,8 @@
             <v-icon name="Star"></v-icon>
             They work extremely well with non-SPA frameworks like Django, Rails, Laravel
           </div>
-        </div>
+        </v-grid>
+        </v-grid>
         <div style="font-weight: 500; text-align: center; font-size: 1.1rem; margin: 20px 0;">
           To install, just include <code>&lt;script src="https://unpkg.com/veef"&gt;&lt;/script&gt;</code>
         </div>
@@ -77,7 +75,7 @@
             <v-icon name="Code"></v-icon> Code &amp; customization
           </button>
           <div>
-            <div style="margin: 50px auto; max-width: 500px; font-size: 1.2rem;">This <code>v-search</code> has 50 Queen songs that it autocompletes. You can type <strong>boehman</strong> and you'll still find <strong>Bohemian</strong>!<v-search><template slot="h">
+            <div style="margin: 50px auto; max-width: 500px; font-size: 1.2rem;">This <code>v-search</code> has 50 Queen songs that it autocompletes. You can type <strong>bo<span style="color: red">eh</span>man</strong> and you'll still find <strong>Bohemian Rhapsody</strong>!<v-search><template slot="h">
                   <script>
                     this.data = [{
                       "name": "Bohemian Rhapsody (1975)",
@@ -286,18 +284,19 @@ this.searchRender = (item, hl) =&gt; {
                 <h1>Some title</h1>
                 <h3>Arbitrary HTML. The border on the left happens because the host page has full control over the styling of the dialog (which happens to add a border) while the rest is controlled by veef.</h3>
               </div>
-              <section data-veef="actions"><button is="veef" primary onclick="d1.open = false">Okay</button><button is="veef" onclick="d1.open = false">Meh</button></section>
+              <section slot="actions"><button is="veef" primary onclick="d1.open = false">Okay</button><button is="veef" onclick="d1.open = false">Meh</button></section>
             </v-dialog>
             <v-dialog id="d2">
               <div>
-                <form is="veef" style="--cols: 2;">
-                  <fieldset><label>Some name</label><input /></fieldset>
-                  <fieldset><label>Some date</label><input type="date" /></fieldset>
-                  <fieldset style="--span: span 2;"><label>Something else</label><input /></fieldset>
-                  <div></div>
+                <form>
+                  <v-controls cols="2">
+                    <div><label>Some name</label><input /></div>
+                    <div><label>Some date</label><input type="date" /></div>
+                    <div v-span="2"><label>Something else</label><input /></div>
+                  </v-controls>
                 </form>
               </div>
-              <section data-veef="actions"><button is="veef" onclick="d2.open = false">Okay</button></section>
+              <section slot="actions"><button is="veef" onclick="d2.open = false">Okay</button></section>
             </v-dialog>
           </div>
         </v-tabs>
@@ -459,8 +458,8 @@ this.searchRender = (item, hl) =&gt; {
             <v-icon name="Bolt"></v-icon> Demo
           </button>
           <div>
-            <main>
-              <div style="padding: 10px; flex-basis: 40%; width: 40%;">
+            <v-grid cols="2">
+              <div>
                 <div class="t1"></div>
                 <v-alert error>This is an error message. You can put <strong>whatever HTML</strong> you like.</v-alert>
                 <v-alert warning>This is a warning. It means something, I think ...</v-alert>
@@ -470,15 +469,15 @@ this.searchRender = (item, hl) =&gt; {
               <div>
                 <form id="toasty">
                   <v-controls cols="2">
-                    <div><label>Message</label><input type="text" id="toastMsg" /></div>
+                    <div><label>Message</label><input type="text" id="toastMsg" value="Some message" /></div>
                     <div><label>Duration</label>
-                      <v-grid cols="4" center><input cols="3" type="range" id="toastRange" min="300" max="10000" step="100" value="1500" /><span cols="1" id="toastRangeLabel"></span></v-grid>
+                      <v-grid cols="4" center><input v-span="3" type="range" id="toastRange" min="300" max="10000" step="100" value="1500" /><span v-span="1" id="toastRangeLabel"></span></v-grid>
                     </div>
-                    <div cols="2"><button is="v-primary" type="submit" style="width: 100%">Create toast</button></div>
+                    <div v-span="2"><button is="v-primary" type="submit" style="width: 100%">Create toast</button></div>
                   </v-controls>
                 </form>
               </div>
-            </main>
+            </v-grid>
           </div>
         </v-tabs>
       </div>
@@ -486,9 +485,9 @@ this.searchRender = (item, hl) =&gt; {
 
     <script>
       let rangeHdl = (e) => {
-        Veef.html(h => {
-          Veef.render(h`<span>${toastRange.value}ms</span>`, toastRangeLabel)
-        });
+        Veef.render(toastRangeLabel, h => {
+          return h`<span>${toastRange.value}ms</span>`
+        })
       };
       rangeHdl();
       toastRange.addEventListener("input", rangeHdl);
@@ -497,10 +496,9 @@ this.searchRender = (item, hl) =&gt; {
         e.preventDefault();
         // let t = document.createElement('div');
         // document.body.append(t)
-        Veef.html(h => {
-          const dom = Veef.renderDom(h`<v-alert success="1" toast="1" duration="${toastRange.value}">${toastMsg.value}</v-alert>`);
-          document.body.append(...dom);
-        })
+
+        const dom = Veef.renderDom(Veef.h`<v-alert success="1" toast="1" duration="${toastRange.value}">${toastMsg.value}</v-alert>`);
+        document.body.append(...dom);
 
         return false;
       }
