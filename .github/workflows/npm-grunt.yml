@@ -28,8 +28,10 @@ jobs:
         git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
         git remote set-url --push origin https://fikisipi:$GITHUB_TOKEN@github.com/clean8s/veef
         git checkout -b gh-pages
-        ls | grep -v -E "(dist|CNAME|png|index)" | xargs rm -rf
+        ls | grep -v -E "(dist|CNAME|png|html)" | xargs rm -rf
         mv -t . dist/*
+        touch .nojekyll
+        sed -i 's/dist\///g' index.html
         git add -A
         git commit -m "Deploy web"
         git push -u --force origin gh-pages 
