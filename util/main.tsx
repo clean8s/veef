@@ -3,23 +3,34 @@ import {h, Fragment, VNode, FunctionComponent} from "preact"
 import {writeFileSync, readFileSync} from "fs"
 //@ts-ignore
 import prettyPrint from "pretty"
+import nunjucks from "nunjucks"
 const qq = '`'
+
+class MyLoader {
+    // TODO: use a proper custom block definition
+    getSource(name: string) {
+        const fl = readFileSync("./assets/full.html", "utf8")
+        // const fl = require("./assets/full")
+        let src = ""
+        const newFl = fl.replace(/{%\s*tpl\s*"(.*?)"\s*%}(.*?){%\s*endtpl\s*%}/gsm, (s: string, arg: string, body: string) => {
+            if(arg === name) {
+                src = body;
+            }
+            return ""
+        })
+        if(name === 'full') {
+            return {src: newFl, path: name, noCache: true};
+        }
+        let path = name;
+        return {src, path, noCache: true};
+    }
+}
+
+const env = new nunjucks.Environment(new MyLoader())
 
 const demo = (x, doSlot?: boolean, returnContent?: boolean) => {
     if(returnContent === true) return require(`./${x}.demo`)
     return <script {...(doSlot ? {slot: "h"}: {})} dangerouslySetInnerHTML={{__html: require(`./${x}.demo`)}} />
-}
-
-function rawTag(tag: string, src: string, args?: Record<string, any>) {
-    const R = args ? args : {};
-    const T = tag;
-    return <T {...R} dangerouslySetInnerHTML={{__html: src}} />
-}
-
-function rawFile(tag: string, filename: string, args?: Record<string, any>) {
-    const R = args ? args : {};
-    const T = tag;
-    return <T {...R} dangerouslySetInnerHTML={{__html: require('./' + filename.replace(/\.\w{2,4}$/, ""))}} />
 }
 
 function Table() {
@@ -110,7 +121,7 @@ function Tabs() {
                     </p>
                 </div>
         </v-tabs>
-        {rawFile("script", "assets/tabdemo.jsx")}
+        <Template tagName="div" template="tabDemo" />
         </div>
     </>
 }
@@ -125,14 +136,24 @@ function Alert() {
     <v-alert info="">This is an alert, a classic.</v-alert>
     </div>
     <div>
-        <button is="veef" primary={true} id="toasty">Create toast</button>
-        {rawTag("script", `
-        toasty.onclick = () => {
-            let t = document.createElement('div');
-            t.innerHTML = "<v-alert success toast>Hello</v-alert>"
-            document.body.append(t)
-        }
-        `)}
+        <form id="toasty">
+        <v-controls cols="2">
+            <div>
+                <label>Message</label>
+            <input type="text" id="toastMsg" />
+            </div>
+            <div>
+                <label>Duration</label>
+                <v-grid cols="4" center>
+                <input cols="3" type="range" id="toastRange" min="300" max="10000" step="100" value="1500" ></input>
+                <span cols="1" id="toastRangeLabel" />
+                </v-grid>
+            </div>
+            <div cols="2">
+                <button is="v-primary" type="submit" style="width: 100%">Create toast</button>
+            </div>
+        </v-controls>
+        </form>
     </div>
         {/* <v-code lang="html">{`
             ~v-alert success~Put any HTML here.~/v-alert~
@@ -145,25 +166,14 @@ function Alert() {
 
 function App() {
     return <>
-    <header>
-        <div class="container"><v-icon name="Bolt"></v-icon> veef Web Components
-        <v-icon class="ptr" onclick="document.body.classList.toggle('N')" name="Menu"></v-icon></div>
-        </header>
-
     <nav>
         <p>Contents <v-icon onclick="document.body.classList.toggle('N')" class="ptr" name="Close"></v-icon></p>
         {["search", "dialog", "table", "tree", "icon", "tabs", "alert"].map(x => <a href={`#v-${x}`}><v-icon name="Bolt" />v-{x}</a>)}
         <a href="#license">License</a>
+        <button onclick={`document.body.setAttribute('data-theme', 'dark')`}>dark mode</button>
     </nav>
 
     <div class="container showcase">
-        <h3 class="pad y-2"><strong>Web Components</strong> is a suite of Web APIs for
-        making interactive components that are native HTML <code>&lt;elements&gt;</code>.
-        </h3>
-        <h3 class="pad y-2">They work really well with non-SPA Django, Rails, Laravel. <br/>
-        veef contains several components, and you can use the React API and fall back to
-        native controls if JavaScript isn't enabled.
-        </h3>
     <Component name="v-search" C={Search} info="smart fuzzy search"/>
     <Component name="v-dialog" C={Dialog} nocustom/>
     <Component name="v-table" C={Table} info="enhances any <code>table</code>, <code>tr</code>, <code>td</code>" rawinfo={true} />
@@ -178,21 +188,19 @@ function App() {
 function Tree() {
     return <>
         <div class="t1">
-         A collapsible tree that
-         can be instantiated with a one liner <code>v-json</code>.
-         It's useful for debugging REST APIs
-         or letting users easily explore nested structures.
-         Based around @redux/json-tree
+            <div class="pad y-2 text-center">
+                Show <strong>JSON structures</strong> & API responses in tree structures.
+            </div>
+            <br/>
          <main>
              <v-tree dark id="tree3"></v-tree>
-             <v-code id="jsonData" lang="js" style="max-height: 180px; overflow: auto;">
+             {/* <v-code id="jsonData" lang="js" style="max-height: 180px; overflow: auto;">
                  {require('./assets/demojson')}
-             </v-code>
-         </main>
-         Furthermore, the way nodes are rendered can be customized to make it
-         useful for specific structures:
-         <v-tree id="tree5" initopen="(path,val)=> path.length < 3" style="display: block; max-width: 450px; overflow: hidden;
+             </v-code> */}
+             <v-tree id="tree5" initopen="(path,val)=> path.length < 3" style="display: block; max-width: 450px; overflow: hidden;
          border-radius: 10px; margin: 20px auto;"></v-tree>
+     
+         </main>
      
          </div>
         <div class="t2">
@@ -217,7 +225,7 @@ function Tree() {
             }
             </script>
             `}
-            </v-code>         {demo('tree')}
+            </v-code>
             </div></>
 }
 
@@ -230,7 +238,7 @@ function Dialog() {
 
         <button is="veef" primary onclick="d1.open = true">
             <v-icon name="Menu"></v-icon>   Open dialog
-        </button> <hr/>
+        </button> {' '}
         <button is="veef" onclick="d2.open = true">
             <v-icon name="Edit"></v-icon> Open dialog with a form
         </button>
@@ -292,31 +300,17 @@ function Search() {
         <div style="margin: 50px auto; max-width: 500px; font-size: 1.2rem;">
             This <code>v-search</code> has 50 Queen songs that it autocompletes.
             You can type <strong>boehman</strong> and you'll still find <strong>Bohemian</strong>!
-        <v-search>{"\n"}
-               {"\n"}
-               {rawFile("template", "assets/queen", {"slot": "h"})}{"\n"}
-  
+        <v-search>
+            <Template template="queen" tagName="template" slot="h"></Template>
         </v-search>
         <br/><br/>
         You can customize the style and write your own filter and rendering logic.
         <v-search>
-        <template slot="style">
-                {`
-            .main-input::placeholder { color: #ccc; }
-            .input-wrapper { background: #333; }
-            .suggestion span { color: #333; }
-            `}
-                </template>
-            <input class="main-input" style="background: #333; font-size: 1.2rem; color: #fff; font-family: Inter;" type="text" slot="input" placeholder="sup"/>
+            <Template template="searchStyle" tagName="style"></Template>
+            <input class="main-input" type="text"
+            slot="input" placeholder="Enter something here..."/>
             <v-icon style="color:#FF6666" slot="icon" name="Heart"></v-icon>
-         
-                {rawTag('template', `
-                this.data = [];
-                this.addEventListener('input', (e) => {
-                    this.data = [this.value];
-                });
-                `, {slot: "h"})}
- 
+                <Template slot="h" template="customSearch" tagName="template" />
         </v-search>
         </div>
         </div>
@@ -325,7 +319,7 @@ function Search() {
                     return <div><strong>{x[0]}</strong> <code>{x[1]}</code><div>{x[2]}</div> </div>;
                 })}
             <v-code lang="html">
-                {"<v-search>\n" + demo('search', false, true) + "</v-search>"}
+                {env.render("queen")}
             </v-code>
             </div>
             </>
@@ -339,11 +333,11 @@ function Component(props: {name: string, C: FunctionComponent, info?: string, no
     }
     return <div id={props.name}><h2><b>{'<' + props.name + '>'}</b> <span style="color: #777; font-size: 1.3rem">{hinfo}</span></h2>
     <v-tabs via="style">
-    <button slot="tab" role="tab" data-target=":scope .blah .t1">
+    <button slot="tab" role="tab">
         <v-icon name="Bolt"></v-icon> Demo
     </button>
     {props.nocustom ? null : 
-    <button slot="tab"role="tab" data-target=":scope .blah .t2">
+    <button slot="tab"role="tab">
         <v-icon name="Code"></v-icon> Code & customization
     </button>}
 
@@ -378,8 +372,13 @@ function Icons() {
 
 function write(out: string) {
 let BASE = `
-${require('./assets/header')}
-${page()}
+
+<!DOCTYPE html>
+<html lang="en">
+${render(<Template tagName="head" template="head" />)}
+${env.render("full", {}).trim()}
+${render(<App />)}
+${env.render("footer", {})}
 </body>
 </html>
 ` 
@@ -387,14 +386,29 @@ ${page()}
     let idx = -1;
     BASE = BASE.replaceAll(/<v-code.*?<\/v-code>/gs, (x) => {
         origs.push(x);
-        return `$code-ref$`;
+        return `/*code-ref*/`;
     });
     
-    BASE = prettyPrint(BASE).replaceAll('$code-ref$', (_: any) => {
+    BASE = prettyPrint(BASE).replaceAll('/*code-ref*/', (_: any) => {
         idx++;
         return origs[idx]
-    }).replaceAll('$style-ref$', require('./assets/main'))
+    }).replaceAll('/*style-ref*/', require('./assets/main'))
+
+    BASE = BASE.replaceAll(/<style>(.*?)<\/style>/gs, (s: string, arg: string) => {
+        return `<style>${arg.replaceAll(/$\s*/gsm, "")}</style>`;
+    });
+    // return BASE;
     writeFileSync(out, BASE);
 }
 
 write("../index.html")
+
+type ArbitraryProp = {[key in keyof JSX.IntrinsicAttributes]: any} & {[key in "slot"]: any}
+function Template(props: {template: string, tagName: string, context?: object} & Partial<ArbitraryProp>) {
+    // let Tag = tag
+    const {template, tagName, context, ...rest} = props
+    let Tag = tagName;
+    const tpl = env.render(template, context || {})
+    return <Tag dangerouslySetInnerHTML={{__html: tpl }} {...rest}></Tag>
+}
+// console.log(env.render("script1", {}));

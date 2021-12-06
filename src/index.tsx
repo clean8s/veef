@@ -55,12 +55,12 @@ class SearchField extends Slottable {
   constructor() {
     super()
     this.root = this.attachShadow({ mode: 'open' }) as any as HTMLElement
+    this.render()
+    this.slotSetup(this.root, () => this.slotted());
   }
   handlers: Record<string, any> = {};
 
   connectedCallback() {
-    this.render()
-    this.slotSetup(this.root, () => this.slotted());
     (['onInput', 'onChange', 'onBlur', 'onFocus', 'onContextMenu', 'onSelect', 'onKeyUp', 'onKeyDown', 'onKeyPress'])
     .map(ev => {
       this.handlers[ev] = (e: Event) => this.handleNativeInput(e)
@@ -265,38 +265,16 @@ class SearchField extends Slottable {
       return inpSlot[0];
     }
     return i;
-    if(inpSlot.length === 0) {
-      return this.slotDefault("input");
-    }
-    return inpSlot[inpSlot.length - 1];
   }
 
   private render() {
-    // if (!this.root) return
-    // let handlers: Record<string, any> = {};
-
-    // (['onInput', 'onChange', 'onBlur', 'onFocus', 'onContextMenu', 'onSelect', 'onKeyUp', 'onKeyDown', 'onKeyPress'])
-    // .map(ev => {
-    //   // x.addEventListener(ev.substring(2).toLowerCase(), (e) => this.handleNativeInput(e))
-    //   handlers[ev] = (e: Event) => this.handleNativeInput(e)
-    // });
-
-    // this.slottedByTag("input", "input").map(x => {
-    //   if(x.hasAttribute("vf-setup"))  return;
-    //   Object.entries(handlers).map(([k, v]) => x.addEventListener(k.substring(2).toLowerCase(), v))
-    //   x.setAttribute('vf-setup', '1');
-    // })
-    // let def = <input type="text" {...handlers} id="default" slot="input"/>;
-    // if(this.slottedByTag("input", "input").length > 1) {
-    //   def = <></>;
-    // }
 
     const myCss = "input,::slotted(input) { " + genCss("main-input w-full rounded p-2 outline-none focus:ring-2 focus:sibling:ring-2") + "}"
-    renderWithCss(myCss)(
+    renderWithCss("")(
       <div class='flex flex-col relative input-wrapper-root'>
         <div class='flex input-wrapper imp'>
           <slot name='input'>
-          <input type="text" id="default" slot="input"/>
+          <input type="text" id="default" part="defaultinput" placeholder="Search..." slot="input"/>
             </slot>
 
           <button class='cursor-pointer w-auto flex rounded-r justify-end items-center text-blue-500 p-2 hover:text-blue-400 right-button'>
@@ -376,6 +354,12 @@ function loadComponents() {
   customElements.define('v-code', Code);
   customElements.define('v-tabs', Tabs);
 
+  customElements.define('v-controls', class extends HTMLElement {
+    constructor() {
+      super()
+    }
+  });
+
   customElements.define('v-scope', class extends HTMLElement {
     constructor() {
       super()
@@ -403,6 +387,22 @@ class VeefElement {
   static h = html;
 }
 window.VeefElement = VeefElement;
+
+class Veef {
+  static html(fn: any) {
+    fn(html)
+  }
+  static render(node: any, domElement: HTMLElement) {
+    preactRender(node, domElement)
+  }
+  static renderDom(node: any) {
+    const emptyEl = document.createElement("div");
+    preactRender(node, emptyEl)
+    return Array.from(emptyEl.childNodes)
+  }
+}
+
+window.Veef = Veef;
 
 export {Tree, SearchField, Dialog, Table, Alert, Code, Tabs, VeefElement};
 

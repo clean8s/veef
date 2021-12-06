@@ -53,8 +53,8 @@ export class Dialog extends TmSlot {
     render(
       <div onClick={click} class='inset-0 fixed bg-[rgba(0,0,0,0.5)] z-50'>
         <div
-          id='v-popup'
-          class='relative shadow-lg rounded-lg p-4 bg-white dark:bg-gray-800 w-[min(500px,40vw)] min-w-[300px] mt-20 mx-auto justify-center'
+          id='v-popup' part="popupMain"
+          class='relative shadow-lg rounded-lg p-4 dark:bg-gray-800 w-[min(500px,40vw)] min-w-[300px] mt-20 mx-auto justify-center'
         >
           <div class='absolute top-[-20px] right-[-20px]'>
             <v-icon class='cursor-pointer w-6 h-6 text-white' name='Close' onClick={() => this.open = false}></v-icon>

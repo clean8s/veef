@@ -25,10 +25,10 @@ customElements.define(
             {Object.keys(IconLibrary).map(x => {
               let maybeLine = null;
               
-              if(x === 'Youtube' || x === 'Close' || x == 'Github') maybeLine = <div style="flex-basis: 100%; height:10px; border-bottom: 1px solid #bcbcbc;" />
+              if(x === 'Youtube' || x === 'Close' || x == 'Github') maybeLine = <div class="separator" />
               return <>{maybeLine}<div style='margin: 15px 15px;text-align: center'>
                 <v-icon name={x} style='width: 40px; height: 40px' />
-                <div style='font-weight: 500; color: #333'>{x}</div>
+                <div class="allIconsLabel">{x}</div>
               </div></>
             })}
           </div>,

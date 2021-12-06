@@ -18,10 +18,10 @@ export class Tabs extends Slottable {
     render() {
       renderWithCss(tabStyle)(
         <>
-        <div id="" class="flex p-2 px-[1px] pb-0 space-x-1 border-b-1 border-[#ccc] bg-[#fff] rounded-t-xl" role="tablist" aria-orientation="horizontal">
+        <div part="tabwrap" id="#tabwrap" class="flex p-2 px-[1px] pb-0 space-x-1 border-b-1 border-[#ccc] rounded-t-xl" role="tablist" aria-orientation="horizontal">
           <slot name="tab"></slot>
               </div>
-              <div class="mx-[1px] p-2 border-1 border-[#ccc] rounded-b">
+              <div part="around" class="mx-[1px] p-2 border-1 rounded-b">
               <slot name=""></slot>
               </div>
         </>,
@@ -66,11 +66,6 @@ export class Tabs extends Slottable {
     tabPosition(tab: HTMLElement) {
       return this.slottedAny("tab").findIndex(x => x.isEqualNode(tab));
     }
-    // findTarget (tab: HTMLElement) {
-    //   const trg = x.getAttribute("data-target");
-    //   return trg != null ? 
-    //     this.parentElement?.querySelector(trg) as HTMLElement : null;
-    // }
     activeContentIdx = -1;
   
     tabTargetToggle (tab: HTMLElement) {

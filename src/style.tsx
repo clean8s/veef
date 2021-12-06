@@ -21,72 +21,40 @@ export function genCss(classes: string) {
     return null
   }).filter(x => x != null).join("\n")
 }
-window.genCss = genCss;
 
 const renderChain: typeof preactRender = (x, y) => {
   preactRender(<>
   {x}
   <slot name="h"></slot>
   <slot name="style"></slot>
-  <style id="_global_v_style"></style>
   </>, y);
   const thisBind = (y as ShadowRoot).host;
   const hSlot = y.querySelector(`slot[name="h"]`) as HTMLSlotElement;
-  const styleSlot = y.querySelector('slot[name="style"]') as HTMLSlotElement;
   const styleEl = y.querySelector("#_global_v_style") as HTMLStyleElement;
 
-  styleSlot.addEventListener('slotchange', (e) => {
-    const S = styleSlot.assignedElements().filter(x => x.tagName.toLowerCase() === 'template')
-      .map(x => (x as HTMLTemplateElement).content.textContent).join("\n");
-      styleEl.textContent = S;
-  })
   hSlot.addEventListener('slotchange', (e) => {
-    const slotEls = hSlot.assignedElements();
+    const slotEls = hSlot.assignedNodes();
     slotEls.map(x => {
-      console.log(x, x.content)
-        if(x.tagName.toLowerCase() === 'template') {
-          // if(x.content.textContent == null || x.content.textContent.trim() == '') {
-          // new MutationObserver((e) => {
-          //   e.map(x => {
-          //     if(x.target instanceof HTMLScriptElement) {
-          //       fnCallSetup(thisBind, '(() => {' + x.target.textContent.trim() + '})')
-          //     }
-          //   })
-          // }).observe(x.content, {childList: true, subtree: true, characterData: true});
-          // }
-          // if(x.hasAttribute("v-loaded")) return;
+      if(!(x instanceof HTMLTemplateElement)) return;
+      // if(x.tagName.toLowerCase() !== 'template') return;
+      
+      if(x.content.textContent == null || x.content.textContent.trim().length == 0){
+        const mut = new MutationObserver((e) => {
+          const M = e.find(x => Array.from(x.addedNodes).find(x => x instanceof HTMLScriptElement));
+          if(M) {
+            fnCallSetup(thisBind, '(() => {' + x.content.textContent + '})')
+            mut.disconnect();
+          }
+        });
+        mut.observe(x.content, {attributes: true, characterDataOldValue: true, characterData: true, childList: true, subtree: true});
+      } else {
           const newInstance = x.content.cloneNode(true) as HTMLElement;
-          if(newInstance.textContent != null) {
-            // console.log(newInstance.textContent);
+          if(newInstance.textContent != null && newInstance.textContent.trim().length > 0) {
             fnCallSetup(thisBind, '(() => {' + newInstance.textContent.trim() + '})')
-            // Array.from(newInstance.children).filter(x => x.tagName.toLowerCase() === 'script').map(x => {
-            //   if(x.textContent === null) return;
-            //   fnCallSetup(thisBind, '(() => {' + x.textContent.trim() + '})')
-            // })
-            // x.setAttribute("v-loaded", "1")
           }
         
-        } else {
-          
         }
     })
-    // if(hSlot.hasAttribute('data-vf-load') && slotEls.length > 0) return;
-    // slotEls.map(x => {
-    //   if(x instanceof HTMLTemplateElement) return;
-    //   let source = ""
-    //   // console.log(x, x instanceof HTMLTemplateElement)
-    //   if(x.textContent === null) {
-    //     source = ""
-    //   } else {
-    //     source = x.textContent
-    //   }
-    //   if(source.trim().length === 0) {
-    //     console.error("Cannot parse your code at ", hSlot.getRootNode().host)
-    //     source = "()=>0"
-    //   }
-    //   fnCallSetup(thisBind, source.trim())
-    // });
-    // hSlot.setAttribute('data-vf-load', "1");
   })
 }
 
@@ -114,24 +82,6 @@ if(supportsStyles()) {
   document.head.append(styleEl);
 }
 
-/**Renders a component together with a stylesheet.
- * TODO: Use the Stylesheet API to prevent duplication. 
- */
-export const render: typeof preactRender = (x, y) => {
-  if(supportsStyles()) {
-    //@ts-ignore
-    (y as ShadowRoot).adoptedStyleSheets = adoptedSheets
-    renderChain(x, y);
-    return
-  }
-  renderChain(
-    <>
-      <style>{objCss}</style>
-      {x}
-    </>,
-    y,
-  )
-}
 
 export const renderWithCss: ((css: string) => typeof preactRender) = (cssStr: string) => (x, y) => {
   if(supportsStyles()) {
@@ -152,4 +102,24 @@ export const renderWithCss: ((css: string) => typeof preactRender) = (cssStr: st
     </>,
     y,
   )
+}
+
+/**Renders a component together with a stylesheet.
+ * TODO: Use the Stylesheet API to prevent duplication. 
+ */
+ export const render: typeof preactRender = (x, y) => {
+  // if(supportsStyles()) {
+  //   //@ts-ignore
+  //   (y as ShadowRoot).adoptedStyleSheets = adoptedSheets
+  //   renderChain(x, y);
+  //   return
+  // }
+  // renderChain(
+  //   <>
+  //     <style>{objCss}</style>
+  //     {x}
+  //   </>,
+  //   y,
+  // )
+  renderWithCss("")(x, y)
 }

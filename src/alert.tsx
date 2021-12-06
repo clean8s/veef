@@ -13,7 +13,7 @@ export class Alert extends TmSlot {
   connectedCallback() {
     this.render()
     if(this.hasAttribute('toast') && !this.alreadyToast) {
-      this.toast()
+      this.putToast()
     }
   }
 
@@ -49,7 +49,7 @@ export class Alert extends TmSlot {
     // })
   }
 
-  toast() {
+  putToast() {
     this.alreadyToast = true;
     // this.removeAttribute('toast')
     // const M = this.cloneNode(true);
@@ -59,10 +59,22 @@ export class Alert extends TmSlot {
     this.style.zIndex = '9999';
     this.style.left = '200px';
     this.classList.add("toast-before")
+    let duration = this._durationAttr;
+    // const already = window.slotQueue.find(x => x.isEqualNode(this))
+    
     this.root.querySelector("#alert").classList.add('toast');
     requestAnimationFrame(() => {
       this.classList.remove("toast-before")
     })
+    setTimeout(() => {
+      if(duration != this._durationAttr) return;
+      this.classList.add("toast-before");
+    }, duration);
+    setTimeout(() => {
+      if(duration != this._durationAttr) return;
+      window.slotQueue = window.slotQueue.filter(x => !x.isEqualNode(this))
+      this.remove()
+    }, duration + 200);
     //@ts-ignore
     let sq = window.slotQueue = ("slotQueue" in window ? [...window.slotQueue, this ] : [this]) as HTMLElement[];
     let top = 80;
@@ -76,14 +88,21 @@ export class Alert extends TmSlot {
   alreadyToast = false;
   toastTarget = null;
 
+  _durationAttr = 1500;
   attributeChangedCallback(key: string, _: any, newVal: string) {
+    key = key.toLowerCase().trim()
+    if(key === 'duration' && !isNaN(parseInt(newVal))) {
+      this._durationAttr = parseInt(newVal)
+      this.alreadyToast = false;
+      this.putToast()
+    }
     if(key === 'toast' && !this.alreadyToast) {
-      this.toast()
+      this.putToast()
     }
     this.render()
   }
 
   static get observedAttributes() {
-    return ['info', 'warning', 'success', 'error', 'toast']
+    return ['info', 'warning', 'success', 'error', 'toast', 'duration']
   }
 }
