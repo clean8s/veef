@@ -16,6 +16,7 @@ export class Tabs extends Slottable {
       this.addEventListener('click', (e) => {
         const tgt = e.target as HTMLElement;
         const btn = tgt.slot == 'tab' ? tgt : tgt.closest('*[name="tab"]') as HTMLElement;
+        console.log(btn)
         // console.log(slot, tgt);
         if(btn) {
           if(1) {
@@ -83,14 +84,10 @@ export class Tabs extends Slottable {
 
     hadFirst = false;
   
-  
-    tabPosition(tab: HTMLElement) {
-      return this.slottedAny("tab").findIndex(x => x.isEqualNode(tab));
-    }
     activeContentIdx = -1;
   
     tabTargetToggle (tab: HTMLElement) {
-        const thisIdx = this.slottedAny("tab").findIndex(x => x.isEqualNode(tab));
+        const thisIdx = this.slottedAny("tab").findIndex(x => x == (tab));
         if(thisIdx === -1 )
         return;
         const els = this.slottedAny("");

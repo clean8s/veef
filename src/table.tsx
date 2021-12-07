@@ -53,7 +53,7 @@ export class Table extends Slottable {
     const sl = this.shadowRoot.querySelector("slot");
     const parentPos = (c: HTMLElement): number => {
       //@ts-ignore
-      return ([...c.parentElement.children] as HTMLElement[]).findIndex(x => x.isEqualNode(c))
+      return ([...c.parentElement.children] as HTMLElement[]).findIndex(x => x == (c))
     }
 
     type El = HTMLElement

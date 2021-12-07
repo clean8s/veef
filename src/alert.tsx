@@ -65,9 +65,6 @@ export class Alert extends Slottable {
     this.classList.add("toast-before")
 
     let duration = this._durationAttr;
-    if(typeof window.slotQueue != 'undefined') {
-    window.slotQueue = window.slotQueue.filter(x => !x.isEqualNode(this))
-    }
     
     this.root.querySelector("#alert").classList.add('toast');
     requestAnimationFrame(() => {
@@ -79,19 +76,30 @@ export class Alert extends Slottable {
     }, duration);
     setTimeout(() => {
       if(duration != this._durationAttr) return;
-      this.globalQueue = this.globalQueue.filter(x => !x.isEqualNode(this))
+      this.globalQueue = this.globalQueue.filter(x => x != this)
       this.remove()
-    }, duration + 200);
+    }, duration + 150);
     //@ts-ignore
-    let top = 25;
-    top += this.globalQueue.reduce((acc, x: HTMLElement) => acc + x.getBoundingClientRect().height + 25, 0);
+    // let top = 5;
+    const getHeight = (x: HTMLElement) => {
+      // return x.offsetTop;
+      const rect = x.getBoundingClientRect();
+      return rect.bottom - rect.top;
+    }
 
-    this.style.bottom = top + 'px';
+    if(this.globalQueue.length > 0) {
+      const lastEl = this.globalQueue[this.globalQueue.length - 1] as Alert;
+      this.toastBottom = lastEl.toastBottom + getHeight(lastEl) + this.stackPadding;
+    }
+    // this.toastBottom = top;
+    this.style.bottom = this.toastBottom + 'px';
     this.globalQueue.push(this);
   }
 
   alreadyToast = false;
   toastTarget = null;
+  toastBottom = 0;
+  stackPadding = 10;
 
   _durationAttr = 1500;
   attributeChangedCallback(key: string, _: any, newVal: string) {

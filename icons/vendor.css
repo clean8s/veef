@@ -29,7 +29,7 @@ v-alert {
 	transition: opacity 0.3s ease-in-out;
 }
 v-alert.toast-before {
-	opacity: 0;
+	opacity: 0.1;
 }
 v-table .vf-checkbox {
 	width: 50px;

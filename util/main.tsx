@@ -442,9 +442,6 @@ function Search() {
                 {params.map(x => {
                     return <div><strong>{x[0]}</strong> <code>{x[1]}</code><div>{x[2]}</div> </div>;
                 })}
-            <v-code lang="html">
-                {env.render("queen")}
-            </v-code>
             </div>
             </>
 }
