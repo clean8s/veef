@@ -267,7 +267,7 @@ class SearchField extends Slottable {
 
   private render() {
 
-    const myCss = "input,::slotted(input) { " + genCss("main-input w-full rounded p-2 outline-none focus:ring-2 focus:sibling:ring-2") + "}"
+    // const myCss = "input,::slotted(input) { " + genCss("main-input w-full rounded p-2 outline-none focus:ring-2 focus:sibling:ring-2") + "}"
     renderWithCss("")(
       <div class='flex flex-col relative input-wrapper-root'>
         <div part="input-wrapper" class='flex input-wrapper imp'>

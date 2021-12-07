@@ -29,12 +29,12 @@ export class Tabs extends Slottable {
     }
 
     onSlot() {
+      this.slottedAny("").filter(x => !x.hasAttribute("data-veef-active")).map(x => x.style.display = 'none')
       if(!this.hadFirst) {
         const content = this.slottedAny("");
         const tabs = this.slottedAny("tab");
         if(content.length > 0 && tabs.length > 0) {
           this.tabTargetToggle(tabs[0])
-          this.hadFirst = true;
         }
         this.render()
       }
@@ -100,10 +100,14 @@ export class Tabs extends Slottable {
         this.activeContentIdx = thisIdx;
         if(typeof tgt == 'undefined') return;
         this.slottedAny("tab").map(x => x.classList.remove('active'))
-        this.slottedAny("").map(x => x.style.display = 'none')
+        this.slottedAny("").map(x => {
+          x.style.display = 'none';
+          x.removeAttribute("data-veef-active");
+        })
         
         tab.classList.toggle("active", true)
         this.hadFirst = true;
+        tgt.setAttribute("data-veef-active", "true");
         tgt.style.display = 'block'
     }
   
