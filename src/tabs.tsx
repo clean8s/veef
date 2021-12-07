@@ -7,21 +7,22 @@ export class Tabs extends Slottable {
     root: HTMLElement
     constructor() {
       super()
-      this.root = this.attachShadow({ mode: 'open' }) as any as HTMLElement
-    }
-  
-    connectedCallback() {
+      this.root = this.attachShadow({ mode: 'open' }) as any as HTMLElement;
       this.render()
       this.slotSetup(this.root, () => this.onSlot())
       this.addEventListener('click', (e) => {
         const tgt = e.target as HTMLElement;
-        const btn = tgt.slot == 'tab' ? tgt : tgt.closest('*[name="tab"]') as HTMLElement;
+        const btn = tgt.slot == 'tab' ? tgt : tgt.closest('*[slot="tab"]') as HTMLElement;
         if(btn) {
           if(typeof btn != 'undefined') {
             this.tabTargetToggle(btn as HTMLElement)
           }
         }
       })
+    }
+  
+    connectedCallback() {
+
     }
 
     onSlot() {
@@ -32,7 +33,7 @@ export class Tabs extends Slottable {
         if(content.length > 0 && tabs.length > 0) {
           this.tabTargetToggle(tabs[0])
         }
-        this.render()
+        // this.render()
       }
 
     }
@@ -82,7 +83,7 @@ export class Tabs extends Slottable {
     activeContentIdx = -1;
   
     tabTargetToggle (tab: HTMLElement) {
-        const thisIdx = this.slottedAny("tab").findIndex(x => x == (tab));
+        const thisIdx = this.slottedAny("tab").findIndex(x => x === (tab));
         if(thisIdx === -1 )
         return;
         const els = this.slottedAny("");

@@ -7,7 +7,7 @@
 
 * The content remains readable without JavaScript!
 * No build process, npm or transpiling needed.
-* They work extremely well with non-SPA frameworks like Django, Rails, Laravel
+* Works well with non-SPA frameworks like Django, Rails, Laravel
 
 # 💡 Docs & demos: [clean8s.com/veef/](https://clean8s.com/veef/)
 
