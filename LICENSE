@@ -1,24 +1,3 @@
-<p align="center">
-<b>veef: Reusable UI controls based on the Web Components API and preact.</b>
-</p>
-<p align="center">
-<img src="https://clean8s.com/veef/og.png" height="150">
-</p>
-
-* The content remains readable without JavaScript!
-* No build process, npm or transpiling needed.
-* They work extremely well with non-SPA frameworks like Django, Rails, Laravel
-
-# 💡 Docs & demos: [clean8s.com/veef/](https://clean8s.com/veef/)
-
-# Setup
-```html
-<script src="https://unpkg.com/veef"></script>
-```
-
-## License
-
-```
 The MIT License (MIT)
 
 Copyright (c) 2021-present clean8s.com
@@ -40,4 +19,3 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
-```

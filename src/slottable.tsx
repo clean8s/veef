@@ -127,7 +127,6 @@ export class Slottable extends HTMLElement {
        const names = Object.getOwnPropertyNames(props);
        const prop = names.find(x => x.toLowerCase() === key);
        
-    console.log(prop)
        if(!prop) {
          return
        }

@@ -16,14 +16,9 @@ export class Tabs extends Slottable {
       this.addEventListener('click', (e) => {
         const tgt = e.target as HTMLElement;
         const btn = tgt.slot == 'tab' ? tgt : tgt.closest('*[name="tab"]') as HTMLElement;
-        console.log(btn)
-        // console.log(slot, tgt);
         if(btn) {
-          if(1) {
-            // const btn = e.composedPath().find(x => x instanceof HTMLElement && x.slot == 'tab');
-            if(typeof btn != 'undefined') {
-              this.tabTargetToggle(btn as HTMLElement)
-            }
+          if(typeof btn != 'undefined') {
+            this.tabTargetToggle(btn as HTMLElement)
           }
         }
       })

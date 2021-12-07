@@ -9,9 +9,6 @@
     <meta property="og:image" content="https://clean8s.com/veef/og.png" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="https://fonts.googleapis.com/css2?family=Fira+Code&amp;family=Inter:wght@200;400;500;600&amp;display=swap" rel="stylesheet">
-    <script>
-        let exports = {};
-    </script>
     <script src="./dist/index.js?v5"></script>
     <title>veef: Web Components + preact UI kit</title>
     <style>
@@ -37,9 +34,9 @@ main>v-code[lang="html"]:before{ content: "SOURCE"; font-weight: 500; color: #ff
 main>div:before,.demo:before { content: "DEMO"; font-weight: 500; color: #fff; background:#FB5012; border-radius: 20px; padding: 3px 10px;}
 h2>code{ color: #996699;  } h2>code:before{content:"<";}h2>code:after{content:">";}
 nav { color: #888; position: fixed; top: 0px; bottom: 0; width: var(--sidebar); box-shadow: 0px 0px 10px rgba(0,0,0,0.2); left: 0px; padding: 20px; z-index: 40; background: #fff; } nav>a{display: block; color: #FB5012; font-weight: 500; padding: 5px 0; }
-header .ptr { display: none; float: right; } sup { font-size: 0.8rem; }
+header .ptr { display: none; float: right; } nav .ptr { display: none; } sup { font-size: 0.8rem; }
 .ptr { cursor: pointer; }
-@media screen and (max-width: 600px) { body{--sidebar:0; } nav{ width: 80vw; display: block;} .N nav { display: none; } header .ptr { display: inline-block; } main { flex-direction: column; max-height: none; } main>* { width: 100%; flex-basis: 100%; } }
+@media screen and (max-width: 600px) { nav .ptr { display: block; } body{--sidebar:0; } nav{ width: 80vw; display: block;} .N nav { display: none; } header .ptr { display: inline-block; } main { flex-direction: column; max-height: none; } main>* { width: 100%; flex-basis: 100%; } }
 code { background: #282c34; padding: 3px 5px; color: #fff; border-radius: 5px;
     font-family: Consolas, Monaco, "Andale Mono", "Ubuntu Mono", monospace;
 } .text-center { text-align: center; } .pad { padding: var(--y, 0) var(--x, 0); } .x-1 { --x: 10px; } .x-2 { --x: 20px; } .y-1 { --y: 10px; } .y-2 { --y: 20px; } 
@@ -120,15 +117,19 @@ body[data-theme="dark"] input.my-input {
             </h3>
                 <v-grid cols="3" class="pros">
                 <div><v-icon name="Html5"></v-icon> The content remains readable without JavaScript!</div>
-                <div><v-icon name="Cube"></v-icon> No build process, npm or transpiling needed. </div>
+                <div><v-icon name="Cube"></v-icon> No build process, npm or transpiling needed. 60KB compressed. </div>
                 <div>
                     <v-icon name="Star"></v-icon>
-                    They work extremely well with non-SPA frameworks like Django, Rails, Laravel</div>
+                    Works well with non-SPA frameworks like Django, Rails, Laravel</div>
                 </v-grid>
                 </v-grid>
-                <div style="font-weight: 500; text-align: center; font-size: 1.1rem; margin: 20px 0;">
+                <div style="font-weight: 500; text-align: center; font-size: 1.3rem; margin: 20px 0;">
                 To install, just include <code>&lt;script src="https://unpkg.com/veef"&gt;&lt;/script&gt;</code> <br/>
-                To support non-JavaScript browsers, use the Style polyfill.
+                <br/>
+                
+                <span style="font-size: 0.85rem"><span style="background: var(--color); color: #fff; padding: 2px 4px;">SOON:</span>
+                CSS polyfill for non-Javascript browsers, dark mode & screen reader improvements.
+                </span>
                 </div>
         </div>
     </div>
@@ -163,8 +164,9 @@ this.itemToString = (item) => {
 <script>
                 this.data = [];
                 this.addEventListener('input', (e) => {
-                    this.data = ["A" + this.value];
+                    this.data = [this.value, "fake item 1", "fake item 2"];
                 });
+                this.itemRender = (i) => i.indexOf("fake") != -1 ? h`<i>${i}</i>` : h`You typed: <strong>${i}</strong>`;
 </script>
 {% endtpl %}
 
@@ -240,7 +242,7 @@ By default, all elements in a page have an empty string <code>""</code> as the d
 </ul>
 
 <h3>preact syntax</h3>
-Some of the slots in veef accept preact code. <a href="https://preactjs.com/">preact</a> is a 3KB library based around the React API
+<strong>Some of the slots in veef</strong> accept preact code. <a href="https://preactjs.com/">preact</a> is a 3KB library based around the React API
 for building user interfaces.
 <br/><br/>
 It can be used in webpages without transpiling using <strong>HTM template literals</strong> as

@@ -35,7 +35,6 @@ export class Table extends Slottable {
 
   _autosort = 0;
   set autosort(i: number) {
-    console.log(i)
     this._autosort = i;
     this.everSorted = false;
     this.render()

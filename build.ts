@@ -28,6 +28,7 @@ async function generateStyles(html: string) {
 }
 
 import { sync as globSync } from 'glob'
+import { readFileSync, writeFileSync } from 'fs'
 
 type ResolveArgs = {importer: string, path: string};
 
@@ -114,27 +115,19 @@ if(watchFlag) {
 
 let outputDir = 'dist';
 
-const out = process.argv.findIndex(x => x === '--out');
-const htmlTransform =  (html: string) => {
-  const nonce = Math.random().toString(36).substr(2, 7);
-  return html
-  .replace("<!--script-->", `<script src="https://unpkg.com/veef?${nonce}"></script>`)
-  .replace(`<script src="dist/index.mjs"></script>`, "")
-}
-
-// if(out > 0) {
-//   const maybeOut = process.argv[out + 1];
-//   if(maybeOut) {
-//     outputDir = maybeOut;
-//     const htmlCopy = fs.readFileSync('index.html', 'utf8');
-//     fs.writeFileSync(path.join(outputDir, 'index.html'), htmlTransform(htmlCopy));
-//   }
-// }
 const isDebug = 'watch' in opts;
 
 (['esm', 'cjs']).map(fmt => {
   const outf = path.join(outputDir, 'index.' + (fmt == 'esm' ? 'mjs' : 'js'));
   console.log(`Building ${fmt} into ${outf}...`)
+  if(fmt === 'cjs') {
+    opts.banner = {
+        js: '(function(exports){'
+      };
+    opts.footer = {
+      js: '})({});'
+    }
+  }
   require('esbuild').build({
     entryPoints: ['src/index.tsx'],
     bundle: true,

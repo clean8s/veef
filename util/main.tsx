@@ -275,10 +275,17 @@ function Utilities() {
 function App() {
     return <>
     <nav>
-        <p>Contents <v-icon onclick="document.body.classList.toggle('N')" class="ptr" name="Close"></v-icon></p>
-        {["search", "dialog", "table", "tree", "icon", "tabs", "alert"].map(x => <a href={`#v-${x}`}><v-icon name="Bolt" />v-{x}</a>)}
-        <a href="#license">License</a>
-        <button onclick={`document.body.setAttribute('data-theme', 'dark')`}>dark mode</button>
+        <v-grid>
+            <div>Contents</div>
+                <div style="text-align: right;">
+                    <v-icon class="ptr" onclick="document.body.classList.toggle('N')" style="color: #000; width: 20px; height: 20px;" name="Close"></v-icon>
+                </div>
+                </v-grid>
+        {["search", "dialog", "table", "tree", "icon", "tabs", "alert", "utilities"].map(x => <a href={
+            (x == 'utilities' ? '#' : '#v-') + `${x}`}><v-icon name="Bolt" />{x == 'utilities' ? "" : "v-"}{x}</a>)}
+        <a href="#guide-web-components"><v-icon name="Help" /> Guide to Web Components</a>
+        <a>Licensed under MIT.</a>
+        
     </nav>
 
     <Component name="v-search" C={Search} info="smart fuzzy autocomplete"/>
@@ -287,8 +294,8 @@ function App() {
     <Component name="v-tree" C={Tree} info="collapse/expand nested JSON" />
     <Component name="v-icon" C={Icons} info="A small collection of icons" />
     <Component name="v-tabs" C={Tabs} info="clickable tabs"/>
-    <Component name="v-alert" C={Alert} />
-    <Component name="utilities" C={Utilities} nocustom />
+    <Component name="v-alert" C={Alert} info="info boxes and toasts" />
+    <Component name="utilities" C={Utilities} info="tiny components" nocustom />
     </>
 }
 
@@ -445,6 +452,8 @@ function Search() {
             You can type <strong>bo<span style="color: red">eh</span>man</strong> and you'll
             still find <strong>Bohemian Rhapsody</strong>!
         <v-search>
+        <input type="text"
+            slot="input" placeholder="Enter something here..."/>
             <Template template="queen" tagName="template" slot="h"></Template>
         </v-search>
         <br/><br/>
