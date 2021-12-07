@@ -235,6 +235,23 @@ function Alert() {
     </>;
 }
 
+function Utilities() {
+    return <Docs>
+        v-code can syntax highlight code snippets for javascript, css and html:
+        {code('<v-code lang="javascript">snippet here</v-code>')}
+        v-controls provides nice input controls, buttons and labels:
+        {code(`
+        <form>
+            <v-controls cols="2">
+                <div><label>Some name</label> <input> </div>
+                <div><label>Some date</label> <input type="date" /> </div>
+                <div v-span="2"><label>Something else</label> <input> </div>
+                <div v-span="2"> <button>My btn</button> </div>
+            </v-controls>
+        </form>
+        `, 'html')}
+    </Docs>
+}
 function App() {
     return <>
     <nav>
@@ -251,6 +268,7 @@ function App() {
     <Component name="v-icon" C={Icons} info="A small collection of icons" />
     <Component name="v-tabs" C={Tabs} nocustom/>
     <Component name="v-alert" C={Alert} />
+    <Component name="utilities" C={Utilities} nocustom />
     </>
 }
 

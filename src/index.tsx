@@ -167,7 +167,7 @@ class SearchField extends Slottable {
       this.hideSuggestions = false
       if(window.innerWidth < 600) {
       this.input.scrollIntoView();
-      window.scrollBy(0, -100);
+      window.scrollBy(0, -140);
       }
       this.render()
     }
