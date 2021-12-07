@@ -12,7 +12,33 @@ export class Tabs extends Slottable {
   
     connectedCallback() {
       this.render()
-      this.slotSetup(this.root, () => this.render())
+      this.slotSetup(this.root, () => this.onSlot())
+      this.addEventListener('click', (e) => {
+        const tgt = e.target as HTMLElement;
+        const btn = tgt.slot == 'tab' ? tgt : tgt.closest('*[name="tab"]') as HTMLElement;
+        // console.log(slot, tgt);
+        if(btn) {
+          if(1) {
+            // const btn = e.composedPath().find(x => x instanceof HTMLElement && x.slot == 'tab');
+            if(typeof btn != 'undefined') {
+              this.tabTargetToggle(btn as HTMLElement)
+            }
+          }
+        }
+      })
+    }
+
+    onSlot() {
+      if(!this.hadFirst) {
+        const content = this.slottedAny("");
+        const tabs = this.slottedAny("tab");
+        if(content.length > 0 && tabs.length > 0) {
+          this.tabTargetToggle(tabs[0])
+          this.hadFirst = true;
+        }
+        this.render()
+      }
+
     }
   
     render() {
@@ -27,36 +53,31 @@ export class Tabs extends Slottable {
         </>,
         this.root,
       )
-      this.lastListeners.forEach((v, k) => {
-          k.removeEventListener('click', v as any)
-      })
-      this.lastListeners = new Map();
+      // this.lastListeners.forEach((v, k) => {
+      //     k.removeEventListener('click', v as any)
+      // })
+      // this.lastListeners = new Map();
 
-      this.slottedAny("tab").map((all) => {
-        const me = all;
-        let lstn = (me: HTMLElement) => {
-          return () => {
-              this.tabTargetToggle(me)
-          }
-          };
-          // this.lastListeners.set(all, lstn);
-          all.addEventListener('click', lstn(me));
-      })
+      // this.slottedAny("tab").map((all) => {
+      //   const me = all;
+      //   let lstn = (me: HTMLElement) => {
+      //     return () => {
+      //       console.log("tab switch")
+      //         this.tabTargetToggle(me)
+      //     }
+      //     };
+      //     // this.lastListeners.set(all, lstn);
+      //     all.addEventListener('click', lstn(me));
+      // })
 
-      if(!this.hadFirst) {
-        const content = this.slottedAny("");
-        const tabs = this.slottedAny("tab");
-        if(content.length > 0 && tabs.length > 0) {
-          this.tabTargetToggle(tabs[0])
-          this.hadFirst = true;
-        }
-        }
-
-        this.slottedAny("").map((x, idx) => {
-          if(idx != this.activeContentIdx) {
-            x.style.display = 'none'
-          }
-        })
+      // if(!this.hadFirst) {
+      //   const content = this.slottedAny("");
+      //   const tabs = this.slottedAny("tab");
+      //   if(content.length > 0 && tabs.length > 0) {
+      //     this.tabTargetToggle(tabs[0])
+      //     this.hadFirst = true;
+      //   }
+      //   }
     }
     lastListeners: Map<HTMLElement, Function> = new Map();
 
