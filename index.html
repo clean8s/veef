@@ -470,12 +470,14 @@
         </v-tabs>
       </div>
       <div id="v-tabs">
-        <h2><b>&lt;v-tabs&gt;</b> <span style="color: #777; font-size: 1.3rem"></span></h2>
+        <h2><b>&lt;v-tabs&gt;</b> <span style="color: #777; font-size: 1.3rem">clickable tabs</span></h2>
         <v-tabs via="style"><button slot="tab" role="tab">
             <v-icon name="Bolt"></v-icon> Demo
+          </button><button slot="tab" role="tab">
+            <v-icon name="Code"></v-icon> Code &amp; customization
           </button>
-          <div class="t1"><button is="veef" id="createTab">Create tab</button>
-            <v-tabs id="tabDemo"><button slot="tab" data-target=".t1">Some really really long label</button><button slot="tab" data-target=".t2">And another really really long one</button><button slot="tab" data-target=".t3">A short one</button>
+          <div class="t1" style="padding: 15px"><button is="v-primary" id="createTab">Create tab</button>
+            <v-tabs id="tabDemo"><button slot="tab" style="filter: hue-rotate(90deg)" data-target=".t1">Some really really long label</button><button slot="tab" style="filter: hue-rotate(90deg)" data-target=".t2">And another really really long one</button><button slot="tab" style="filter: hue-rotate(90deg)" data-target=".t3">A short one</button>
               <div class="t1">
                 <h1 class="text-center">Tab 1</h1>
                 <p class="text-center">You got here because the tab <code>target</code> selector matches the content.</p>
@@ -512,6 +514,16 @@
                 })
               </script>
             </div>
+          </div>
+          <div>
+            <div style="padding: 20px; font-size: 1.1em">Using <code>v-tab</code> is just a matter of adding buttons and content in the right order as children:<v-code lang="html" style="margin: 20px 0;">
+                &lt;v-tabs&gt;
+                    &lt;button slot=&quot;tab&quot;&gt;Tab 1&lt;/button&gt;
+                    &lt;button slot=&quot;tab&quot;&gt;Tab 2&lt;/button&gt;
+                    &lt;div&gt;Content for Tab 1&lt;/div&gt;
+                    &lt;div&gt;Content for Tab 2&lt;/div&gt;
+                &lt;/v-tabs&gt;
+                </v-code>The tab buttons must have <code>slot=&quot;tab&quot;</code> while the content doesn't need a slot attribute, but the length of the slotted buttons and the content elements (which don't have to be <code>div</code>) must match.<br /><br />You can style your buttons inside your page's CSS.<br /><br />TODO: Explain the styling of the shadow parts.</div>
           </div>
         </v-tabs>
       </div>

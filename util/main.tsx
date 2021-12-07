@@ -146,12 +146,12 @@ tbl.addEventListener('rowselect', (e) => {
 
 function Tabs() {
     return <>
-        <div class="t1">
-            <button is="veef" id="createTab">Create tab</button>
+        <div class="t1" style="padding: 15px">
+            <button is="v-primary" id="createTab">Create tab</button>
         <v-tabs id="tabDemo">
-            <button slot="tab" data-target=".t1">Some really really long label</button>
-            <button slot="tab" data-target=".t2">And another really really long one</button>
-            <button slot="tab" data-target=".t3">A short one</button>
+            <button slot="tab" style="filter: hue-rotate(90deg)" data-target=".t1">Some really really long label</button>
+            <button slot="tab" style="filter: hue-rotate(90deg)" data-target=".t2">And another really really long one</button>
+            <button slot="tab" style="filter: hue-rotate(90deg)" data-target=".t3">A short one</button>
                 <div class="t1">    
                     <h1 class="text-center">Tab 1</h1>
                     <p class="text-center">
@@ -173,6 +173,26 @@ function Tabs() {
                 </div>
         </v-tabs>
         <Template tagName="div" template="tabDemo" />
+        </div>
+        <div>
+            <Docs>
+                Using <code>v-tab</code> is just a matter of adding buttons and content in the right order as children:
+                {code(`
+                <v-tabs>
+                    <button slot="tab">Tab 1</button>
+                    <button slot="tab">Tab 2</button>
+                    <div>Content for Tab 1</div>
+                    <div>Content for Tab 2</div>
+                </v-tabs>
+                `)}
+                The tab buttons must have <code>slot="tab"</code> while the content doesn't need a slot attribute,
+                but the length of the slotted buttons and the content elements (which don't have to be <code>div</code>) must match.
+                <br/><br/>
+                You can style your buttons inside your page's CSS.
+                <br/><br/>
+                TODO: Explain the styling of the shadow parts.
+
+            </Docs>
         </div>
     </>
 }
@@ -266,7 +286,7 @@ function App() {
     <Component name="v-table" C={Table} info="enhances any <code>table</code>, <code>tr</code>, <code>td</code>" rawinfo={true} />
     <Component name="v-tree" C={Tree} info="collapse/expand nested JSON" />
     <Component name="v-icon" C={Icons} info="A small collection of icons" />
-    <Component name="v-tabs" C={Tabs} nocustom/>
+    <Component name="v-tabs" C={Tabs} info="clickable tabs"/>
     <Component name="v-alert" C={Alert} />
     <Component name="utilities" C={Utilities} nocustom />
     </>
