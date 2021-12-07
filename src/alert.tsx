@@ -76,7 +76,7 @@ export class Alert extends Slottable {
     }, duration);
     setTimeout(() => {
       if(duration != this._durationAttr) return;
-      this.globalQueue = this.globalQueue.filter(x => x != this)
+      this.globalQueue = this.globalQueue.filter(x => x != this);
       this.remove()
     }, duration + 150);
     //@ts-ignore

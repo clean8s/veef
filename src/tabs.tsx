@@ -83,7 +83,7 @@ export class Tabs extends Slottable {
     activeContentIdx = -1;
   
     tabTargetToggle (tab: HTMLElement) {
-        const thisIdx = this.slottedAny("tab").findIndex(x => x === (tab));
+        const thisIdx = this.slottedAny("tab").findIndex(x => x === tab);
         if(thisIdx === -1 )
         return;
         const els = this.slottedAny("");

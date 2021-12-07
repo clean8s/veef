@@ -60,6 +60,7 @@ const renderChain: typeof preactRender = (x, y) => {
 export const objCss = windiCss + vendorCss
 
 function supportsStyles() {
+  // return false;
   return 'adoptedStyleSheets' in Document.prototype &&
   'replace' in CSSStyleSheet.prototype;
 }

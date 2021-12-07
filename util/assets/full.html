@@ -1,4 +1,5 @@
 {% tpl "head" %}
+<meta charset="utf-8">
 <link rel="shortcut icon" href="data:image/gif;base64,R0lGODlhEAAQAJEAAAAAAP////tQEgAAACH/C05FVFNDQVBFMi4wAwEAAAAh+QQEAAAAACwAAAAAEAAQAAACK5QFGct8mEBrL6oZqpVT735sERWKV1aanGcu7OemcGy0ZD07MgfiZw/hYQoAOw==" />
     <meta name="og:image" content="summary" />
     <meta name="twitter:card" content="summary" />
@@ -9,7 +10,10 @@
     <meta property="og:image" content="https://clean8s.com/veef/og.png" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="https://fonts.googleapis.com/css2?family=Fira+Code&amp;family=Inter:wght@200;400;500;600&amp;display=swap" rel="stylesheet">
-    <script src="./dist/index.js?v5"></script>
+    <script>
+        let exports = {};
+    </script>
+    <script src="dist/index.js?v5"></script>
     <title>veef: Web Components + preact UI kit</title>
     <style>
 /* You DON'T need this. This is the documentation CSS, not the components! */
@@ -126,7 +130,6 @@ body[data-theme="dark"] input.my-input {
                     <v-icon name="Star"></v-icon>
                     Works well with non-SPA frameworks like Django, Rails, Laravel</div>
                 </v-grid>
-                </v-grid>
                 <div style="font-weight: 500; text-align: center; font-size: 1.3rem; margin: 20px 0;">
                 To install, just include <code>&lt;script src="https://unpkg.com/veef"&gt;&lt;/script&gt;</code> <br/>
                 <br/>
@@ -144,7 +147,7 @@ body[data-theme="dark"] input.my-input {
         Learn the Web Components<br/>and preact syntax</a></div>
     <div v-span="2" style="text-align: center;"><a href="#v-search" style="width: 100%; min-width: 100px; max-width: 150px;" is="v-primary">
         <v-icon name="RightChevron"></v-icon>
-        See the demos</button></a></div>
+        See the demos</a></div>
     <div v-span="2" style="text-align: center;"><a target="_blank" is="v-primary" href="https://github.com/clean8s/veef">
         <v-icon name="Github"></v-icon>
         GitHub repo</a></div>

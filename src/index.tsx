@@ -337,7 +337,6 @@ class SearchField extends Slottable {
   }
 }
 
-
 import {Tree, Dialog, Table, Alert, Code, Tabs, VeefElement, loadComponents} from "./veef";
 loadComponents({'v-search': SearchField})
 export {Tree, SearchField, Dialog, Table, Alert, Code, Tabs, VeefElement};

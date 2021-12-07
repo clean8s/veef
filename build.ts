@@ -120,14 +120,14 @@ const isDebug = 'watch' in opts;
 (['esm', 'cjs']).map(fmt => {
   const outf = path.join(outputDir, 'index.' + (fmt == 'esm' ? 'mjs' : 'js'));
   console.log(`Building ${fmt} into ${outf}...`)
-  if(fmt === 'cjs') {
-    opts.banner = {
-        js: '(function(exports){'
-      };
-    opts.footer = {
-      js: '})({});'
-    }
-  }
+  // if(fmt === 'cjs') {
+  //   opts.banner = {
+  //       js: '(function(exports){'
+  //     };
+  //   opts.footer = {
+  //     js: '})({});'
+  //   }
+  // }
   require('esbuild').build({
     entryPoints: ['src/index.tsx'],
     bundle: true,
