@@ -10,8 +10,10 @@
   "license": "MIT",
   "dependencies": {
     "@material-design-icons/svg": "^0.10.4",
+    "@types/clean-css": "^4.2.5",
     "@types/glob": "^7.2.0",
     "@windicss/plugin-utils": "^1.5.3",
+    "clean-css": "^5.2.2",
     "glob": "^7.2.0",
     "htm": "^3.1.0",
     "preact": "^10.6.1",

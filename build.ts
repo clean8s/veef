@@ -24,7 +24,8 @@ async function generateStyles(html: string) {
   const MINIFY = false
   const styles = interpretedSheet.extend(preflightSheet, APPEND).build(MINIFY)
   
-  return styles
+  //@ts-ignore
+  return (new (require("clean-css"))({})).minify(styles);
 }
 
 import { sync as globSync } from 'glob'
