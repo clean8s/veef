@@ -23,11 +23,16 @@ padding-bottom: 0.625rem;
 color: rgba(70, 70, 70, var(--tw-text-opacity));
 width: 100%;
 text-align: center;
-transition: 0.1s all;
+transition: border 0.2s, background-color 0.2s, color 0.2s, box-shadow 0.2s;
 cursor: pointer;
 border: 0px solid transparent;
 border-bottom-width: 2px;
 user-select: none;
+}
+::slotted(button:hover) {
+    background: #fff;
+    color: var(--color);
+    box-shadow: rgba(0, 0, 0, 0.1) 0px 10px 15px -3px, rgba(0, 0, 0, 0.05) 0px 4px 6px -2px, #00000010 0 -10px 15px -3px;
 }
 ::slotted(button:last-of-type) {
     margin-right: 0;

@@ -61,7 +61,7 @@ function Table() {
         Try custom sort by clicking <strong style="color: var(--color)">on the third column.</strong>.
     </article>
 
-    <v-table selectable id="tbl" autosort="0"  class="t1">
+    <v-table selectable sortable id="tbl" class="t1">
     <table>
     <tr>
         <td>Some num</td>
@@ -71,25 +71,25 @@ function Table() {
     <tr>
         <td>3</td>
         <td>20/01/2020</td>
-        <td data-sort="2"><v-icon style="color: #FF3333" name="CircleFilled"></v-icon></td>
+        <td data-sort="3"><v-icon style="color: #FF3333" name="CircleFilled"></v-icon></td>
         
     </tr>
     <tr>
         <td>5367</td>
         <td>10/01/2020</td>
-        <td data-sort="1"><v-icon style="color: #CC0000" name="CircleFilled"></v-icon></td>
+        <td data-sort="4"><v-icon style="color: #CC0000" name="CircleFilled"></v-icon></td>
         
     </tr>
     <tr>
         <td>251</td>
         <td>5/05/2022</td>
-        <td data-sort="3"><v-icon style="color: #FF9999" name="CircleFilled"></v-icon></td>
+        <td data-sort="2"><v-icon style="color: #FF9999" name="CircleFilled"></v-icon></td>
         
     </tr>
     <tr>
         <td>938141</td>
         <td>01/01/1999</td>
-        <td data-sort="4"><v-icon style="color: #f5dada" name="CircleFilled"></v-icon></td>
+        <td data-sort="1"><v-icon style="color: #f5dada" name="CircleFilled"></v-icon></td>
         
         </tr>
     </table>
@@ -200,7 +200,7 @@ function Tabs() {
 function Alert() {
     return <>
     <div>
-    <v-grid cols="2">
+    <v-grid columns="2">
         <div><div class='t1'></div>
     <v-alert error="">This is an error message. You can put <strong>whatever HTML</strong> you like.</v-alert>
     <v-alert warning="">This is a warning. It means something, I think ...</v-alert>
@@ -209,14 +209,14 @@ function Alert() {
     </div>
     <div>
         <form id="toasty">
-        <v-controls cols="2">
+        <v-controls columns="2">
             <div>
                 <label>Message</label>
             <input type="text" id="toastMsg" value="Some message" />
             </div>
             <div>
                 <label>Duration</label>
-                <v-grid cols="3" center>
+                <v-grid columns="3" center>
                 <input v-span="2" style="max-width: 120px" type="range" id="toastRange" min="300" max="10000" step="100" value="1500" ></input>
                 <span v-span="1" id="toastRangeLabel" />
                 </v-grid>
@@ -262,7 +262,7 @@ function Utilities() {
         v-controls provides nice input controls, buttons and labels:
         {code(`
         <form>
-            <v-controls cols="2">
+            <v-controls columns="2">
                 <div><label>Some name</label> <input> </div>
                 <div><label>Some date</label> <input type="date" /> </div>
                 <div v-span="2"><label>Something else</label> <input> </div>
@@ -277,7 +277,7 @@ function App() {
     <nav>
         <v-grid>
             <div>Contents</div>
-                <div style="text-align: right;">
+                <div style="max-width: 50px;">
                     <v-icon class="ptr" onclick="document.body.classList.toggle('N')" style="color: #000; width: 20px; height: 20px;" name="Close"></v-icon>
                 </div>
                 </v-grid>
@@ -350,10 +350,10 @@ function Dialog() {
     <article class="pad x-2 text-center">
     Try closing it with <code>Esc</code>, the close icon or the area behind the modal.<br/><br/>
 
-        <button is="veef" primary onclick="d1.open = true">
+        <button is="v-primary"onclick="d1.open = true">
             <v-icon name="Menu"></v-icon>   Open dialog
         </button> {' '}
-        <button is="veef" onclick="d2.open = true">
+        <button is="v-secondary" onclick="d2.open = true">
             <v-icon name="Edit"></v-icon> Open dialog with a form
         </button>
 
@@ -373,14 +373,14 @@ function Dialog() {
          </div>
          
          <section slot="actions">
-             <button is="veef" primary onclick="d1.open = false">Okay</button>
-             <button is="veef" onclick="d1.open = false">Meh</button>
+             <button is="v-primary" onclick="d1.open = false">Okay</button>
+             <button is="v-secondary" onclick="d1.open = false">Meh</button>
          </section>
      </v-dialog>
      <v-dialog id="d2">
          <div>
          <form>
-             <v-controls cols="2">
+             <v-controls columns="2">
              <div>
              <label>Some name</label>
              <input />
@@ -397,7 +397,7 @@ function Dialog() {
              </form>
          </div>
          <section slot="actions">
-             <button is="veef" onclick="d2.open = false">Okay</button>
+             <button is="v-primary" onclick="d2.open = false">Okay</button>
          </section>
      </v-dialog>
      </div>
@@ -454,7 +454,7 @@ function Search() {
         <v-search>
         <input type="text"
             slot="input" placeholder="Enter something here..."/>
-            <Template template="queen" tagName="template" slot="h"></Template>
+            <Template template="queen" tagName="template" slot="script"></Template>
         </v-search>
         <br/><br/>
         You can customize the style and write your own filter and rendering logic.
@@ -463,7 +463,7 @@ function Search() {
             <input class="main-input" type="text"
             slot="input" placeholder="Enter something here..."/>
             <v-icon style="color:#FF6666" slot="icon" name="Heart"></v-icon>
-                <Template slot="h" template="customSearch" tagName="template" />
+                <Template slot="script" template="customSearch" tagName="template" />
         </v-search>
         </div>
         </div>
@@ -472,7 +472,7 @@ function Search() {
             {code(`
             <v-search>
               <input type="text" slot="input" placeholder="Enter something here..." />
-              <template slot="h">
+              <template slot="script">
                 <script>
                     this.data = ["a", "b", "c"];
                 </script>

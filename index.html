@@ -15,28 +15,40 @@
     let exports = {};
   </script>
   <script src="dist/index.js?v5"></script>
-  <title>veef: Web Components + preact UI kit</title>
-  <style>/* You DON'T need this. This is the documentation CSS, not the components! */body {line-height: 1.5;tab-size: 4;font-size: 16px;color: rgb(31, 41, 55);font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;margin: 0;padding: 0;}* {box-sizing: border-box;-webkit-font-smoothing: antialiased;text-rendering: optimizelegibility;}p {margin: 10px 0 30px;}aside {background: #eaeaea;padding: 20px;}a {text-decoration: none;color: #3366CC;}code {font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;}header {background: hsl(var(--color-hs) 50%);position: sticky;inset: 0;bottom: auto;color: #fff;z-index: 40;padding: 20px 0;font-weight: 600;letter-spacing: 0.05em;}body {--sidebar: 200px;padding-left: var(--sidebar);}.container {width: 90%;max-width: 1000px;margin: 0 auto;}.showcase {clear: both;}.showcase>div,#icon-notice {scroll-margin-top: 5em;}.guide h2 {scroll-margin-top: 3em;}.showcase h2 {font-size: 2em;margin: 60px 0 15px;font-weight: 400;}.showcase h3 {border-left: 4px solid #555;padding-left: 0.5em;font-size: 1.1em;font-weight: 500;margin: 5px 0 15px;color: #555;}main {display: flex;width: 100%;}main>* {width: 50%;flex-basis: 50%;padding: 5px;}v-code {margin: 0 10px;}main>v-code[lang="html"]:before {content: "SOURCE";font-weight: 500;color: #fff;background: #333333;border-radius: 20px;padding: 3px 10px;}main>div:before,.demo:before {content: "DEMO";font-weight: 500;color: #fff;background: #FB5012;border-radius: 20px;padding: 3px 10px;}h2>code {color: #996699;}h2>code:before {content: "<";}h2>code:after {content: ">";}nav {color: #888;position: fixed;top: 0px;bottom: 0;width: var(--sidebar);box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);left: 0px;padding: 20px;z-index: 40;background: #fff;}nav>a {display: block;color: #FB5012;font-weight: 500;padding: 5px 0;}header .ptr {display: none;float: right;}nav .ptr {display: none;}sup {font-size: 0.8rem;}.ptr {cursor: pointer;}@media screen and (max-width: 600px) {nav .ptr {display: block;}body {--sidebar: 0;}nav {width: 80vw;display: block;}.N nav {display: none;}header .ptr {display: inline-block;}main {flex-direction: column;max-height: none;}main>* {width: 100%;flex-basis: 100%;}}code {background: #282c34;padding: 3px 5px;color: #fff;border-radius: 5px;font-family: Consolas, Monaco, "Andale Mono", "Ubuntu Mono", monospace;}.text-center {text-align: center;}.pad {padding: var(--y, 0) var(--x, 0);}.x-1 {--x: 10px;}.x-2 {--x: 20px;}.y-1 {--y: 10px;}.y-2 {--y: 20px;}body {--color: rgb(var(--color-rgb));--color-bg: 255, 255, 255;--color-b: #55555535;--color-f: #913a0080;--color-hs: 24 100%;--color-rgb: 255, 102, 0;}article {max-width: 500px;margin: 0 auto;}v-tabs>button {font-size: 1rem;font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;}.guide {line-height: 1.7;}.guide>ul {line-height: 2.2;}.pros>div {display: flex;font-size: 1.2rem;align-items: center;min-width: 300px;margin: 1rem 0;}.pros>div v-icon {flex-shrink: 0;font-size: 1.5rem;margin-right: 0.5rem;color: var(--color);}body[data-theme="dark"] header {background: hsl(var(--color-hs) 40%);}body[data-theme="dark"] {color: #fff;background: #333;--color: #FF3333;--color-hs: 0 81%;}body[data-theme="dark"] v-tabs::part(around) {border-color: #444;}body[data-theme="dark"] v-tabs::part(tabwrap) {border-color: #444;}.hero {background: #eee;padding: 2rem 0;}body[data-theme="dark"] .hero {background: #444;}body[data-theme="dark"] v-tabs>button {background: #444;color: #fff;}body[data-theme="dark"] v-table td {background: #444;border-color: #333;}body[data-theme="dark"] v-table tr {color: #fff;}body[data-theme="dark"] nav {background: #282828;}body[data-theme="dark"] v-icon .allIconsLabel {color: #ccc;}body[data-theme="dark"] v-icon .separator {border-color: #5a5a5a;}body[data-theme="dark"] input.my-input {background: #999;}</style>
+  <title>veef: 60KB Web Components </title>
+  <style>/* You DON'T need this. This is the documentation CSS, not the components! */body {line-height: 1.5;tab-size: 4;font-size: 16px;color: rgb(31, 41, 55);font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;margin: 0;padding: 0;}* {box-sizing: border-box;-webkit-font-smoothing: antialiased;text-rendering: optimizelegibility;}p {margin: 10px 0 30px;}aside {background: #eaeaea;padding: 20px;}a {text-decoration: none;color: #3366CC;}code {font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;}header {background: hsl(var(--color-hs) 50%);position: sticky;inset: 0;bottom: auto;color: #fff;z-index: 40;padding: 5px 0;font-weight: 600;letter-spacing: 0.05em;}body {--sidebar: 200px;padding-left: var(--sidebar);}.container {width: 90%;max-width: 1000px;margin: 0 auto;}.showcase {clear: both;}.showcase>div,#icon-notice {scroll-margin-top: 5em;}.guide h2 {scroll-margin-top: 3em;}.showcase h2 {font-size: 2em;margin: 60px 0 15px;font-weight: 400;}.showcase h3 {border-left: 4px solid #555;padding-left: 0.5em;font-size: 1.1em;font-weight: 500;margin: 5px 0 15px;color: #555;}main {display: flex;width: 100%;}main>* {width: 50%;flex-basis: 50%;padding: 5px;}v-code {margin: 0 10px;}main>v-code[lang="html"]:before {content: "SOURCE";font-weight: 500;color: #fff;background: #333333;border-radius: 20px;padding: 3px 10px;}main>div:before,.demo:before {content: "DEMO";font-weight: 500;color: #fff;background: #FB5012;border-radius: 20px;padding: 3px 10px;}h2>code {color: #996699;}h2>code:before {content: "<";}h2>code:after {content: ">";}nav {color: #888;position: fixed;top: 0px;bottom: 0;width: var(--sidebar);box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);left: 0px;padding: 20px;z-index: 40;background: #fff;}nav>a {display: block;color: #FB5012;font-weight: 500;padding: 5px 0;}header .ptr {display: none;float: right;}nav .ptr {display: none;}sup {font-size: 0.8rem;}.ptr {cursor: pointer;}@media screen and (max-width: 600px) {.nonmobile {display: none;}nav .ptr {display: block;}body {--sidebar: 0;}nav {width: 80vw;display: block;}.N nav {display: none;}header .ptr {display: inline-block;}main {flex-direction: column;max-height: none;}main>* {width: 100%;flex-basis: 100%;}}code {background: #282c34;padding: 3px 5px;color: #fff;border-radius: 5px;font-family: Consolas, Monaco, "Andale Mono", "Ubuntu Mono", monospace;}.text-center {text-align: center;}.pad {padding: var(--y, 0) var(--x, 0);}.x-1 {--x: 10px;}.x-2 {--x: 20px;}.y-1 {--y: 10px;}.y-2 {--y: 20px;}body {--color: rgb(var(--color-rgb));--color-bg: 255, 255, 255;--color-border-b: #55555535;--color-f: #913a0080;--color-hs: 24 100%;--color-rgb: 255, 102, 0;}article {max-width: 500px;margin: 0 auto;}v-tabs>button {font-size: 1rem;font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;}.guide {line-height: 1.7;}.guide>ul {line-height: 2.2;}.pros>div {display: flex;font-size: 1.2rem;align-items: center;min-width: 300px;margin: 1rem 0;}.pros>div v-icon {flex-shrink: 0;font-size: 1.5rem;margin-right: 0.5rem;color: var(--color);}body[data-theme="dark"] header {background: hsl(var(--color-hs) 40%);}body[data-theme="dark"] {color: #fff;background: #333;--color: #FF3333;--color-hs: 0 81%;}body[data-theme="dark"] v-tabs::part(around) {border-color: #444;}body[data-theme="dark"] v-tabs::part(tabwrap) {border-color: #444;}.hero {background: #eee;padding: 2rem 0;}body[data-theme="dark"] .hero {background: #444;}body[data-theme="dark"] v-tabs>button {background: #444;color: #fff;}body[data-theme="dark"] v-table td {background: #444;border-color: #333;}body[data-theme="dark"] v-table tr {color: #fff;}body[data-theme="dark"] nav {background: #282828;}body[data-theme="dark"] v-icon .allIconsLabel {color: #ccc;}body[data-theme="dark"] v-icon .separator {border-color: #5a5a5a;}body[data-theme="dark"] input.my-input {background: #999;}</style>
 
   <body class="N">
     <header>
       <div class="container">
-        <v-icon name="Bolt"></v-icon> veef Web Component kit
-        <span style="background:#fff; color: var(--color); padding: 0 3px;">alpha</span>
-        <v-icon class="ptr" onclick="document.body.classList.toggle('N')" name="Menu"></v-icon>
-      </div>
+        <v-grid>
+          <div>
+            <v-icon name="Bolt"></v-icon> veef components
+            <span style="background:#fff; color: var(--color); padding: 0 3px;">alpha</span>
+          </div>
+
+          <div style="text-align: center;">
+            <a target="_blank" style="--color: #000;" is="v-secondary" href="https://github.com/clean8s/veef">
+              <v-icon name="Github"></v-icon>
+              <span class="nonmobile">GitHub</span>
+            </a>
+            <v-icon style="cursor: pointer;" onclick="document.body.classList.toggle('N')" name="Menu"></v-icon>
+          </div>
+        </v-grid>
     </header>
     <div style="" class="hero">
       <div class="container">
-        <h3 style="margin: 0 0 35px; font-size: 3rem; letter-spacing: -0.025em; line-height: 1; border: 0;">Reusable UI controls based on the <strong>Web Components</strong> API
+        <h3 style="margin: 0 0 35px; font-size: 3rem; letter-spacing: -0.025em; line-height: 1; border: 0;">
+
+          60KB component library based on the <strong>Web Components</strong> API
           and <span style="color: #6633CC">preact</span>.
         </h3>
-        <v-grid cols="3" class="pros">
+        <v-grid columns="3" class="pros">
           <div>
             <v-icon name="Html5"></v-icon> The content remains readable without JavaScript!
           </div>
           <div>
-            <v-icon name="Cube"></v-icon> No build process, npm or transpiling needed. 60KB compressed.
+            <v-icon name="Cube"></v-icon> No build process, npm or transpiling needed.
           </div>
           <div>
             <v-icon name="Star"></v-icon>
@@ -54,24 +66,20 @@
       </div>
     </div>
     <div class="container showcase pad y-2">
-      <v-grid cols="6" style="max-width: 600px; margin: 0 auto;">
-        <div v-span="2" style="text-align: center;"><a href="#guide-web-components" style="width: 100%; max-width: 250px;" is="v-primary">
+      <v-grid columns="2" style="max-width: 600px; margin: 0 auto;">
+        <div style="text-align: center;"><a href="#guide-web-components" is="v-secondary" style="width: 100%;">
             <v-icon name="RightChevron"></v-icon>
             Learn the Web Components<br />and preact syntax
           </a></div>
-        <div v-span="2" style="text-align: center;"><a href="#v-search" style="width: 100%; min-width: 100px; max-width: 150px;" is="v-primary">
+        <div style="text-align: center;"><a href="#v-search" is="v-primary" style="width: 100%">
             <v-icon name="RightChevron"></v-icon>
             See the demos
-          </a></div>
-        <div v-span="2" style="text-align: center;"><a target="_blank" is="v-primary" href="https://github.com/clean8s/veef">
-            <v-icon name="Github"></v-icon>
-            GitHub repo
           </a></div>
       </v-grid>
       <nav>
         <v-grid>
           <div>Contents</div>
-          <div style="text-align: right;">
+          <div style="max-width: 50px;">
             <v-icon class="ptr" onclick="document.body.classList.toggle('N')" style="color: #000; width: 20px; height: 20px;" name="Close"></v-icon>
           </div>
         </v-grid><a href="#v-search">
@@ -102,7 +110,7 @@
             <v-icon name="Code"></v-icon> Code &amp; component docs
           </button>
           <div>
-            <div style="margin: 50px auto; max-width: 500px; font-size: 1.2rem;">This <code>v-search</code> has 50 Queen songs that it autocompletes. You can type <strong>bo<span style="color: red">eh</span>man</strong> and you'll still find <strong>Bohemian Rhapsody</strong>!<v-search><input type="text" slot="input" placeholder="Enter something here..." /><template slot="h">
+            <div style="margin: 50px auto; max-width: 500px; font-size: 1.2rem;">This <code>v-search</code> has 50 Queen songs that it autocompletes. You can type <strong>bo<span style="color: red">eh</span>man</strong> and you'll still find <strong>Bohemian Rhapsody</strong>!<v-search><input type="text" slot="input" placeholder="Enter something here..." /><template slot="script">
                   <script>
                     this.data = [{"name":"Bohemian Rhapsody (1975)","value":"song-1"},{"name":"Under Pressure (with David Bowie) (1981)","value":"song-2"},{"name":"Killer Queen (1974)","value":"song-3"},{"name":"Radio Ga Ga (1984)","value":"song-4"},{"name":"Seven Seas of Rhye (1974)","value":"song-5"},{"name":"Another One Bites the Dust (1980)","value":"song-6"},{"name":"Don’t Stop Me Now (1979)","value":"song-7"},{"name":"We Will Rock You (1977)","value":"song-8"},{"name":"You’re My Best Friend (1976)","value":"song-9"},{"name":"Somebody to Love (1976)","value":"song-10"},{"name":"We Are the Champions (1977)","value":"song-11"},{"name":"Love of My Life (live at Festhalle Frankfurt, 2 February 1979) (1979)","value":"song-12"},{"name":"Spread Your Wings (1978)","value":"song-13"},{"name":"I Want to Break Free (1984)","value":"song-14"},{"name":"Who Wants to Live Forever (1986)","value":"song-15"},{"name":"Tie Your Mother Down (1977)","value":"song-16"},{"name":"Crazy Little Thing Called Love (1979)","value":"song-17"},{"name":"These Are the Days of Our Lives (1991)","value":"song-18"},{"name":"Now I’m Here (1975)","value":"song-19"},{"name":"Bicycle Race (1978)","value":"song-20"},{"name":"Fat Bottomed Girls (1978)","value":"song-21"},{"name":"The Show Must Go On (1991)","value":"song-22"},{"name":"Keep Yourself Alive (1973)","value":"song-23"},{"name":"Too Much Love Will Kill You (1996)","value":"song-24"},{"name":"Good Old Fashioned Lover Boy (1977)","value":"song-25"},{"name":"One Vision (1985)","value":"song-26"},{"name":"Play the Game (1980)","value":"song-27"},{"name":"I Want It All (1989)","value":"song-28"},{"name":"A Kind of Magic (1986)","value":"song-29"},{"name":"Save Me (1980)","value":"song-30"},{"name":"Hammer to Fall (1984)","value":"song-31"},{"name":"You Don’t Fool Me (1996)","value":"song-32"},{"name":"Let Me Live (1996)","value":"song-33"},{"name":"Back Chat (1982)","value":"song-34"},{"name":"A Winter’s Tale (1995)","value":"song-35"},{"name":"Innuendo (1991)","value":"song-36"},{"name":"Flash (1980)","value":"song-37"},{"name":"I’m Going Slightly Mad (1991)","value":"song-38"},{"name":"Thank God It’s Christmas (1984)","value":"song-39"},{"name":"Las Palabras de Amor (the Words of Love) (1982)","value":"song-40"},{"name":"It’s a Hard Life (1984)","value":"song-41"},{"name":"Breakthru (1989)","value":"song-42"},{"name":"Friends Will Be Friends (1986)","value":"song-43"},{"name":"Heaven for Everyone (1995)","value":"song-44"},{"name":"No One But You (Only the Good Die Young) (1998)","value":"song-45"},{"name":"Headlong (1991)","value":"song-46"},{"name":"Body Language (1982)","value":"song-47"},{"name":"Scandal (1989)","value":"song-48"},{"name":"The Invisible Man (1989)","value":"song-49"},{"name":"The Miracle (1989)","value":"song-50"}];
                     this.searchKey = "name"
@@ -115,7 +123,7 @@
                   </script>
                 </template></v-search><br /><br />You can customize the style and write your own filter and rendering logic.<v-search class="dark-input">
                 <style>.dark-input input {background: #333;font-size: 1.2rem;color: #fff;font-family: Inter;}.dark-input input::placeholder {color: #aaa;}.input-wrapper {background: #333;}.suggestion span {color: #333;}.dark-input::part(right-button),.dark-input::part(input-wrapper) {background: #333;}</style><input class="main-input" type="text" slot="input" placeholder="Enter something here..." />
-                <v-icon style="color:#FF6666" slot="icon" name="Heart"></v-icon><template slot="h">
+                <v-icon style="color:#FF6666" slot="icon" name="Heart"></v-icon><template slot="script">
                   <script>
                     this.data = [];
                     this.addEventListener('input', (e) => {
@@ -131,7 +139,7 @@
             <div style="padding: 20px; font-size: 1.1em"><v-code lang="html" style="margin: 20px 0;">
             &lt;v-search&gt;
               &lt;input type=&quot;text&quot; slot=&quot;input&quot; placeholder=&quot;Enter something here...&quot; /&gt;
-              &lt;template slot=&quot;h&quot;&gt;
+              &lt;template slot=&quot;script&quot;&gt;
                 &lt;script&gt;
                     this.data = [&quot;a&quot;, &quot;b&quot;, &quot;c&quot;];
                 &lt;/script&gt;
@@ -158,9 +166,9 @@
             <v-icon name="Code"></v-icon> Code &amp; component docs
           </button>
           <div>
-            <article class="pad x-2 text-center">Try closing it with <code>Esc</code>, the close icon or the area behind the modal.<br /><br /><button is="veef" primary onclick="d1.open = true">
+            <article class="pad x-2 text-center">Try closing it with <code>Esc</code>, the close icon or the area behind the modal.<br /><br /><button is="v-primary" onclick="d1.open = true">
                 <v-icon name="Menu"></v-icon> Open dialog
-              </button> <button is="veef" onclick="d2.open = true">
+              </button> <button is="v-secondary" onclick="d2.open = true">
                 <v-icon name="Edit"></v-icon> Open dialog with a form
               </button></article>
             <v-dialog id="d1">
@@ -169,19 +177,19 @@
                 <h1>Some title</h1>
                 <h3>Arbitrary HTML. The border on the left happens because the host page has full control over the styling of the dialog (which happens to add a border) while the rest is controlled by veef.</h3>
               </div>
-              <section slot="actions"><button is="veef" primary onclick="d1.open = false">Okay</button><button is="veef" onclick="d1.open = false">Meh</button></section>
+              <section slot="actions"><button is="v-primary" onclick="d1.open = false">Okay</button><button is="v-secondary" onclick="d1.open = false">Meh</button></section>
             </v-dialog>
             <v-dialog id="d2">
               <div>
                 <form>
-                  <v-controls cols="2">
+                  <v-controls columns="2">
                     <div><label>Some name</label><input /></div>
                     <div><label>Some date</label><input type="date" /></div>
                     <div v-span="2"><label>Something else</label><input /></div>
                   </v-controls>
                 </form>
               </div>
-              <section slot="actions"><button is="veef" onclick="d2.open = false">Okay</button></section>
+              <section slot="actions"><button is="v-primary" onclick="d2.open = false">Okay</button></section>
             </v-dialog>
           </div>
           <div>
@@ -215,7 +223,7 @@
           </button>
           <div class="t1">
             <article class="text-center pad y-2">Try custom sort by clicking <strong style="color: var(--color)">on the third column.</strong>.</article>
-            <v-table selectable id="tbl" autosort="0" class="t1">
+            <v-table selectable sortable id="tbl" class="t1">
               <table>
                 <tr>
                   <td>Some num</td>
@@ -225,28 +233,28 @@
                 <tr>
                   <td>3</td>
                   <td>20/01/2020</td>
-                  <td data-sort="2">
+                  <td data-sort="3">
                     <v-icon style="color: #FF3333" name="CircleFilled"></v-icon>
                   </td>
                 </tr>
                 <tr>
                   <td>5367</td>
                   <td>10/01/2020</td>
-                  <td data-sort="1">
+                  <td data-sort="4">
                     <v-icon style="color: #CC0000" name="CircleFilled"></v-icon>
                   </td>
                 </tr>
                 <tr>
                   <td>251</td>
                   <td>5/05/2022</td>
-                  <td data-sort="3">
+                  <td data-sort="2">
                     <v-icon style="color: #FF9999" name="CircleFilled"></v-icon>
                   </td>
                 </tr>
                 <tr>
                   <td>938141</td>
                   <td>01/01/1999</td>
-                  <td data-sort="4">
+                  <td data-sort="1">
                     <v-icon style="color: #f5dada" name="CircleFilled"></v-icon>
                   </td>
                 </tr>
@@ -409,7 +417,7 @@
             <v-icon name="Code"></v-icon> Code &amp; component docs
           </button>
           <div>
-            <v-grid cols="2">
+            <v-grid columns="2">
               <div>
                 <div class="t1"></div>
                 <v-alert error>This is an error message. You can put <strong>whatever HTML</strong> you like.</v-alert>
@@ -419,10 +427,10 @@
               </div>
               <div>
                 <form id="toasty">
-                  <v-controls cols="2">
+                  <v-controls columns="2">
                     <div><label>Message</label><input type="text" id="toastMsg" value="Some message" /></div>
                     <div><label>Duration</label>
-                      <v-grid cols="3" center><input v-span="2" style="max-width: 120px" type="range" id="toastRange" min="300" max="10000" step="100" value="1500" /><span v-span="1" id="toastRangeLabel"></span></v-grid>
+                      <v-grid columns="3" center><input v-span="2" style="max-width: 120px" type="range" id="toastRange" min="300" max="10000" step="100" value="1500" /><span v-span="1" id="toastRangeLabel"></span></v-grid>
                     </div>
                     <div v-span="2"><button is="v-primary" type="submit" style="width: 100%">Create toast</button></div>
                   </v-controls>
@@ -446,7 +454,7 @@
           </button>
           <div style="padding: 20px; font-size: 1.1em">v-code can syntax highlight code snippets for javascript, css and html:<v-code lang="html" style="margin: 20px 0;">&lt;v-code lang=&quot;javascript&quot;&gt;snippet here&lt;/v-code&gt;</v-code>v-controls provides nice input controls, buttons and labels:<v-code lang="html" style="margin: 20px 0;">
         &lt;form&gt;
-            &lt;v-controls cols=&quot;2&quot;&gt;
+            &lt;v-controls columns=&quot;2&quot;&gt;
                 &lt;div&gt;&lt;label&gt;Some name&lt;/label&gt; &lt;input&gt; &lt;/div&gt;
                 &lt;div&gt;&lt;label&gt;Some date&lt;/label&gt; &lt;input type=&quot;date&quot; /&gt; &lt;/div&gt;
                 &lt;div v-span=&quot;2&quot;&gt;&lt;label&gt;Something else&lt;/label&gt; &lt;input&gt; &lt;/div&gt;
@@ -540,67 +548,7 @@ render(h`&lt;ul&gt;${content}&lt;/ul&gt;`, document.body);
           return false;
         }
 
-        tree3.data = {
-          "airports": [{
-              "name": "London",
-              "code": "LHR",
-              "country": "UK"
-            },
-            {
-              "name": "Paris",
-              "code": "CDG",
-              "country": "France"
-            },
-            {
-              "name": "New York",
-              "code": "JFK",
-              "country": "USA"
-            },
-            {
-              "name": "Tokyo",
-              "code": "HND",
-              "country": "Japan"
-            },
-            {
-              "name": "Sydney",
-              "code": "SYD",
-              "country": "Australia"
-            },
-            {
-              "name": "Dubai",
-              "code": "DXB",
-              "country": "UAE"
-            },
-            {
-              "name": "Rome",
-              "code": "FCO",
-              "country": "Italy"
-            }
-
-          ],
-          "weather": [{
-              "date": "2018-05-06",
-              "temperatureC": 1,
-              "summary": "Freezing",
-              "temperatureF": 33
-            },
-            {
-              "date": "2018-05-07",
-              "temperatureC": 14,
-              "summary": "Bracing",
-              "temperatureF": 57
-            },
-            {
-              "date": "2018-05-08",
-              "temperatureC": -13,
-              "summary": "Freezing",
-              "temperatureF": 9
-            }
-          ],
-          "status": 200,
-          "currentLocation": "London",
-          "language": "en-US"
-        };
+        tree3.data = JSON.parse('{"airports":[{"name":"London","code":"LHR","country":"UK"},{"name":"Paris","code":"CDG","country":"France"},{"name":"New York","code":"JFK","country":"USA"},{"name":"Tokyo","code":"HND","country":"Japan"},{"name":"Sydney","code":"SYD","country":"Australia"},{"name":"Dubai","code":"DXB","country":"UAE"},{"name":"Rome","code":"FCO","country":"Italy"}],"weather":[{"date":"2018-05-06","temperatureC":1,"summary":"Freezing","temperatureF":33},{"date":"2018-05-07","temperatureC":14,"summary":"Bracing","temperatureF":57},{"date":"2018-05-08","temperatureC":-13,"summary":"Freezing","temperatureF":9}],"status":200,"currentLocation":"London","language":"en-US"}');
         tree5.renderLabel = (handler) => {
           let h = VeefElement.h;
           if (handler.path.length === 1)

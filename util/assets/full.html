@@ -1,4 +1,5 @@
 {% tpl "head" %}
+
 <meta charset="utf-8">
 <link rel="shortcut icon" href="data:image/gif;base64,R0lGODlhEAAQAJEAAAAAAP////tQEgAAACH/C05FVFNDQVBFMi4wAwEAAAAh+QQEAAAAACwAAAAAEAAQAAACK5QFGct8mEBrL6oZqpVT735sERWKV1aanGcu7OemcGy0ZD07MgfiZw/hYQoAOw==" />
     <meta name="og:image" content="summary" />
@@ -14,7 +15,7 @@
         let exports = {};
     </script>
     <script src="dist/index.js?v5"></script>
-    <title>veef: Web Components + preact UI kit</title>
+    <title>veef: 60KB Web Components </title>
     <style>
 /* You DON'T need this. This is the documentation CSS, not the components! */
 body { line-height: 1.5; tab-size: 4; font-size: 16px; color: rgb(31, 41, 55);
@@ -22,7 +23,7 @@ body { line-height: 1.5; tab-size: 4; font-size: 16px; color: rgb(31, 41, 55);
     margin: 0; padding: 0; } * { box-sizing: border-box; -webkit-font-smoothing: antialiased; text-rendering: optimizelegibility; }
 p { margin: 10px 0 30px;} aside { background: #eaeaea; padding: 20px; } a { text-decoration: none; color: #3366CC;}
 code { font-family: ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace;}
-header { background: hsl(var(--color-hs) 50%); position: sticky; inset: 0; bottom: auto; color: #fff; z-index: 40; padding: 20px 0; font-weight: 600; letter-spacing: 0.05em;}
+header { background: hsl(var(--color-hs) 50%); position: sticky; inset: 0; bottom: auto; color: #fff; z-index: 40; padding: 5px 0; font-weight: 600; letter-spacing: 0.05em;}
 body {
     --sidebar: 200px;
     padding-left: var(--sidebar);
@@ -40,11 +41,18 @@ h2>code{ color: #996699;  } h2>code:before{content:"<";}h2>code:after{content:">
 nav { color: #888; position: fixed; top: 0px; bottom: 0; width: var(--sidebar); box-shadow: 0px 0px 10px rgba(0,0,0,0.2); left: 0px; padding: 20px; z-index: 40; background: #fff; } nav>a{display: block; color: #FB5012; font-weight: 500; padding: 5px 0; }
 header .ptr { display: none; float: right; } nav .ptr { display: none; } sup { font-size: 0.8rem; }
 .ptr { cursor: pointer; }
-@media screen and (max-width: 600px) { nav .ptr { display: block; } body{--sidebar:0; } nav{ width: 80vw; display: block;} .N nav { display: none; } header .ptr { display: inline-block; } main { flex-direction: column; max-height: none; } main>* { width: 100%; flex-basis: 100%; } }
+@media screen and (max-width: 600px) { .nonmobile { display: none; } nav .ptr { display: block; } body{--sidebar:0; } nav{ width: 80vw; display: block;} .N nav { display: none; } header .ptr { display: inline-block; } main { flex-direction: column; max-height: none; } main>* { width: 100%; flex-basis: 100%; } }
 code { background: #282c34; padding: 3px 5px; color: #fff; border-radius: 5px;
     font-family: Consolas, Monaco, "Andale Mono", "Ubuntu Mono", monospace;
 } .text-center { text-align: center; } .pad { padding: var(--y, 0) var(--x, 0); } .x-1 { --x: 10px; } .x-2 { --x: 20px; } .y-1 { --y: 10px; } .y-2 { --y: 20px; } 
-body { --color: rgb(var(--color-rgb));  --color-bg: 255,255,255; --color-b: #55555535; --color-f: #913a0080; --color-hs: 24 100%; --color-rgb: 255,102,0; }
+body {
+    --color: rgb(var(--color-rgb));
+    --color-bg: 255,255,255;
+    --color-border-b: #55555535;
+    --color-f: #913a0080;
+    --color-hs: 24 100%; 
+    --color-rgb: 255,102,0;
+}
 article { max-width: 500px; margin: 0 auto; }
 v-tabs > button {
     font-size: 1rem;
@@ -114,18 +122,31 @@ body[data-theme="dark"] input.my-input {
     </style>
     <body class="N">
         <header>
-        <div class="container"><v-icon name="Bolt"></v-icon> veef Web Component kit
+        <div class="container">
+            <v-grid>
+                <div>
+                <v-icon name="Bolt"></v-icon> veef components
             <span style="background:#fff; color: var(--color); padding: 0 3px;">alpha</span>
-        <v-icon class="ptr" onclick="document.body.classList.toggle('N')" name="Menu"></v-icon></div>
+            </div>
+
+            <div style="text-align: center;">
+                <a target="_blank" style="--color: #000;" is="v-secondary" href="https://github.com/clean8s/veef">
+                <v-icon name="Github"></v-icon>
+                <span class="nonmobile">GitHub</span></a>
+                <v-icon style="cursor: pointer;" onclick="document.body.classList.toggle('N')" name="Menu"></v-icon>
+            </div>
+            </v-grid>
         </header>
         <div style="" class="hero">
             <div class="container">
-        <h3 style="margin: 0 0 35px; font-size: 3rem; letter-spacing: -0.025em; line-height: 1; border: 0;">Reusable UI controls based on the <strong>Web Components</strong> API
+        <h3 style="margin: 0 0 35px; font-size: 3rem; letter-spacing: -0.025em; line-height: 1; border: 0;">
+            
+            60KB component library based on the <strong>Web Components</strong> API
             and <span style="color: #6633CC">preact</span>.
             </h3>
-                <v-grid cols="3" class="pros">
+                <v-grid columns="3" class="pros">
                 <div><v-icon name="Html5"></v-icon> The content remains readable without JavaScript!</div>
-                <div><v-icon name="Cube"></v-icon> No build process, npm or transpiling needed. 60KB compressed. </div>
+                <div><v-icon name="Cube"></v-icon> No build process, npm or transpiling needed. </div>
                 <div>
                     <v-icon name="Star"></v-icon>
                     Works well with non-SPA frameworks like Django, Rails, Laravel</div>
@@ -141,16 +162,13 @@ body[data-theme="dark"] input.my-input {
         </div>
     </div>
     <div class="container showcase pad y-2">
-    <v-grid cols="6" style="max-width: 600px; margin: 0 auto;">
-    <div v-span="2" style="text-align: center;"><a href="#guide-web-components" style="width: 100%; max-width: 250px;" is="v-primary">
+    <v-grid columns="2" style="max-width: 600px; margin: 0 auto;">
+    <div style="text-align: center;"><a href="#guide-web-components" is="v-secondary" style="width: 100%;">
         <v-icon name="RightChevron"></v-icon>
         Learn the Web Components<br/>and preact syntax</a></div>
-    <div v-span="2" style="text-align: center;"><a href="#v-search" style="width: 100%; min-width: 100px; max-width: 150px;" is="v-primary">
+    <div style="text-align: center;"><a href="#v-search" is="v-primary" style="width: 100%">
         <v-icon name="RightChevron"></v-icon>
         See the demos</a></div>
-    <div v-span="2" style="text-align: center;"><a target="_blank" is="v-primary" href="https://github.com/clean8s/veef">
-        <v-icon name="Github"></v-icon>
-        GitHub repo</a></div>
     </v-grid>
 {% endtpl %}
 
@@ -295,69 +313,7 @@ Notes about preact and HTM syntax:
     return false;
     }
     
-    tree3.data = {
-        "airports":[
-           {
-              "name":"London",
-              "code":"LHR",
-              "country":"UK"
-           },
-           {
-              "name":"Paris",
-              "code":"CDG",
-              "country":"France"
-           },
-             {
-                "name":"New York",
-                "code":"JFK",
-                "country":"USA"
-                },
-                {
-                "name":"Tokyo",
-                "code":"HND",
-                "country":"Japan"
-                },
-                {
-                "name":"Sydney",
-                "code":"SYD",
-                "country":"Australia"
-                },
-                {
-                "name":"Dubai",
-                "code":"DXB",
-                "country":"UAE"
-                },
-                {
-                "name":"Rome",
-                "code":"FCO",
-                "country":"Italy"
-                }
-    
-        ],
-        "weather":[
-           {
-              "date":"2018-05-06",
-              "temperatureC":1,
-              "summary":"Freezing",
-              "temperatureF":33
-           },
-           {
-              "date":"2018-05-07",
-              "temperatureC":14,
-              "summary":"Bracing",
-              "temperatureF":57
-           },
-           {
-              "date":"2018-05-08",
-              "temperatureC":-13,
-              "summary":"Freezing",
-              "temperatureF":9
-           }
-        ],
-        "status": 200,
-        "currentLocation": "London",
-        "language": "en-US"
-     };
+    tree3.data = JSON.parse('{"airports":[{"name":"London","code":"LHR","country":"UK"},{"name":"Paris","code":"CDG","country":"France"},{"name":"New York","code":"JFK","country":"USA"},{"name":"Tokyo","code":"HND","country":"Japan"},{"name":"Sydney","code":"SYD","country":"Australia"},{"name":"Dubai","code":"DXB","country":"UAE"},{"name":"Rome","code":"FCO","country":"Italy"}],"weather":[{"date":"2018-05-06","temperatureC":1,"summary":"Freezing","temperatureF":33},{"date":"2018-05-07","temperatureC":14,"summary":"Bracing","temperatureF":57},{"date":"2018-05-08","temperatureC":-13,"summary":"Freezing","temperatureF":9}],"status":200,"currentLocation":"London","language":"en-US"}');
     tree5.renderLabel = (handler) => {
         let h = VeefElement.h;
         if(handler.path.length === 1)

@@ -40,15 +40,9 @@ type ItemTransform = (items: Item[]) => Item[];
 type ItemRender = (item: Item, hl: any) => VNode;
 type ItemPick = CustomEvent<Item>;
 
-@Attrs(["q"], (attr) => {
-  console.log(attr)
-})
+@Attrs(["q"], ["itemToString", "itemTransform", "itemRender", "data", "searchKey", "placeholder"])
 class SearchField extends Slottable {
   private root: HTMLElement
-
-  get props() {
-    return ["_itemToString", "_itemTransform", "_itemRender", "_data", "_searchKey", "_placeholder"]
-  }
 
   constructor() {
     super()
@@ -257,7 +251,6 @@ class SearchField extends Slottable {
 
   public get input() {
     const inpSlot = this.slottedByTag("input", "input")
-    console.log(inpSlot)
     const i = inpSlot.find(x => x.id != "default");
     if(!i) {
       return inpSlot[0];

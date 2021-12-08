@@ -43,14 +43,14 @@ export function literalOrString(src: string) : string | boolean | number | objec
 }
 
 // type Q<T> = new () => T extends HTMLElement ? T : never;
-export function Attrs<T extends new (...m: any[]) => HTMLElement >(attrList: string[], handler: (attr: string, from: string, to: string) => void) {
-  return (cls: T) : any => {
+export function Attrs<T extends new (...m: any[]) => HTMLElement >(attrList?: string[], autoProps?: string[]) {
+  return (SomeClass: T) : any => {
     //@ts-ignore
-    cls.observedAttributes = attrList;
-    cls.prototype.attributeChangedCallback = function (attr: string, from: string, to: string) {
-      handler(attr, from, to)
+    SomeClass.observedAttributes = attrList || [];
+    SomeClass.prototype.attributeChangedCallback = function (attr: string, from: string, to: string) {
+      this[attr] = literalOrString(to);
     };
-    class newClass extends cls {
+    class newClass extends SomeClass {
       constructor(...args: any[])  {
         super(...args)
       }
@@ -61,16 +61,21 @@ export function Attrs<T extends new (...m: any[]) => HTMLElement >(attrList: str
         super.render()
       }
     };
-    cls.prototype.props.map(x => {
-      Object.defineProperty(newClass.prototype, x.substring(1), {
+    let propList: string[] = autoProps || [];
+    if(SomeClass.prototype.propertyList) {
+      propList = SomeClass.prototype.propertyList;
+    }
+    propList.map(x => {
+      Object.defineProperty(newClass.prototype, x, {
         get() {
-          return this[x];
+          return this["_" + x];
         },
         set(val: any) {
-          this.setupSuper(x, val)
+          this.setupSuper("_" + x, val)
         }
       })
     })
+
     return newClass
   }
 }

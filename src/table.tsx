@@ -1,9 +1,19 @@
 import React from 'react'
 import { render } from './style'
-import { Slottable, TmSlot } from './slottable'
+import { Attrs, Slottable, TmSlot } from './slottable'
 
+@Attrs(["selectable", "sortable"], ["selectable", "sortable", "compare"])
 export class Table extends Slottable {
   root: HTMLElement
+  _selectable = false;
+  _sortable = false;
+  _autosort = 0;
+  _compare = (el1: HTMLElement, el2: HTMLElement, colIndex: number) : number | undefined => {
+    if(colIndex !== 3) return undefined;
+    //@ts-ignore
+    return parseInt(el1.getAttribute("data-sort")) - parseInt(el2.getAttribute("data-sort"));
+  }
+  
   constructor() {
     super()
     this.root = this.attachShadow({ mode: 'open' }) as any as HTMLElement
@@ -18,46 +28,21 @@ export class Table extends Slottable {
     return this.root.querySelector('#table') as HTMLElement
   }
 
-  static get observedAttributes() {
-    return ['selectable', 'autosort']
-  }
-
-  private _selectable = false;
-
-  get selectable() : boolean {
-    return this._selectable;
-  }
-
-  set selectable(s: boolean) {
-    this._selectable = s;
-    this.render()
-  }
-
-  _autosort = 0;
-  set autosort(i: number) {
-    this._autosort = i;
-    this.everSorted = false;
-    this.render()
-  }
-  get autosort() {
-    return this._autosort;
-  }
-
   setActive(cell: HTMLTableCellElement) : void {
     [...this.querySelectorAll('td,th')].forEach(x => x.classList.remove('vf-active'));
     cell.classList.add('vf-active')
   }
 
   render() {
-    const sl = this.shadowRoot.querySelector("slot");
     const parentPos = (c: HTMLElement): number => {
       //@ts-ignore
       return ([...c.parentElement.children] as HTMLElement[]).findIndex(x => x === c)
     }
 
     type El = HTMLElement
+    const sortHandler = (e: MouseEvent) => {
+      if(!this._sortable) return;
 
-    const clickHandle = (e: MouseEvent) => {
       this.everSorted = true
 
       // get the row that belongs to the clicked element
@@ -76,7 +61,7 @@ export class Table extends Slottable {
       const colIndex = parentPos(col)
 
       // if we have a checkbox, ignore first column
-      if(colIndex === 0 && this.selectable) return;
+      if(colIndex === 0 && this._selectable) return;
 
       this.setActive(col)
       
@@ -91,16 +76,22 @@ export class Table extends Slottable {
         return td.textContent.trim()
       }
 
-      type Comparer<T> = (a: T, b: T) => number
+      // type Comparer<T> = (a: T, b: T) => number
+
+      // let cmp = (column1: HTMLTableColElement, column2: HTMLTableColElement) => {
+      //   return 
+      // }
 
       // does a locale compare of two cells. can be plugged into .sort()
-      const comparer: ((idx: number, asc: boolean) => Comparer<any>) = (idx: number, asc: boolean) =>
-        (a, b) =>
-          ((v1: any, v2: any) =>
-            v1 !== '' && v2 !== '' && !isNaN(v1) && !isNaN(v2) ? v1 - v2 : v1.toString().localeCompare(v2))(
-              getCellValue(asc ? a : b, idx),
-              getCellValue(asc ? b : a, idx),
-            )
+      // const comparer: ((idx: number, asc: boolean) => Comparer<any>) = (idx: number, asc: boolean) =>
+      //   (a, b) =>
+      //     ((v1: any, v2: any) =>
+      //       v1 !== '' && v2 !== '' && !isNaN(v1) && !isNaN(v2) ? v1 - v2 : v1.toString().localeCompare(v2))(
+      //         cmp(a.children[idx], b.children[idx]),
+              
+      //         getCellValue(asc ? a : b, idx),
+      //         getCellValue(asc ? b : a, idx),
+      //       )
 
       let tbody: HTMLElement | null = this.querySelector("tbody");
       let theTable: HTMLElement = tbody as HTMLElement;
@@ -108,8 +99,31 @@ export class Table extends Slottable {
         theTable = this.querySelector("table") as HTMLElement;
       }
 
+      const nicerStr = (cell: HTMLTableCellElement) : string | number => {
+        if(cell.textContent === null) return "";
+        let N = parseFloat(cell.textContent.trim())
+        if(!isNaN(N)) return N;
+        return cell.textContent.trim();
+      }
+
+      let comparer = (a: Element, b: Element): number => {
+        let col1 = a.children[colIndex] as HTMLTableCellElement;
+        let col2 = b.children[colIndex] as HTMLTableCellElement;
+        
+        const maybeCmp = this._compare(col1, col2, colIndex)
+        if(typeof maybeCmp !== 'undefined') return maybeCmp;
+
+        let v1 = nicerStr(col1);
+        let v2 = nicerStr(col2);
+        if(typeof v1 === 'number' && typeof v2 === 'number') {
+          return v1 - v2;
+        }
+
+        return v1.toString().localeCompare(v2.toString());
+      }
+
       Array.from(this.querySelectorAll('tr:nth-child(n+2)'))
-        .sort(comparer(colIndex, ascending))
+        .sort((a, b) => comparer(ascending ? a : b, ascending ? b : a))
         .map(tr => theTable.appendChild(tr))
         .map(x => x.children[colIndex].classList.add('vf-active'))
     }
@@ -117,14 +131,14 @@ export class Table extends Slottable {
     render(
       <>
       <div class="hidden"><slot name="A">pad a eb sin</slot></div>
-        <div id='table' class='w-full mb-8 overflow-hidden rounded-lg shadow-lg' onClick={e => clickHandle(e)}>
+        <div id='table' class='w-full mb-8 overflow-hidden rounded-lg shadow-lg' onClick={e => sortHandler(e)}>
           <slot></slot>
         </div>
       </>,
       this.root,
     )
 
-    if(this.selectable) {
+    if(this._selectable) {
       this.wasSelectable = true;
       this.setupSelect()
     } else if(this.wasSelectable) {
@@ -133,7 +147,7 @@ export class Table extends Slottable {
     }
 
     if (!this.everSorted && this.slottedByTag("", "table").length > 0) {
-      let idx = parseInt(this.autosort.toString());
+      let idx = parseInt(this._autosort.toString());
       if(!isNaN(idx) && idx >= 0)
       this.headerColByIndex(idx).click()
     }
@@ -173,7 +187,7 @@ export class Table extends Slottable {
   }
 
   headerColByIndex(n: number) : HTMLElement {
-    const i = n + (this.selectable ? 2 : 1);
+    const i = n + (this._selectable ? 2 : 1);
     return this.querySelector(`tr:first-child>td:nth-child(${i})`) as HTMLElement;
   }
 

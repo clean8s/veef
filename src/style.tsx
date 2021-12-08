@@ -25,15 +25,13 @@ export function genCss(classes: string) {
 const renderChain: typeof preactRender = (x, y) => {
   preactRender(<>
   {x}
-  <slot name="h"></slot>
-  <slot name="style"></slot>
+  <slot name="script"></slot>
   </>, y);
   const thisBind = (y as ShadowRoot).host;
-  const hSlot = y.querySelector(`slot[name="h"]`) as HTMLSlotElement;
-  const styleEl = y.querySelector("#_global_v_style") as HTMLStyleElement;
+  const scriptSlot = y.querySelector(`slot[name="script"]`) as HTMLSlotElement;
 
-  hSlot.addEventListener('slotchange', (e) => {
-    const slotEls = hSlot.assignedNodes();
+  scriptSlot.addEventListener('slotchange', (e) => {
+    const slotEls = scriptSlot.assignedNodes();
     slotEls.map(x => {
       if(!(x instanceof HTMLTemplateElement)) return;
       // if(x.tagName.toLowerCase() !== 'template') return;
@@ -51,7 +49,6 @@ const renderChain: typeof preactRender = (x, y) => {
           if(newInstance.textContent != null && newInstance.textContent.trim().length > 0) {
             fnCallSetup(thisBind, '(() => {' + newInstance.textContent.trim() + '})')
           }
-        
         }
     })
   })
