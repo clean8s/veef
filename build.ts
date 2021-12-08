@@ -142,6 +142,8 @@ let outputDir = 'dist';
 
 const isDebug = 'watch' in opts;
 
+const SHOW_REPORT = false; // show stats about asset size
+
 (['esm', 'cjs']).map(fmt => {
   const outf = path.join(outputDir, 'index.' + (fmt == 'esm' ? 'mjs' : 'js'));
   console.log(`Building ${fmt} into ${outf}...`)
@@ -170,9 +172,10 @@ const isDebug = 'watch' in opts;
     ...opts,
   }).catch(() => process.exit(1)).then((res: any) => {
     console.log("Built!")
-    let k = require('esbuild').analyzeMetafile(res.metafile);
-    k.then((x: any) => {
-      // console.log(x);
+    let esbuildMeta = require('esbuild').analyzeMetafile(res.metafile);
+    esbuildMeta.then((report: any) => {
+      if(SHOW_REPORT)
+      console.log(report);
     })
     if("watch" in opts) {
       console.log("Continuing to watch...")

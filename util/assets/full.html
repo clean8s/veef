@@ -62,7 +62,7 @@ v-tabs > button {
     line-height: 1.7;
 }
 .guide>ul {
-    line-height: 2.2;
+    line-height: 2.05;
 }
 .pros>div {
     display: flex;
@@ -145,20 +145,22 @@ body[data-theme="dark"] input.my-input {
             and <span style="color: #6633CC">preact</span>.
             </h3>
                 <v-grid columns="3" class="pros">
+                    <div>
+                        <v-icon name="Star"></v-icon>
+                        100+ icons and styles built into the Shadow DOM.</div>
+                        
                 <div><v-icon name="Html5"></v-icon> The content remains readable without JavaScript!</div>
                 <div><v-icon name="Cube"></v-icon> No build process, npm or transpiling needed. </div>
-                <div>
-                    <v-icon name="Star"></v-icon>
-                    Works well with non-SPA frameworks like Django, Rails, Laravel</div>
                 </v-grid>
-                <div style="font-weight: 500; text-align: center; font-size: 1.3rem; margin: 20px 0;">
-                To install, just include <code>&lt;script src="https://unpkg.com/veef"&gt;&lt;/script&gt;</code> <br/>
-                <br/>
+                <div style="box-shadow: 0px 0px 20px rgba(0,0,0,0.15); font-weight: 500; padding: 20px; text-align: center; background: #fff; font-size: 1.3rem; margin: 30px 0;">
                 
-                <span style="font-size: 0.85rem"><span style="background: var(--color); color: #fff; padding: 2px 4px;">SOON:</span>
+                    To install, just include <code>&lt;script src="https://unpkg.com/veef"&gt;&lt;/script&gt;</code> <br/>
+             
+                </div>
+                
+                <span style="font-size: 1rem"><span style="background: var(--color); color: #fff; padding: 2px 4px;">SOON:</span>
                 CSS polyfill for non-Javascript browsers, dark mode & screen reader improvements.
                 </span>
-                </div>
         </div>
     </div>
     <div class="container showcase pad y-2">
@@ -232,15 +234,17 @@ document.addEventListener("DOMContentLoaded", () => {
 {% tpl "footer" %}
 <div class="guide" style="font-size: 1.2em">
 <h2 id="guide-web-components">Web Components and preact</h2>
-Web Components are a suite of APIs that let you create custom HTML tags. You can read the specification <a href="https://developer.mozilla.org/en-US/docs/Web/Web_Components">here</a>.
+Web Components are a suite of APIs that let you create elements that behave like usual HTML. You can read the specification <a href="https://developer.mozilla.org/en-US/docs/Web/Web_Components">here</a>.
 
 The most important parts to know are:
 <ul>
     <li>The syntax is same as usual tags: <code>&lt;v-icon&gt;</code>, <code>&lt;somelibrary-blah&gt;</code> etc.</li>
-    <li>Some components have children and some don't</li>
-    <li>All components need to have their tags closed (even empty ones), unlike <code>&lt;br/&gt;</code> or <code>&lt;link&gt;</code></li>
-    <li>An author of Web Component can make them have them appear and behave the way he wants.
-        However, if JavaScript is disabled they will just display the standard HTML content without
+    <li>Some components have children and some don't.</li>
+    <li>All components need to have their tags closed (even empty ones like <code>&lt;v-icon&gt;&lt;/v-icon&gt;</code>)<br/>
+        which is unlike <code>&lt;br/&gt;</code> or <code>&lt;link&gt;</code></li>
+    <li>The author of an Web Component can make them have them appear and behave the way he wants,
+        while the style of children and attributes are chosen by the user.</li>
+    <li>If JavaScript is disabled they will just display the standard HTML content without
         dynamic events and interactions.
     </li>
 </ul>

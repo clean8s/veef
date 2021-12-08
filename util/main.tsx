@@ -281,7 +281,7 @@ function App() {
                     <v-icon class="ptr" onclick="document.body.classList.toggle('N')" style="color: #000; width: 20px; height: 20px;" name="Close"></v-icon>
                 </div>
                 </v-grid>
-        {["search", "dialog", "table", "tree", "icon", "tabs", "alert", "utilities"].map(x => <a href={
+        {["search", "table", "dialog", "tree", "alert", "tabs", "icon", "utilities"].map(x => <a href={
             (x == 'utilities' ? '#' : '#v-') + `${x}`}><v-icon name="Bolt" />{x == 'utilities' ? "" : "v-"}{x}</a>)}
         <a href="#guide-web-components"><v-icon name="Help" /> Guide to Web Components</a>
         <a>Licensed under MIT.</a>
@@ -289,12 +289,12 @@ function App() {
     </nav>
 
     <Component name="v-search" C={Search} info="smart fuzzy autocomplete"/>
-    <Component name="v-dialog" C={Dialog} info="modals over the screen" />
     <Component name="v-table" C={Table} info="enhances any <code>table</code>, <code>tr</code>, <code>td</code>" rawinfo={true} />
+    <Component name="v-dialog" C={Dialog} info="modals over the screen" />
     <Component name="v-tree" C={Tree} info="collapse/expand nested JSON" />
-    <Component name="v-icon" C={Icons} info="A small collection of icons" />
-    <Component name="v-tabs" C={Tabs} info="clickable tabs"/>
     <Component name="v-alert" C={Alert} info="info boxes and toasts" />
+    <Component name="v-tabs" C={Tabs} info="clickable tabs"/>
+    <Component name="v-icon" C={Icons} info="A small collection of icons" />
     <Component name="utilities" C={Utilities} info="tiny components" nocustom />
     </>
 }
