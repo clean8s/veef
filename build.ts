@@ -71,6 +71,22 @@ let preactAlias = {
       }
     })
 
+    build.onResolve({ filter: /^base16/ }, (args: ResolveArgs) => {
+      return {
+        path: "base16",
+        namespace: "base16"
+      }
+    })
+
+    build.onLoad({ filter: /.*/, namespace: 'base16'}, async (x: any) => {
+      console.log(x)
+      return {
+        contents: `let monokai = { "scheme": "monokai", "author": "wimer hazenberg (http://www.monokai.nl)", "base00": "#272822", "base01": "#383830", "base02": "#49483e", "base03": "#75715e", "base04": "#a59f85", "base05": "#f8f8f2", "base06": "#f5f4f1", "base07": "#f9f8f5", "base08": "#f92672", "base09": "#fd971f", "base0A": "#f4bf75", "base0B": "#a6e22e", "base0C": "#a1efe4", "base0D": "#66d9ef", "base0E": "#ae81ff", "base0F": "#cc6633" };
+                   export { monokai }; export default monokai;
+        `
+      }
+    })
+
     build.onLoad({ filter: /.*/, namespace: 'material-icons' }, async (x: {pluginData: string[]}) => {
       let icons: Record<string, string> = {};
       const imps = x.pluginData.map(icon => {
@@ -85,7 +101,7 @@ let preactAlias = {
     build.onLoad({ filter: /.*/, namespace: 'windi' }, async (args: { path: string }) => {
       console.log(`Putting styles...`)
       const srcjs = jsfiles.map(x => {
-        console.log(`Scanning for classes in ${x}`)
+        // console.log(`Scanning for classes in ${x}`)
         return fs.readFileSync(x, 'utf8')
       }).join('\n')
       const css = await generateStyles(srcjs)
@@ -128,7 +144,7 @@ const isDebug = 'watch' in opts;
   //     js: '})({});'
   //   }
   // }
-  require('esbuild').build({
+  let b = require('esbuild').build({
     entryPoints: ['src/index.tsx'],
     bundle: true,
     minify: !isDebug,
@@ -141,9 +157,14 @@ const isDebug = 'watch' in opts;
     format: fmt,
     outfile: outf,
     plugins: [preactAlias],
+    metafile: true,
     ...opts,
-  }).catch(() => process.exit(1)).then(() => {
+  }).catch(() => process.exit(1)).then((res: any) => {
     console.log("Built!")
+    let k = require('esbuild').analyzeMetafile(res.metafile);
+    k.then((x: any) => {
+      console.log(x);
+    })
     if("watch" in opts) {
       console.log("Continuing to watch...")
     }
