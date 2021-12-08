@@ -25,7 +25,11 @@ async function generateStyles(html: string) {
   const styles = interpretedSheet.extend(preflightSheet, APPEND).build(MINIFY)
   
   //@ts-ignore
-  return (new (require("clean-css"))({})).minify(styles);
+  return minifyCss(styles);
+}
+
+const minifyCss = (someCss: string) : string => {
+  return (new (require("clean-css"))({})).minify(someCss).styles;
 }
 
 import { sync as globSync } from 'glob'
@@ -71,6 +75,10 @@ let preactAlias = {
         namespace: 'windi',
       }
     })
+
+    build.onLoad({filter: /veef.*?\.css/}, async (x: any) => {
+      return { contents: minifyCss(readFileSync(x.path, 'utf8')), loader: 'text' }
+    });
 
     build.onResolve({ filter: /^base16/ }, (args: ResolveArgs) => {
       return {
@@ -164,7 +172,7 @@ const isDebug = 'watch' in opts;
     console.log("Built!")
     let k = require('esbuild').analyzeMetafile(res.metafile);
     k.then((x: any) => {
-      console.log(x);
+      // console.log(x);
     })
     if("watch" in opts) {
       console.log("Continuing to watch...")
