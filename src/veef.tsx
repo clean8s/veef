@@ -60,16 +60,17 @@ setGlobal('VeefElement', VeefElement);
 
 class Veef {
   static h = html;
-  static render(element: HTMLElement, fn: (h: typeof html) => any) {
-    let node = fn(html)
-    preactRender(node, element)
+  static with(fn: (h: typeof html)=>void) {
+    return fn(html)
   }
-//   static render(node: any, domElement: HTMLElement) {
-//     preactRender(node, domElement)
-//   }
-  static renderDom(node: any) {
+
+  static render(expr: any, domElement: HTMLElement) {
+    preactRender(expr, domElement)
+  }
+
+  static renderVirtual(expr: any) {
     const emptyEl = document.createElement("div");
-    preactRender(node, emptyEl)
+    preactRender(expr, emptyEl)
     return Array.from(emptyEl.childNodes)
   }
 }

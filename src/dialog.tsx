@@ -48,21 +48,8 @@ export class Dialog extends TmSlot {
       if (!P) {
         this.open = false
       }
-      // console.log(e.composedPath())
     }
-    const slotCss = `
-    ::slotted(*[slot="actions"]){
-    display: flex;
-    grid-gap: 1rem;
-    gap: 1rem;
-    justify-content: space-between;
-    align-items: center;
-    }
-    ::slotted(*[slot="actions"]) > *{
-    	width: 100% !important;
-	    display: block; 
-    }
-    `
+
     renderWithCss("")(
       <div onClick={click} class='inset-0 fixed bg-[rgba(0,0,0,0.5)] z-50'>
         <div

@@ -29,10 +29,21 @@ export function rawExecute(bindThis: any, source: string) : any {
   return new Function('h', source).bind(bindThis)(html)
 }
 
+/** A lossy function that converts a string into a reasonable JS literal, most
+ * likely for tag attributes. Not the same as JS implicit casts tho: attr="" implies attr == true
+ */
 export function literalOrString(src: string) : string | boolean | number | object {
   if (typeof src === 'string' && src.trim().length === 0) {
+    // empty param means a true flag 
     return true
   } else {
+    // TODO: All boolean-ish combos?
+    if(src.trim() === "0" || src.trim() === "false") {
+      return false
+    } else if(src.trim() === "1" || src.trim() === "true") {
+      return true
+    }
+
     try {
       return JSON.parse(src)
     } catch (e) {
@@ -42,7 +53,7 @@ export function literalOrString(src: string) : string | boolean | number | objec
   }
 }
 
-// type Q<T> = new () => T extends HTMLElement ? T : never;
+/** A decorator for accepting attributes and props automatically */
 export function Attrs<T extends new (...m: any[]) => HTMLElement >(attrList?: string[], autoProps?: string[]) {
   return (SomeClass: T) : any => {
     //@ts-ignore
@@ -84,6 +95,9 @@ import React from 'react'
 type SlotEvent = {target: EventTarget & HTMLSlotElement | null}
 type SlotCallback = () => void;
 
+/** Slottable is an HTMLElement that listens to slot changes and 
+ *  splits the children into a Map<slotname>.
+ */
 export class Slottable extends HTMLElement {
   slotSetup(root: HTMLElement, updateCb: SlotCallback) {
     let slots = [...root.querySelectorAll('slot')];

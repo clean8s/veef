@@ -288,7 +288,7 @@ function App() {
         
     </nav>
 
-    <Component name="v-search" C={Search} info="smart fuzzy autocomplete"/>
+    <Component name="v-search" C={Search} info="smart fuzzy autocomplete" nocustom/>
     <Component name="v-table" C={Table} info="enhances any <code>table</code>, <code>tr</code>, <code>td</code>" rawinfo={true} />
     <Component name="v-dialog" C={Dialog} info="modals over the screen" />
     <Component name="v-tree" C={Tree} info="collapse/expand nested JSON" />
@@ -467,7 +467,7 @@ function Search() {
         </v-search>
         </div>
         </div>
-        <div class="t2">
+        {/* <div class="t2">
             <Docs>
             {code(`
             <v-search>
@@ -485,7 +485,7 @@ function Search() {
                 {params.map(x => {
                     return <div><strong>{x[0]}</strong> <code>{x[1]}</code><div>{x[2]}</div> </div>;
                 })}
-            </div>
+            </div> */}
             </>
 }
 
@@ -596,4 +596,3 @@ function Template(props: {template: string, tagName?: string, context?: object} 
     const tpl = env.render(template, context || {})
     return <Tag dangerouslySetInnerHTML={{__html: tpl }} {...rest}></Tag>
 }
-// console.log(env.render("script1", {}));

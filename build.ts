@@ -101,7 +101,6 @@ let preactAlias = {
       const imps = x.pluginData.map(icon => {
         const content = fs.readFileSync(`node_modules/@material-design-icons/svg/filled/${icon}.svg`, 'utf8');
         icons["icon_" + icon] = content;
-        // return `export icon_${icon} = ${JSON.stringify(content)};`
       });
       return {
         contents:       `export default icons = ${JSON.stringify(icons)}`,
@@ -147,15 +146,7 @@ const SHOW_REPORT = false; // show stats about asset size
 (['esm', 'cjs']).map(fmt => {
   const outf = path.join(outputDir, 'index.' + (fmt == 'esm' ? 'mjs' : 'js'));
   console.log(`Building ${fmt} into ${outf}...`)
-  // if(fmt === 'cjs') {
-  //   opts.banner = {
-  //       js: '(function(exports){'
-  //     };
-  //   opts.footer = {
-  //     js: '})({});'
-  //   }
-  // }
-  let b = require('esbuild').build({
+  require('esbuild').build({
     entryPoints: ['src/index.tsx'],
     bundle: true,
     minify: !isDebug,
