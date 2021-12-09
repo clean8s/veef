@@ -38,7 +38,7 @@ jobs:
         git config user.name "gh-action"
         git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
         git remote set-url --push origin https://fikisipi:$GITHUB_TOKEN@github.com/clean8s/veef
-        git checkout -b main
         git pull
+        git checkout main
         git merge v2
         git push -u origin main
