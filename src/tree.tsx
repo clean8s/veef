@@ -6,12 +6,6 @@ import { invertBase16Theme, invertTheme, Theme } from 'react-base16-styling';
 import { monokai, VeefTheme } from '../icons/tree-theme'
 import { StylingFunction, Base16Theme  } from 'react-base16-styling';
 
-type TreeTheme = {
-  background: string,
-  text: string,
-  typeStr: string,
-  typeNum: string
-};
 
 type Handler = {
   data: object,

@@ -8,19 +8,19 @@ export {vendorCss, alertCss, windiCss};
 import { render as preactRender } from 'preact'
 import { fnCall, fnCallSetup } from './slottable';
 
-export function genCss(classes: string) {
-  function escapeRegex(s) {
-    return s.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
-}
-  let cls = classes.split(' ');
-  cls.push("*", "html", "::after");
-  return cls.map(x => {
-    let rgx = new RegExp(escapeRegex(x) + "\\s*{(.*?)}", 's');
-    let oo = windiCss.match(rgx);
-    if(oo && oo[1]) return oo[1];
-    return null
-  }).filter(x => x != null).join("\n")
-}
+// export function genCss(classes: string) {
+//   function escapeRegex(s) {
+//     return s.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
+// }
+//   let cls = classes.split(' ');
+//   cls.push("*", "html", "::after");
+//   return cls.map(x => {
+//     let rgx = new RegExp(escapeRegex(x) + "\\s*{(.*?)}", 's');
+//     let oo = windiCss.match(rgx);
+//     if(oo && oo[1]) return oo[1];
+//     return null
+//   }).filter(x => x != null).join("\n")
+// }
 
 const renderChain: typeof preactRender = (x, y) => {
   preactRender(<>
@@ -104,18 +104,5 @@ export const renderWithCss: ((css: string) => typeof preactRender) = (cssStr: st
  * TODO: Use the Stylesheet API to prevent duplication. 
  */
  export const render: typeof preactRender = (x, y) => {
-  // if(supportsStyles()) {
-  //   //@ts-ignore
-  //   (y as ShadowRoot).adoptedStyleSheets = adoptedSheets
-  //   renderChain(x, y);
-  //   return
-  // }
-  // renderChain(
-  //   <>
-  //     <style>{objCss}</style>
-  //     {x}
-  //   </>,
-  //   y,
-  // )
   renderWithCss("")(x, y)
 }

@@ -5,8 +5,8 @@ import { Attrs, Slottable, TmSlot } from './slottable'
 @Attrs(["selectable", "sortable"], ["selectable", "sortable", "compare"])
 export class Table extends Slottable {
   root: HTMLElement
-  _selectable = false;
-  _sortable = false;
+  _selectable = true;
+  _sortable = true;
   _autosort = 0;
   _compare = (el1: HTMLElement, el2: HTMLElement, colIndex: number) : number | undefined => {
     if(colIndex !== 3) return undefined;
@@ -67,32 +67,6 @@ export class Table extends Slottable {
       
       const ascending = col.classList.toggle('desc')
 
-      const getCellValue = (tr: HTMLTableRowElement, idx: number) : string => {
-        if(typeof tr.children[idx] === 'undefined') return ''
-        let td = tr.children[idx]
-
-        if(td.hasAttribute("data-sort")) return td.getAttribute("data-sort") as string;
-        if(td.textContent === null) return ''
-        return td.textContent.trim()
-      }
-
-      // type Comparer<T> = (a: T, b: T) => number
-
-      // let cmp = (column1: HTMLTableColElement, column2: HTMLTableColElement) => {
-      //   return 
-      // }
-
-      // does a locale compare of two cells. can be plugged into .sort()
-      // const comparer: ((idx: number, asc: boolean) => Comparer<any>) = (idx: number, asc: boolean) =>
-      //   (a, b) =>
-      //     ((v1: any, v2: any) =>
-      //       v1 !== '' && v2 !== '' && !isNaN(v1) && !isNaN(v2) ? v1 - v2 : v1.toString().localeCompare(v2))(
-      //         cmp(a.children[idx], b.children[idx]),
-              
-      //         getCellValue(asc ? a : b, idx),
-      //         getCellValue(asc ? b : a, idx),
-      //       )
-
       let tbody: HTMLElement | null = this.querySelector("tbody");
       let theTable: HTMLElement = tbody as HTMLElement;
       if(tbody === null) {
@@ -137,6 +111,7 @@ export class Table extends Slottable {
       </>,
       this.root,
     )
+    
 
     if(this._selectable) {
       this.wasSelectable = true;
@@ -151,8 +126,30 @@ export class Table extends Slottable {
       if(!isNaN(idx) && idx >= 0)
       this.headerColByIndex(idx).click()
     }
+
+    this.slotMutations()
   }
   wasSelectable = false;
+
+  slotHandled = new WeakMap<HTMLElement, boolean>();
+  slotMutations() {
+    // TODO: Don't leak memory if user keeps reslotting?
+    const unHandled = this.slottedAny("").filter(x => !this.slotHandled.has(x));
+
+    unHandled.forEach(x => {
+      new MutationObserver((e) => {
+        const changedRows = (x: MutationRecord) => {
+          return ([...x.removedNodes, ...x.addedNodes]).filter(x => x instanceof HTMLTableRowElement).length > 0;
+        }
+        const newRows = e.filter(x => x.type === "childList" && changedRows(x));
+        if(newRows.length > 0) {
+          this.removeSelect()
+          this.setupSelect()
+        }
+      }).observe(x, {childList: true, subtree: true});
+      this.slotHandled.set(x, true);
+    });
+  }
 
   removeSelect() {
     Array.from(this.querySelectorAll('td,th')).filter(x => x.classList.contains('vf-checkbox')).map(x => x.remove());
