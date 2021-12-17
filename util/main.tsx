@@ -15,7 +15,7 @@ function Snippet(props: {code: string, height?: number}) {
 
     return <>
     <v-grid columns="2" style="align-items:start">
-        <v-editor language="html" style={S} value={props.code} onchange="this.nextElementSibling.nextElementSibling.innerHTML = this.value"></v-editor>
+        <v-editor language="html" style={S} value={props.code} onchange="this.nextElementSibling.children[1].innerHTML = this.value"></v-editor>
         <div>
         <span style="background:#eee; padding: 10px;margin: 0 auto;display: flex;"><v-icon name="Preview"></v-icon> Sandbox preview:</span>
         <div dangerouslySetInnerHTML={{__html: props.code}}/>
@@ -158,18 +158,17 @@ tbl.addEventListener('rowselect', (e) => {
     <strong>autosort="number"</strong>: the default column to sort by when the table is loaded <br/>
     <DocSection>Custom comparison</DocSection>
     <Snippet height={380} code={`
-    <v-table selectable sortable>
+    <v-table sortable>
     <table>
     <tr><th>Col</th></tr>
-    <tr><td> </td></tr>
-    <tr><td>HE</td></tr>
-    <tr><td>WOR</td></tr>
-    <tr><td>LLO</td></tr>
-    <tr><td>LD</td></tr>
+    <tr><td>fourth</td></tr>
+    <tr><td>first</td></tr>
+    <tr><td>second</td></tr>
+    <tr><td>third</td></tr>
     </table>
     <script slot="h">
         h => {
-        let no = {HE: 0, LLO: 1, " ": 2, WOR: 3, LD: 4};
+        let no = {first: 1, second: 2, third: 3, fourth: 4};
         this.compare = (a, b) => { // -1 if <, 1 if > and 0 if ==
             return no[a.innerText] < no[b.innerText] ? 1 : -1;
         }
@@ -216,20 +215,19 @@ function Tabs() {
         <div>
             <Docs>
                 Using <code>v-tab</code> is just a matter of adding buttons and content in the right order as children:
-                {code(`
+                <Snippet code={(`
                 <v-tabs>
                     <button slot="tab">Tab 1</button>
                     <button slot="tab">Tab 2</button>
                     <div>Content for Tab 1</div>
                     <div>Content for Tab 2</div>
                 </v-tabs>
-                `)}
-                The tab buttons must have <code>slot="tab"</code> while the content doesn't need a slot attribute,
-                but the length of the slotted buttons and the content elements (which don't have to be <code>div</code>) must match.
-                <br/><br/>
-                You can style your buttons inside your page's CSS.
-                <br/><br/>
-                TODO: Explain the styling of the shadow parts.
+                `)} />
+                <DocSection>Number of buttons must equal number of content elements</DocSection>
+                The tab buttons must have <code>slot="tab"</code> while the content elements don't need anything. <br/><br/>
+                <strong>Note that N tab buttons need N elements, ordered in the same sequence.</strong>
+                <DocSection>Styling</DocSection>
+                You can style buttons inside your page's CSS using usual <code>v-tabs > button{'{ .. }'}</code> rules.
 
             </Docs>
         </div>
@@ -276,19 +274,24 @@ function Alert() {
     </div>
     <div>
         <Docs>
-            To display an alert:
             <Snippet code={`
             <v-alert success>Some HTML here</v-alert>
             <v-alert warning>Some HTML here</v-alert>
             <v-alert error>Some HTML here</v-alert>
             <v-alert info>Some HTML here</v-alert>`} height={120}/>
             <DocSection>Toasts</DocSection>
-            Toasts are a special kind of alerts displayed in the bottom right corner of the screen
-            for a limited amount of time.
-            <br/><br/>
+            
             To create a toast, you need to put the <code>toast="1"</code> attribute in HTML
-            or set the <code>toastElement.toast = true</code> JavaScript property. The duration
-            is set similarly (<code>duration</code>)
+            or set the <code>toastElement.toast = true</code> JavaScript property.
+
+            <Snippet code={`
+            <v-alert info id="inf1">
+                This is a toasty info.
+            </v-alert>
+            <button onclick="document.querySelector('#inf1').toast = true">
+                Open as toast
+            </button>
+            `} />
         </Docs>
         </div>
     </>;
@@ -296,19 +299,26 @@ function Alert() {
 
 function Utilities() {
     return <Docs>
-        v-code can syntax highlight code snippets for javascript, css and html:
-        {code('<v-code lang="javascript">snippet here</v-code>')}
-        v-controls provides nice input controls, buttons and labels:
-        {code(`
-        <form>
-            <v-controls columns="2">
-                <div><label>Some name</label> <input> </div>
-                <div><label>Some date</label> <input type="date" /> </div>
-                <div v-span="2"><label>Something else</label> <input> </div>
-                <div v-span="2"> <button>My btn</button> </div>
-            </v-controls>
-        </form>
-        `, 'html')}
+        <Snippet code={`
+        <v-controls columns="2">
+            <div>
+                <label>Some name</label>
+                <input>
+            </div>
+            <div>
+                <label>Some date</label>
+                <input type="date">
+            </div>
+            <div v-span="2">
+                <label>Something else</label>
+                <input>
+            </div>
+            <div>
+                <label>&nbsp;</label>
+                <button is="v-primary">Action</button>
+            </div>
+        </v-controls>
+        `} />
     </Docs>
 }
 function App() {
@@ -334,7 +344,44 @@ function App() {
     <Component name="v-alert" C={Alert} info="info boxes and toasts" />
     <Component name="v-tabs" C={Tabs} info="clickable tabs"/>
     <Component name="v-icon" C={Icons} info="A small collection of icons" />
+    <Component name="v-editor" C={Editor} info="A Monaco-based editor" />
     <Component name="utilities" C={Utilities} info="tiny components" nocustom />
+    
+    </>
+}
+
+function Editor() {
+    return <>
+    <div>
+        <Docs>
+        <h3 style="margin: 20px 0 30px;">Note: veef doesn't bundle the syntax engine, it is loaded dynamically via CDN when you include this tag. </h3>
+        <v-editor value={dedent(`
+        /*
+         * Put some JavaScript
+         * over here.
+         */
+        const m = new Array(10).fill(0).map((x, i) => 2 * i);
+        `)} />
+        </Docs>
+    </div>
+    <div>
+        <Docs>
+            Use <code>&lt;v-editor&gt;&lt;/v-editor&gt;</code> to display the editor.
+            Attributes / properties:
+            <ul>
+                <li><strong>value</strong>: get/set the current code shown</li>
+                <li><strong>language</strong>: get/set the language syntax</li>
+            </ul>
+            <DocSection>Accessing JS monaco instance</DocSection>
+            <ul>
+                <li><strong>.editor</strong>: the monaco.editor instance</li>
+            </ul>
+            <DocSection>Events</DocSection>
+            <ul>
+                <li><strong>change</strong>: when the buffer/code is changed</li>
+            </ul>
+        </Docs>
+    </div>
     </>
 }
 
@@ -535,9 +582,9 @@ function Component(props: {name: string, C: FunctionComponent, info?: string, no
         //@ts-ignore
         hinfo = <span dangerouslySetInnerHTML={{__html: props.info}}></span>;
     }
-    return  <div id={props.name} class="element-docs">
+    return  <div class="element-docs" id={props.name}>
     <div class="container showcase">
-        <h2><b>{'<' + props.name + '>'}</b> <span style="font-size: 1.3rem">{hinfo}</span></h2>
+        <h2 style="margin-top: 1rem"><b>{'<' + props.name + '>'}</b> <span style="font-size: 1.3rem">{hinfo}</span></h2>
     <v-tabs via="style">
     <button slot="tab" role="tab">
         <v-icon name="Bolt"></v-icon> Demo

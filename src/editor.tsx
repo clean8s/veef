@@ -47,7 +47,7 @@ export class Editor extends HTMLElement {
     const elTarget = this.root;
 
     s.setAttribute('src', "https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.26.1/min/vs/loader.min.js");
-    s.setAttribute("async", "");
+    s.setAttribute("defer", "");
 
     const onScriptLoad = (doRequire?: boolean) => {
       let winReq = (window as any).require;

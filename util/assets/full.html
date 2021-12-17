@@ -18,6 +18,7 @@
     <title>veef: 60KB Web Components </title>
     <style>
 /* You DON'T need this. This is the documentation CSS, not the components! */
+html { scroll-behavior: smooth; }
 body { line-height: 1.5; tab-size: 4; font-size: 16px; color: rgb(31, 41, 55);
     font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;
     margin: 0; padding: 0; } * { box-sizing: border-box; -webkit-font-smoothing: antialiased; text-rendering: optimizelegibility; }
@@ -30,13 +31,13 @@ body {
     padding-left: var(--sidebar);
 }
 .container { width: 90%; max-width: 1000px; margin: 0 auto; } .showcase { clear: both; }
-.element-docs { padding: 2.5rem 0; }
-.element-docs:nth-child(2n)>div>h2>span { color: #999; }
+.element-docs { padding: 2.5rem 0 4rem; }
+.element-docs:nth-child(2n+1)>div>h2>span { color: #999; }
 .element-docs>div>h2>span { color: #777; }
-.element-docs:nth-child(2n) { background: #222; } 
-.element-docs:nth-child(2n)>div>h2 { color: #fff; } 
-.element-docs:nth-child(2n)>div>v-tabs { display: block; background: #fff; border-radius: 10px; }
-.showcase>div, #icon-notice {scroll-margin-top: 5em;} .guide h2 { scroll-margin-top: 3em; }
+
+.element-docs:nth-child(2n+1) { background: #222; } 
+.element-docs:nth-child(2n+1)>div>h2 { color: #fff; } 
+.element-docs:nth-child(2n+1)>div>v-tabs { display: block; background: #fff; border-radius: 10px; }
 .showcase h2 { font-size: 2em; margin: 0px 0 15px; font-weight: 400; }
 .showcase h3 { border-left: 4px solid #555; padding-left: 0.5em; font-size: 1.1em;font-weight: 500; margin: 5px 0 15px; color: #555; }
 main { display: flex; width: 100%; }
@@ -45,7 +46,9 @@ v-code { margin: 0 10px; }
 main>v-code[lang="html"]:before{ content: "SOURCE"; font-weight: 500; color: #fff; background:#333333; border-radius: 20px; padding: 3px 10px; }
 main>div:before,.demo:before { content: "DEMO"; font-weight: 500; color: #fff; background:#FB5012; border-radius: 20px; padding: 3px 10px;}
 h2>code{ color: #996699;  } h2>code:before{content:"<";}h2>code:after{content:">";}
-nav { color: #888; position: fixed; top: 0px; bottom: 0; width: var(--sidebar); box-shadow: 0px 0px 10px rgba(0,0,0,0.2); left: 0px; padding: 20px; z-index: 40; background: #fff; } nav>a{display: block; color: #FB5012; font-weight: 500; padding: 5px 0; }
+nav { color: #888; position: fixed; top: 0px; bottom: 0; width: var(--sidebar); box-shadow: 0px 0px 10px rgba(0,0,0,0.2); left: 0px; padding: 20px; z-index: 40; background: #fff; }
+nav>a{display: block; color: #FB5012; font-weight: 500; padding: 5px 0; }
+nav>a:hover { color: #000; }
 header .ptr { display: none; float: right; } nav .ptr { display: none; } sup { font-size: 0.8rem; }
 .ptr { cursor: pointer; }
 @media screen and (max-width: 600px) { .nonmobile { display: none; } nav .ptr { display: block; } body{--sidebar:0; } nav{ width: 80vw; display: block;} .N nav { display: none; } header .ptr { display: inline-block; } main { flex-direction: column; max-height: none; } main>* { width: 100%; flex-basis: 100%; } }
@@ -168,15 +171,13 @@ body[data-theme="dark"] input.my-input {
                 <span style="font-size: 1rem"><span style="background: var(--color); color: #fff; padding: 2px 4px;">SOON:</span>
                 CSS polyfill for non-Javascript browsers, dark mode & screen reader improvements.
                 </span>
+
+                <a href="#guide-web-components" is="v-secondary" style="display: block; margin-top: 1rem;">
+                    <v-icon name="RightChevron"></v-icon>
+                    Learn about Web Components</a>
         </div>
     </div>
 
-    <div class="container showcase pad y-2">
-        <a href="#guide-web-components" is="v-secondary" style="width: 100%;">
-            <v-icon name="RightChevron"></v-icon>
-            Learn about Web Components</a>
-
-    </div>
 {% endtpl %}
 
 {% tpl "queen" %}

@@ -5,8 +5,8 @@ import { Attrs, Slottable, TmSlot } from './slottable'
 @Attrs(["selectable", "sortable"], ["selectable", "sortable", "compare"])
 export class Table extends Slottable {
   root: HTMLElement
-  _selectable = true;
-  _sortable = true;
+  _selectable = false;
+  _sortable = false;
   _autosort = 0;
   _compare = (el1: HTMLElement, el2: HTMLElement, colIndex: number) : number | undefined => {
     if(colIndex !== 3) return undefined;
@@ -124,7 +124,7 @@ export class Table extends Slottable {
     if(this._selectable) {
       this.wasSelectable = true;
       this.setupSelect()
-    } else if(this.wasSelectable) {
+    } else  {
       this.wasSelectable = false;
       this.removeSelect()
     }

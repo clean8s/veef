@@ -17,6 +17,14 @@ export class Alert extends Slottable {
     }
   }
 
+  set toast(val: boolean) {
+    if(val) {
+      this.setAttribute('toast', '')
+    } else {
+      this.removeAttribute('toast')
+    }
+  }
+
   alertType() {
     const typ = Alert.observedAttributes.find(x => this.getAttribute(x) != null);
     return typ ? typ : 'info'
