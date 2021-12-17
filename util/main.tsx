@@ -361,6 +361,16 @@ function Editor() {
          * over here.
          */
         const m = new Array(10).fill(0).map((x, i) => 2 * i);
+        class WordCount extends HTMLParagraphElement {
+            constructor() {
+              // Always call super first in constructor
+              super();
+          
+              // Element functionality written in here
+          
+              ...
+            }
+          }
         `)} />
         </Docs>
     </div>
