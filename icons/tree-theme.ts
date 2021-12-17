@@ -15,7 +15,7 @@ const getDefaultThemeStyling = (theme: Base16Theme): StylingConfig => {
   return {
     tree: (s: any) => {
       return {
-        style: {...s.style, margin: undefined, padding: undefined, background: '#282c34'},
+        style: {...s.style, margin: undefined, padding: undefined},
         className: 'vf-tree',
       };
     },

@@ -38,6 +38,14 @@ export class Table extends Slottable {
       //@ts-ignore
       return ([...c.parentElement.children] as HTMLElement[]).findIndex(x => x === c)
     }
+    const ancestorPos = (c: HTMLElement, anc: string, selfSelector?: string): number => {
+      if(selfSelector) {
+        //@ts-ignore
+        return [...c.closest(anc).querySelectorAll(selfSelector)].findIndex(x => x === c);
+      }
+      //@ts-ignore
+      return c.closest(anc).findIndex(x => x === c)
+    }
 
     type El = HTMLElement
     const sortHandler = (e: MouseEvent) => {
@@ -50,11 +58,11 @@ export class Table extends Slottable {
       if (!row) return
 
       // find location of row in respect to table
-      const rowIndex = parentPos(row)
+      const rowIndex = ancestorPos(row, "table", "tr")
       if (rowIndex !== 0) return;
 
       // get the column that belongs to the clicked element
-      let col = (e.target as El).closest('td')
+      let col = (e.target as El).closest('td,th')
       if (!col) return
       
       // find location of column in respect to table
@@ -123,8 +131,11 @@ export class Table extends Slottable {
 
     if (!this.everSorted && this.slottedByTag("", "table").length > 0) {
       let idx = parseInt(this._autosort.toString());
-      if(!isNaN(idx) && idx >= 0)
-      this.headerColByIndex(idx).click()
+      if(!isNaN(idx) && idx >= 0) {
+        const col = this.headerColByIndex(idx);
+        if(col)
+        col.click()
+      }
     }
 
     this.slotMutations()
@@ -156,7 +167,7 @@ export class Table extends Slottable {
   }
 
   setupSelect() {
-    const hasSelect: boolean = document.querySelector('.vf-checkbox') !== null;
+    const hasSelect: boolean = this.querySelector('.vf-checkbox') !== null;
     if(!hasSelect) {
       const checkbox = (selectAll?: boolean) => {
         const checkCol = document.createElement('td');
@@ -184,8 +195,8 @@ export class Table extends Slottable {
   }
 
   headerColByIndex(n: number) : HTMLElement {
-    const i = n + (this._selectable ? 2 : 1);
-    return this.querySelector(`tr:first-child>td:nth-child(${i})`) as HTMLElement;
+    const i = n + (this._selectable ? 1 : 0);
+    return [...this.querySelector(`tr:first-child`)!.querySelectorAll(`td,th`)][i] as HTMLElement;
   }
 
   everSorted = false

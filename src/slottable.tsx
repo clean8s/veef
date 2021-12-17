@@ -22,7 +22,8 @@ export function fnCall(bindThis: any, source: string, ...args: any[]): any {
  * where h is preact/htm 
  */
 export function fnCallSetup(bindThis: any, source: string) : any {
-  return new Function('h', `let code = (${source}); return code(h)`).bind(bindThis)(html)
+  let src = source.trim().replace(/;+$/, "");
+  return new Function('h', `let code = (${src}); return code(h)`).bind(bindThis)(html)
 }
 
 export function rawExecute(bindThis: any, source: string) : any {
@@ -47,7 +48,7 @@ export function literalOrString(src: string) : string | boolean | number | objec
     try {
       return JSON.parse(src)
     } catch (e) {
-      console.error(e)
+      // console.error(e)
     }
     return src
   }
@@ -102,6 +103,7 @@ export class Slottable extends HTMLElement {
   slotSetup(root: HTMLElement, updateCb: SlotCallback) {
     let slots = [...root.querySelectorAll('slot')];
     slots.map(slot => {
+      if(slot.name === "h") return;
       slot.addEventListener('slotchange', e => this.handleSlot(e as SlotEvent, updateCb))
       this.handleSlot({ target: slot }, updateCb)
     })

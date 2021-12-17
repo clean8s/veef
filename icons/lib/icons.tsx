@@ -131,6 +131,7 @@ const LibraryUnordered = {
   'Help': sized(Help),
   'Error': sized(Error),
   'Disabled': sized(Disabled),
+  'Preview': sized(matIcons.icon_visibility),
   'CreditCard': sized(CreditCard),
   'Key': sized(Key),
   'Lock': sized(Lock),

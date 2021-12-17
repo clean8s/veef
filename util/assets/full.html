@@ -19,18 +19,25 @@
     <style>
 /* You DON'T need this. This is the documentation CSS, not the components! */
 body { line-height: 1.5; tab-size: 4; font-size: 16px; color: rgb(31, 41, 55);
+    font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;
     margin: 0; padding: 0; } * { box-sizing: border-box; -webkit-font-smoothing: antialiased; text-rendering: optimizelegibility; }
-* {font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;}
     p { margin: 10px 0 30px;} aside { background: #eaeaea; padding: 20px; } a { text-decoration: none; color: #3366CC;}
-code { font-family: ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace;}
+input { font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;}
+    code { font-family: ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace;}
 header { background: hsl(var(--color-hs) 50%); position: sticky; inset: 0; bottom: auto; color: #fff; z-index: 40; padding: 5px 0; font-weight: 600; letter-spacing: 0.05em;}
 body {
     --sidebar: 200px;
     padding-left: var(--sidebar);
 }
 .container { width: 90%; max-width: 1000px; margin: 0 auto; } .showcase { clear: both; }
+.element-docs { padding: 2.5rem 0; }
+.element-docs:nth-child(2n)>div>h2>span { color: #999; }
+.element-docs>div>h2>span { color: #777; }
+.element-docs:nth-child(2n) { background: #222; } 
+.element-docs:nth-child(2n)>div>h2 { color: #fff; } 
+.element-docs:nth-child(2n)>div>v-tabs { display: block; background: #fff; border-radius: 10px; }
 .showcase>div, #icon-notice {scroll-margin-top: 5em;} .guide h2 { scroll-margin-top: 3em; }
-.showcase h2 { font-size: 2em; margin: 40px 0 5px; font-weight: 400; }
+.showcase h2 { font-size: 2em; margin: 0px 0 15px; font-weight: 400; }
 .showcase h3 { border-left: 4px solid #555; padding-left: 0.5em; font-size: 1.1em;font-weight: 500; margin: 5px 0 15px; color: #555; }
 main { display: flex; width: 100%; }
 main>*{ width: 50%; flex-basis: 50%; padding: 5px; }
@@ -142,7 +149,7 @@ body[data-theme="dark"] input.my-input {
         <h3 style="margin: 0 0 35px; font-size: 3rem; letter-spacing: -0.025em; line-height: 1; border: 0;">
             
             60KB component library based on the <strong>Web Components</strong> API
-            and <span style="color: #6633CC">preact</span>.
+            and <span>preact</span>.
             </h3>
                 <v-grid columns="3" class="pros">
                     <div>
@@ -165,14 +172,11 @@ body[data-theme="dark"] input.my-input {
     </div>
 
     <div class="container showcase pad y-2">
-    <v-grid columns="2" style="max-width: 600px; margin: 0 auto;">
-    <div style="text-align: center;"><a href="#guide-web-components" is="v-secondary" style="width: 100%;">
-        <v-icon name="RightChevron"></v-icon>
-        Learn the Web Components<br/>and preact syntax</a></div>
-    <div style="text-align: center;"><a href="#v-search" is="v-primary" style="width: 100%">
-        <v-icon name="RightChevron"></v-icon>
-        See the demos</a></div>
-    </v-grid>
+        <a href="#guide-web-components" is="v-secondary" style="width: 100%;">
+            <v-icon name="RightChevron"></v-icon>
+            Learn about Web Components</a>
+
+    </div>
 {% endtpl %}
 
 {% tpl "queen" %}
@@ -233,7 +237,8 @@ document.addEventListener("DOMContentLoaded", () => {
 {% endtpl %}
 
 {% tpl "footer" %}
-<div class="guide" style="font-size: 1.2em">
+<div class="container">
+    <div class="guide" style="font-size: 1.2em">
 <h2 id="guide-web-components">Web Components and preact</h2>
 Web Components are a suite of APIs that let you create elements that behave like usual HTML. You can read the specification <a href="https://developer.mozilla.org/en-US/docs/Web/Web_Components">here</a>.
 

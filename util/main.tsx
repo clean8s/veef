@@ -4,8 +4,26 @@ import {writeFileSync, readFileSync} from "fs"
 //@ts-ignore
 import prettyPrint from "pretty"
 import nunjucks from "nunjucks"
-const qq = '`'
 
+function Snippet(props: {code: string, height?: number}) {
+    props.code = dedent(props.code.replaceAll("~", "`")).replaceAll(/h'(.*?)'/g, (...groups: string[]) => {
+        return "h`" + groups[1].replaceAll("{", "${") + "`"
+    });
+    let S = "min-width: 300px;";
+    if(props.height)
+    S += "height: " + props.height + "px;";
+
+    return <>
+    <v-grid columns="2" style="align-items:start">
+        <v-editor language="html" style={S} value={props.code} onchange="this.nextElementSibling.nextElementSibling.innerHTML = this.value"></v-editor>
+        <div>
+        <span style="background:#eee; padding: 10px;margin: 0 auto;display: flex;"><v-icon name="Preview"></v-icon> Sandbox preview:</span>
+        <div dangerouslySetInnerHTML={{__html: props.code}}/>
+        </div>
+        </v-grid>
+        
+    </>
+}
 function Docs(props: {children?: any}) {
     return <>
     <div style="padding: 20px; font-size: 1.1em">
@@ -14,7 +32,8 @@ function Docs(props: {children?: any}) {
     </>
 }
 function DocSection(props: {children: any}) {
-    return <h2 style="text-align: left; padding-left: 15px; margin: 10px 0; font-size: 1.3em; border-left: 5px solid var(--color);">{props.children}</h2>
+    return <h2 style="text-align: left; padding-left: 15px; margin: 10px 0; font-size: 1.3em; border-left: 5px solid var(--color);">
+        {props.children}</h2>
 }
 
 function DocAttr(props: {name: string, type: string, children: any}) {
@@ -102,22 +121,24 @@ tbl.addEventListener('rowselect', (e) => {
 </div>
 <div class="t2">
     <Docs>
-    <DocSection>Putting your &lt;table&gt; in v-table</DocSection>
-    To make your table interactive, you need to put your table as a child:
-    {code(`
-    <v-table>
-      <table>
-        <tr>
-          <th>Col 1</th>
-          <th>Col 2</th>
-        </tr>
-        <tr>
-          <th>Row 1, 1</th>
-          <th>Row 1, 2</th>
-        </tr>
-      </table>
-    </v-table>
-    `)}
+        <Snippet code={`
+    <v-table selectable sortable>
+    <table>
+      <tr>
+        <th>Col 1</th>
+        <th>Col 2</th>
+      </tr>
+      <tr>
+        <td>A</td>
+        <td>B</td>
+      </tr>
+      <tr>
+        <td>C</td>
+        <td>D</td>
+      </tr>
+    </table>
+  </v-table>
+        `} />
     <DocSection>Selection event</DocSection>
     You can use JavaScript to detect when a row is selected with the <code>rowselect</code> event.
     A list of all rows is available in <code>event.detail</code>.
@@ -131,15 +152,33 @@ tbl.addEventListener('rowselect', (e) => {
     });
     </script>
     `)}
+    <DocSection>Attributes / props</DocSection>
+    <strong>selectable</strong>: adds a checkbox for selecting rows <br/>
+    <strong>sortable</strong>: sorts a column when you click on its header <br/>
+    <strong>autosort="number"</strong>: the default column to sort by when the table is loaded <br/>
+    <DocSection>Custom comparison</DocSection>
+    <Snippet height={380} code={`
+    <v-table selectable sortable>
+    <table>
+    <tr><th>Col</th></tr>
+    <tr><td> </td></tr>
+    <tr><td>HE</td></tr>
+    <tr><td>WOR</td></tr>
+    <tr><td>LLO</td></tr>
+    <tr><td>LD</td></tr>
+    </table>
+    <script slot="h">
+        h => {
+        let no = {HE: 0, LLO: 1, " ": 2, WOR: 3, LD: 4};
+        this.compare = (a, b) => { // -1 if <, 1 if > and 0 if ==
+            return no[a.innerText] < no[b.innerText] ? 1 : -1;
+        }
+        this.querySelector("th").click();
+        };
+    </script>
+    </v-table>
+    `} />
     </Docs>
-    Event: <br/>
-    <strong>rowselect:</strong> activated on any checkbox click and has <code>e.detail</code> which is <code>HTMLTableRow[]</code>. <br/>
-    <hr />
-    Attributes: <br/>
-    <strong>selectable</strong> <br/>
-    <strong>sortable</strong> <br/>
-    <strong>autosort="column index"</strong><br/>
-    Custom sort: <code>data-sort</code>
 </div>
 </>
 }
@@ -238,11 +277,11 @@ function Alert() {
     <div>
         <Docs>
             To display an alert:
-            {code(`
+            <Snippet code={`
             <v-alert success>Some HTML here</v-alert>
             <v-alert warning>Some HTML here</v-alert>
             <v-alert error>Some HTML here</v-alert>
-            <v-alert info>Some HTML here</v-alert>`)}
+            <v-alert info>Some HTML here</v-alert>`} height={120}/>
             <DocSection>Toasts</DocSection>
             Toasts are a special kind of alerts displayed in the bottom right corner of the screen
             for a limited amount of time.
@@ -289,7 +328,7 @@ function App() {
     </nav>
 
     <Component name="v-search" C={Search} info="smart fuzzy autocomplete" nocustom/>
-    <Component name="v-table" C={Table} info="enhances any <code>table</code>, <code>tr</code>, <code>td</code>" rawinfo={true} />
+    <Component name="v-table" C={Table} info="sortable and checkable datatable" rawinfo={true} />
     <Component name="v-dialog" C={Dialog} info="modals over the screen" />
     <Component name="v-tree" C={Tree} info="collapse/expand nested JSON" />
     <Component name="v-alert" C={Alert} info="info boxes and toasts" />
@@ -318,28 +357,28 @@ function Tree() {
      
          </div>
         <div class="t2">
-            The most simple way to use it is to supply a JSON string as an attribute:
-            <v-code lang="html">
-                {`
-                <v-tree data='{"some":"json"}'></v-tree>
-                `}
-            </v-code>
-            You can also flip the color scheme by setting the dark attribute:
-            <v-code lang="html">
-                {`
-                <v-tree dark data='{"some":"json"}'></v-tree>
-                `}
-            </v-code>
-            <v-code lang="html">
-            {`
-            <script>
-            {
-              tree.data = {a: 5};
-              tree5.renderLabel = (handler) => {
-            }
-            </script>
-            `}
-            </v-code>
+            <Docs>
+                <DocSection>Simple JSON tree</DocSection>
+            <Snippet code={`
+            <v-tree dark data='{
+                "some":"json", "here": [1, 2],
+                "nested": {"banana": true, "apple": false}}
+            '></v-tree>
+            `} height={100} />
+            <DocSection>Custom labels</DocSection>
+            <Snippet code={`
+            <v-tree data='{
+                "some":"json", "here": [1, 2],
+                "nested": {"banana": true, "apple": false}}
+            '>
+             <script slot="h">
+                (h) => {
+                    this.renderLabel = (el) => h'DEMO {el.path[0]}';
+                }
+             </script>
+            </v-tree>
+            `} />
+            </Docs>
             </div></>
 }
 
@@ -403,20 +442,21 @@ function Dialog() {
      </div>
      <div>
          <Docs>
-             The only thing needed to make a dialog is the HTML inside it.
-             Example:
-        {code(`
-        <v-dialog id="myDialog">
-        This is a <b>dialog</b>
-        </v-dialog>
-        `)}
-        <DocSection>Opening/closing a dialog</DocSection>
-        In order to open a dialog you can either use the <code>open="1"</code> HTML attribute or
-        the <code>element.open</code> JavaScript property:
-        {code(`
-        document.getElementById('myDialog').open = true;
-        // or <v-dialog open="true" ...
-        `, 'javascript')}
+             <Snippet code={`
+                         <v-dialog id="dl1">
+                         <v-icon name="Delete" data-veef="message"></v-icon>
+                         <div>
+                           <h1>Some title</h1>
+                           <h3>Put some content here.</h3>
+                         </div>
+                         <section slot="actions">
+                            <button is="v-primary" onclick="d1.open = false">Okay</button>
+                            <button is="v-secondary" onclick="d1.open = false">Meh</button></section>
+                       </v-dialog>
+                       <button is="v-primary"
+                            onclick="dl1.open = true">Open</button>
+             `} height={350} />
+             
         <DocSection>Styling</DocSection>
         The <code>v-dialog</code> element uses the original style of the children you pass to it, and then centers the
         children evenly. <br/>
@@ -495,18 +535,20 @@ function Component(props: {name: string, C: FunctionComponent, info?: string, no
         //@ts-ignore
         hinfo = <span dangerouslySetInnerHTML={{__html: props.info}}></span>;
     }
-    return <div id={props.name}><h2><b>{'<' + props.name + '>'}</b> <span style="color: #777; font-size: 1.3rem">{hinfo}</span></h2>
+    return  <div id={props.name} class="element-docs">
+    <div class="container showcase">
+        <h2><b>{'<' + props.name + '>'}</b> <span style="font-size: 1.3rem">{hinfo}</span></h2>
     <v-tabs via="style">
     <button slot="tab" role="tab">
         <v-icon name="Bolt"></v-icon> Demo
     </button>
     {props.nocustom ? null : 
     <button slot="tab" role="tab">
-        <v-icon name="Code"></v-icon> Code & component docs
+        <v-icon name="Code"></v-icon> Code / sandbox
     </button>}
 
         <props.C/>
-        </v-tabs></div>
+        </v-tabs></div> </div>
 }
 
 function page() {
@@ -595,4 +637,58 @@ function Template(props: {template: string, tagName?: string, context?: object} 
     let Tag = tagName || fallback;
     const tpl = env.render(template, context || {})
     return <Tag dangerouslySetInnerHTML={{__html: tpl }} {...rest}></Tag>
+}
+
+/**Given a Node.textContent, de-indents the
+ * source code such that you can freely indent your HTML:
+ * <code>
+ *    const x = 1          <=>    <code>const x = 1</code>
+ * </code>
+ */
+function dedent(code: string) : string {
+let nonSpace = [...code].findIndex(x => !x.match(/\s/));
+if (nonSpace === -1) {
+    // No non-space characters
+    return code
+}
+
+// The first newline is considered redundant
+// because source usually looks like this:
+//
+// <code>
+// code begins here
+// </code>
+if(code.startsWith('\n')) { 
+    code = code.substring(1);
+    nonSpace--;
+}
+
+const weight = (spc: string): number => {
+    return spc.split('').reduce((acc, x) => {
+    if (x === '\t') acc+= 4;
+    else if(x.match(/\s/)) acc++;
+    return acc
+    }, 0)
+};
+
+const detectedSpace = code.substring(0, nonSpace);
+const detectedWeight = detectedSpace.split('\n').reduce((acc, x) => {
+    if (weight(x) > acc) acc = weight(x);
+    return acc
+    }, 0);
+
+// const detectedWeight = weight(detectedSpace);
+
+const restString = code.substring(nonSpace);
+return restString.split("\n").map(x => {
+    for(let i = 0; i < detectedWeight; i++) {
+    if(x.length > 0 && x[0].trim().length === 0) {
+        if(x[0] === '\t') {
+        i += 3;
+        }
+        x = x.substring(1);
+    }
+    }
+    return x;
+}).join("\n").trim()
 }

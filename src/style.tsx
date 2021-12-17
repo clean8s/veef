@@ -22,13 +22,40 @@ import { fnCall, fnCallSetup } from './slottable';
 //   }).filter(x => x != null).join("\n")
 // }
 
+let globalSlotReady : WeakMap<HTMLElement, boolean>;
+if(typeof window["globalSlotReady"] == "undefined") {
+  globalSlotReady = window["globalSlotReady"] = new WeakMap();
+} else {
+  globalSlotReady = window["globalSlotReady"];
+}
+
 const renderChain: typeof preactRender = (x, y) => {
   preactRender(<>
   {x}
   <slot name="script"></slot>
+  <slot name="h"></slot>
   </>, y);
   const thisBind = (y as ShadowRoot).host;
   const scriptSlot = y.querySelector(`slot[name="script"]`) as HTMLSlotElement;
+  const hSlot = y.querySelector(`slot[name="h"]`) as HTMLSlotElement;
+  
+
+  let lastTimeout: null | NodeJS.Timeout = null;
+  if(!globalSlotReady.has(thisBind)) {
+  hSlot.addEventListener("slotchange", (e) => {
+    hSlot.assignedElements().map(x => {
+      const src = x.textContent.trim();
+      if(src?.endsWith("<") || src.endsWith("/") || src.endsWith(">")) {
+        return;
+      }
+      fnCallSetup(thisBind, src)
+      // }
+    })
+    // fnCallSetup()
+  })
+  globalSlotReady.set(thisBind, true);
+  }
+  
 
   scriptSlot.addEventListener('slotchange', (e) => {
     const slotEls = scriptSlot.assignedNodes();

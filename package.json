@@ -12,6 +12,7 @@
     "@material-design-icons/svg": "^0.10.4",
     "@types/clean-css": "^4.2.5",
     "@types/glob": "^7.2.0",
+    "@types/prismjs": "^1.16.6",
     "@windicss/plugin-utils": "^1.5.3",
     "clean-css": "^5.2.2",
     "glob": "^7.2.0",
