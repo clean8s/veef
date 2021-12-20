@@ -265,7 +265,6 @@ class SearchField extends Slottable {
       <div class='flex flex-col relative input-wrapper-root'>
         <div part="input-wrapper" class='flex input-wrapper imp'>
           <slot name='input'>
-          <input type="text" id="default" part="defaultinput" placeholder="Search..." slot="input"/>
             </slot>
 
           <button part="right-button" class='cursor-pointer w-auto flex rounded-r justify-end items-center text-blue-500 p-2 hover:text-blue-400 right-button'>

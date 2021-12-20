@@ -8,16 +8,6 @@ declare module "*.css" {
     export default content;
 }
 
-
-// //@ts-ignore
-// import PrismJS from "@types/prismjs"
-// import Prism = PrismJS;
-
-// declare module "prism-es6" {
-//     export var highlight : typeof PrismJS.highlight;
-//     export var highlightAll : typeof PrismJS.highlightAll;
-// }
-
 declare module 'color-string' {
     export function toHex(color: string): string;
     export type Color = string;

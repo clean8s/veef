@@ -1,7 +1,6 @@
 
 import {Tabs } from "./tabs"
-import { Alert } from './alert'
-import { Code } from './codehl'
+import { Alert, Dropdown } from './alert'
 import { Dialog } from './dialog'
 import { Table } from './table'
 import { Tree } from './tree'
@@ -12,7 +11,7 @@ import htm from 'htm'
 export const html = htm.bind(preactH)
 
 
-export {Tree, Dialog, Table, Alert, Code, Tabs, VeefElement, Editor};
+export {Tree, Dialog, Table, Alert, Tabs, VeefElement, Editor};
 
 export function loadComponents(extra: Record<string, CustomElementConstructor>) {
   customElements.define('v-tree', Tree)
@@ -22,9 +21,9 @@ export function loadComponents(extra: Record<string, CustomElementConstructor>) 
   customElements.define('v-dialog', Dialog)
   customElements.define('v-table', Table)
   customElements.define('v-alert', Alert)
-  customElements.define('v-code', Code);
   customElements.define('v-tabs', Tabs);
   customElements.define('v-editor', Editor);
+  customElements.define('v-dropdown', Dropdown);
 
   customElements.define('v-controls', class extends HTMLElement {
     constructor() {

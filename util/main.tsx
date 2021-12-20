@@ -5,19 +5,64 @@ import {writeFileSync, readFileSync} from "fs"
 import prettyPrint from "pretty"
 import nunjucks from "nunjucks"
 
-function Snippet(props: {code: string, height?: number}) {
+function Dropdown() {
+    return <>
+    <div>
+        <Docs>
+            <Template template="dropdemo" tagName="div" />
+        
+        </Docs>
+    </div>
+    <div>
+        <Docs>
+            <h3>A basic example</h3>
+            <Snippet width={170} code={`
+                    <v-dropdown>
+                        <select onchange="selectedInfo.innerText = 'change event: ' + this.value">
+                            <option>Some option</option>
+                            <option>Another option</option>
+                        </select>
+                    </v-dropdown> <br/><br/>
+                    <div id="selectedInfo">onchange will appear here</div>
+            `} />
+            <h3>Custom rendering</h3>
+            To modify how an option is rendered, you need to define the <code>.transform(option, idx)</code> function.
+            <br/>
+            This react(ive) function should return a node using the <code>h`{"<b>${1+1}</b>"}`</code> <strong>literal syntax</strong>.
+            <br/>
+
+            <Snippet width={170} code={`
+            <v-dropdown>
+            <select>
+                <option value="opt1">One like</option>
+                <option value="opt2">Two</option>
+                <option value="opt2">Three</option>
+            </select>
+            <script slot="h">
+            (h) => {
+                this.transform = (x, idx) => h'<v-icon name="Like" /> {x}'
+            };
+            </script>
+            </v-dropdown>
+            
+            `} />
+        </Docs>
+    </div>
+    </>
+}
+function Snippet(props: {code: string, width?: number, height?: number}) {
     props.code = dedent(props.code.replaceAll("~", "`")).replaceAll(/h'(.*?)'/g, (...groups: string[]) => {
         return "h`" + groups[1].replaceAll("{", "${") + "`"
     });
-    let S = "min-width: 300px;";
+    let S = `min-width: 300px;`;
     if(props.height)
     S += "height: " + props.height + "px;";
 
     return <>
     <v-grid columns="2" style="align-items:start">
         <v-editor language="html" style={S} value={props.code} onchange="this.nextElementSibling.children[1].innerHTML = this.value"></v-editor>
-        <div>
-        <span style="background:#eee; padding: 10px;margin: 0 auto;display: flex;"><v-icon name="Preview"></v-icon> Sandbox preview:</span>
+        <div style={typeof props.width == 'undefined' ? "" : "max-width:" + (props.width) + "px" }>
+        <span style="background:#eee; padding: 10px;margin: 0 auto 15px;display: block;"><v-icon name="Preview"></v-icon> Sandbox preview:</span>
         <div dangerouslySetInnerHTML={{__html: props.code}}/>
         </div>
         </v-grid>
@@ -330,14 +375,15 @@ function App() {
                     <v-icon class="ptr" onclick="document.body.classList.toggle('N')" style="color: #000; width: 20px; height: 20px;" name="Close"></v-icon>
                 </div>
                 </v-grid>
-        {["search", "table", "dialog", "tree", "alert", "tabs", "icon", "utilities"].map(x => <a href={
-            (x == 'utilities' ? '#' : '#v-') + `${x}`}><v-icon name="Bolt" />{x == 'utilities' ? "" : "v-"}{x}</a>)}
+        {["v-search", "v-table", "v-dialog", "v-tree", "v-alert", "v-tabs", "v-icon", "v-editor", "utilities"].map(x => <a href={`#${x}`}>
+            <v-icon name="Bolt" />{x}</a>)}
         <a href="#guide-web-components"><v-icon name="Help" /> Guide to Web Components</a>
         <a>Licensed under MIT.</a>
         
     </nav>
 
     <Component name="v-search" C={Search} info="smart fuzzy autocomplete" nocustom/>
+    <Component name="v-dropdown" C={Dropdown} info="enhance your <select>"/>
     <Component name="v-table" C={Table} info="sortable and checkable datatable" rawinfo={true} />
     <Component name="v-dialog" C={Dialog} info="modals over the screen" />
     <Component name="v-tree" C={Tree} info="collapse/expand nested JSON" />
@@ -514,23 +560,6 @@ function Dialog() {
                             onclick="dl1.open = true">Open</button>
              `} height={350} />
              
-        <DocSection>Styling</DocSection>
-        The <code>v-dialog</code> element uses the original style of the children you pass to it, and then centers the
-        children evenly. <br/>
-
-        It can also center and stretch buttons for actions, which can be done using the slot <code>slot="actions"</code>. A full example
-        with icons, text and actions:
-        {code(`
-                    <v-dialog id="d1">
-                    <v-icon name="Delete" data-veef="message"></v-icon>
-                    <div>
-                      <h1>Some title</h1>
-                      <h3>Arbitrary HTML. The border on the left happens because the host page has full control over the styling of the dialog (which happens to add a border) while the rest is controlled by veef.</h3>
-                    </div>
-                    <section slot="actions">
-                      <button primary onclick="d1.open = false">Okay</button>
-                      <button onclick="d1.open = false">Meh</button></section>
-                  </v-dialog>`)}
         
         </Docs>
      </div>
@@ -545,6 +574,15 @@ function Search() {
     ]
     return <><div>
         <div style="margin: 50px auto; max-width: 500px; font-size: 1.2rem;">
+{/* 
+            <v-dropdown>
+                Pick something
+                <v-item slot="option">
+                    <v-icon name="Github" />
+                    Kurac
+                </v-item>
+                </v-dropdown> <br/> */}
+
             This <code>v-search</code> has 50 Queen songs that it autocompletes.
             You can type <strong>bo<span style="color: red">eh</span>man</strong> and you'll
             still find <strong>Bohemian Rhapsody</strong>!

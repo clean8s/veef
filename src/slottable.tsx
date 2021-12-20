@@ -54,6 +54,27 @@ export function literalOrString(src: string) : string | boolean | number | objec
   }
 }
 
+export function Props<T>(propList: string[], callbackName?: string) {
+  return (oldClass: any) => {
+    propList.map(x => {
+      Object.defineProperty(oldClass.prototype, x, {
+        get() {
+          return this["_" + x];
+        },
+        set(val: any) {
+          this["_" + x] = val;
+          if(callbackName) {
+            this[callbackName]()
+            // cb(this as T, val);
+          }
+          // this.setupSuper("_" + x, val)
+        }
+      })
+    });
+    return oldClass;
+  };
+}
+
 /** A decorator for accepting attributes and props automatically */
 export function Attrs<T extends new (...m: any[]) => HTMLElement >(attrList?: string[], autoProps?: string[]) {
   return (SomeClass: T) : any => {
@@ -93,6 +114,7 @@ export function Attrs<T extends new (...m: any[]) => HTMLElement >(attrList?: st
 }
 
 import React from 'react'
+import { Transformable } from './transformable'
 type SlotEvent = {target: EventTarget & HTMLSlotElement | null}
 type SlotCallback = () => void;
 
@@ -110,6 +132,8 @@ export class Slottable extends HTMLElement {
   }
 
   slottedNodes: Map<string, { elements: HTMLElement[], texts: Text[]}> = new Map();
+  trackedNodes: WeakMap<HTMLElement, boolean> = new WeakMap();
+  
 
   public slottedAny(slotName: string): HTMLElement[] {
     const nodes = this.slottedNodes.get(slotName)
@@ -126,6 +150,7 @@ export class Slottable extends HTMLElement {
   handleSlot(e: SlotEvent, fn: SlotCallback) {
     const slot = e.target
     if(slot === null) return;
+
     const slottedTexts: Text[] = slot.assignedNodes({flatten: true}).filter(x => x.nodeType === Node.TEXT_NODE) as Text[]
     const slottedEls: HTMLElement[] = slot.assignedElements({flatten: true}) as HTMLElement[];
     this.slottedNodes.set(slot.name, {
@@ -138,40 +163,6 @@ export class Slottable extends HTMLElement {
   public htm(fn: (h: any)=>any) {
     return fn(html);
   }
-  
-    /**Parse attribute string to a likely more useful thing.
-   * basic JS literals get JSON.parse'd, empty attribute
-   * is considered a flag and is returned as true.
-  */
-     attributeChangedCallback(key: string, _: any, newVal: string) {
-       const props = Object.getPrototypeOf(this);
-       const names = Object.getOwnPropertyNames(props);
-       const prop = names.find(x => x.toLowerCase() === key);
-       
-       if(!prop) {
-         return
-       }
-       
-      if (typeof newVal === 'string' && newVal.trim().length === 0) {
-        //@ts-ignore
-        this[prop] = true
-      } else {
-        let err = false;
-        let jVal = newVal.trim()
-        try {
-          jVal = JSON.parse(newVal)
-        } catch (e) {
-          err = true;
-        }
-        if(!err) {
-          //@ts-ignore
-          this[prop] = jVal;
-        } else {
-          //@ts-ignore
-          this[prop] = fnCallSetup(this, `(h) => (${newVal.trim()})`)
-        }
-      }
-    }
 }
 
 /** A custom Element that handles slotting templates. */

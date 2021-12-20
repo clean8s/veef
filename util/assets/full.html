@@ -11,9 +11,7 @@
     <meta property="og:image" content="https://clean8s.com/veef/og.png" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="https://fonts.googleapis.com/css2?family=Fira+Code&amp;family=Inter:wght@200;400;500;600&amp;display=swap" rel="stylesheet">
-    <script>
-        let exports = {};
-    </script>
+
     <script src="dist/index.js?v5"></script>
     <title>veef: 60KB Web Components </title>
     <style>
@@ -152,13 +150,12 @@ body[data-theme="dark"] input.my-input {
             <div class="container">
         <h3 style="margin: 0 0 35px; font-size: 3rem; letter-spacing: -0.025em; line-height: 1; border: 0;">
             
-            60KB component library based on the <strong>Web Components</strong> API
-            and <span>preact</span>.
+            60KB component library based on the <strong>Web Components</strong> API.
             </h3>
                 <v-grid columns="3" class="pros">
                     <div>
                         <v-icon name="Star"></v-icon>
-                        100+ icons and styles built into the Shadow DOM.</div>
+                        <span>Works with <strong>any framework.</strong></span></div>
                         
                 <div><v-icon name="Html5"></v-icon> The content remains readable without JavaScript!</div>
                 <div><v-icon name="Cube"></v-icon> No build process, npm or transpiling needed. </div>
@@ -175,6 +172,70 @@ body[data-theme="dark"] input.my-input {
         </div>
     </div>
 
+{% endtpl %}
+
+{% tpl "dropdemo" %}
+<div style="text-align: center">
+This is <strong>a standard</strong> <code>&lt;select&gt;</code> wrapped in <code>&lt;v-dropdown&gt;</code>:
+
+<div style="text-align: center; margin: 2rem 0;">
+<v-dropdown>
+    <select onchange="curval.innerText = '\'' + this.value + '\''">
+        <option value="copy">Some copy operation</option>
+        <option value="bolt">A bolt</option>
+    </select>
+    <script slot="h">
+        h => {
+            this.transform = (x, idx) => h`<v-icon style='color: orange' name=${idx > 0 ? 'Bolt' : 'Copy'}/> ${x}`
+        }
+    </script>
+</v-dropdown>
+<small style="margin-left: 1em; color: #999;">this.value = <strong id="curval">'copy'</strong></small>
+</div>
+
+    Enhance the component with <strong>custom rendering logic</strong> if JS is enabled: 
+    <div style="text-align: center; margin: 2rem 0;">
+    <span id="dropdemo"></span>
+
+<v-dropdown>
+    <select>
+        <option value="opt1">Some counter: 0</option>
+        <option value="opt2">Some counter: 0</option>
+        <option value="opt2">Some counter: 0</option>
+    </select>
+    <script slot="h">
+        h => {
+            let i = 1;
+            setInterval(() => {
+                this.transform = (x, idx) => h`<strong> ${(i * (idx + 1)).toString()}</strong> <span style="color: #999">Counter</span>`
+                i++;
+                i %= 20;
+            }, 500);
+        }
+    </script>
+</v-dropdown>
+</div>
+You can style the Shadow DOM using the <code>::part</code> CSS selector:
+<div style="margin: 2rem auto">
+    <v-dropdown id="styled">
+        <select>
+            <option>Item number one</option>
+            <option>Item number two</option>
+            <option>Item number three</option>
+            <option>Item lorem</option>
+            <option>Item opsum</option>
+        </select>
+    </v-dropdown>
+    <style>
+        #styled::part(select) {
+            background: #FF6600;
+            border-color: #BF4600;
+            color: #fff;
+        }
+    </style>
+    
+</div>
+</div>
 {% endtpl %}
 
 {% tpl "queen" %}
@@ -257,13 +318,13 @@ The most important parts to know are:
 A single component can contain children that are placed at different places. For example,
 you could program a dialog component can have a title part, a content part and action buttons:
 <br/><br/>
-<v-code lang="html">
+<v-editor language="html">
     &lt;some-dialog&gt;
       &lt;div slot="title" class="mytitle"&gt; Dialog title &lt;/div&gt;
       &lt;div slot="content"&gt; ..  &lt;/div&gt;
       &lt;input slot="button" type="button"&gt; Cancel &lt;/input&gt;
     &lt;some-dialog&gt;
-</v-code>
+</v-editor>
 <br/>
 To specify where you want to put a child, you use the <code>slot=""</code> attribute. That
 attribute is supported on all tags in the browser.
@@ -274,25 +335,29 @@ By default, all elements in a page have an empty string <code>""</code> as the d
         in the final product.</li>
 </ul>
 
-<h3>preact syntax</h3>
+<h3>preact <code>h``</code> syntax</h3>
 <strong>Some of the slots in veef</strong> accept preact code. <a href="https://preactjs.com/">preact</a> is a 3KB library based around the React API
 for building user interfaces.
 <br/><br/>
 It can be used in webpages without transpiling using <strong>HTM template literals</strong> as
 <a href="https://preactjs.com/guide/v10/getting-started/#alternatives-to-jsx">described in their tutorials</a>.
 For example, if you want to render a list of strings in your browser using preact + htm, they suggest using this:
-<br/>
-<v-code lang="html">
-&lt;script type="module"&gt;
-import { html as h, render } from 'https://unpkg.com/htm/preact/standalone.module.js'
-let strs = ["one", "two", "three"];
-let content = strs.map(str => {
-    return h`&lt;li&gt;${str}&lt;/li&gt;`
-})
+<br/><br/>
+<v-editor language="html">
+&lt;script slot="h"&gt;
+(h) => {
+     // The code inside this function
+     // gets run after the element is set up.
 
-render(h`&lt;ul&gt;${content}&lt;/ul&gt;`, document.body);
+     // You have access to the 'h' literal,
+     // and you can use it to supply custom reactive nodes.
+
+     this.someFunction = () => h`&lt;div /&gt;`
+
+};
 &lt;/script&gt;
-</v-code>
+</v-editor>
+<br/>
 Notes about preact and HTM syntax:
 <ul>
     <li>All tags must be closed, <code>&lt;input&gt;</code> isn't allowed. However, you can use <code>&lt;input /&gt;</code></li>
@@ -304,22 +369,6 @@ Notes about preact and HTM syntax:
 veef already ships with the imports from the previous example, but you can use them outside too.
 <br/>
 <br/>
-<h3>htm and preact outside of slots</h3>
-To play with <code>h</code> outside slots, you can use the global <code>Veef.with()</code> static method.
-(In the future this may only be available via the
-<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/import">Web Module import syntax</a>):
-<v-code lang="html">
-    &lt;script&gt;
-    Veef.with(h => {
-        let content = h`&lt;ul&gt;
-            &lt;li&gt;one&lt;/li&gt;
-            &lt;li&gt;two&lt;/li&gt;
-            &lt;li&gt;three&lt;/li&gt;
-        &lt;/ul&gt;`
-        Veef.render(content, document.body);
-    })
-    &lt;/script&gt;
-</v-code>
 </div>
 
 <script>

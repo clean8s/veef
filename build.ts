@@ -3,7 +3,7 @@ const fs = require('fs')
 const path = require('path')
 import { createUtils, UserOptions } from '@windicss/plugin-utils'
 
-async function generateStyles(html: string) {
+async function generateStyles(html: string, preflight?: boolean, asSheet?: boolean) {
   let K = createUtils()
   await K.ensureInit()
   let out = await K.applyExtractors(html)
@@ -18,11 +18,18 @@ async function generateStyles(html: string) {
   
   // Process the html classes to an interpreted style sheet
   const interpretedSheet = processor.interpret(htmlClasses).styleSheet
+  if(asSheet === true) {
+    return interpretedSheet;
+  }
   
   // Build styles
   const APPEND = false
   const MINIFY = false
-  const styles = interpretedSheet.extend(preflightSheet, APPEND).build(MINIFY)
+  let sheet = interpretedSheet;
+  if(preflight !== false) {
+    sheet = sheet.extend(preflightSheet, APPEND);
+  }
+  const styles = sheet.build(MINIFY)
   
   //@ts-ignore
   return minifyCss(styles);
@@ -34,6 +41,7 @@ const minifyCss = (someCss: string) : string => {
 
 import { sync as globSync } from 'glob'
 import { readFileSync, writeFileSync } from 'fs'
+import { StyleSheet } from 'windicss/types/utils/style'
 
 type ResolveArgs = {importer: string, path: string};
 
@@ -42,9 +50,6 @@ let preactAlias = {
   setup(build: any) {
     let path = require('path')
 
-    // build.onStart(() => {
-    //   console.log(build)
-    // })
     
     let jsfiles = globSync('**/*.tsx', {
       dot: false,
@@ -56,10 +61,8 @@ let preactAlias = {
       const script: string = fs.readFileSync(args.importer as string, 'utf8');
       const iconList = Array.from(script.matchAll(/icon_[a-zA-Z0-9_-]+/g)).map((match: string[]) => {
         return match[0].replace('icon_', '')
-        // console.log(icon)
       })
 
-      // console.log(args)
       return {
         path: args.path.replace('virtual:', ''),
         namespace: 'material-icons',
@@ -76,9 +79,9 @@ let preactAlias = {
       }
     })
 
-    build.onLoad({filter: /veef.*?\.css/}, async (x: any) => {
-      return { contents: minifyCss(readFileSync(x.path, 'utf8')), loader: 'text' }
-    });
+    // build.onLoad({filter: /veef.*?\.css/}, async (x: any) => {
+    //   return { contents: minifyCss(readFileSync(x.path, 'utf8')), loader: 'text' }
+    // });
 
     build.onResolve({ filter: /^base16/ }, (args: ResolveArgs) => {
       return {
@@ -89,6 +92,31 @@ let preactAlias = {
       return {
         path: path.resolve("node_modules/prism-es6/prism.js")
       }
+    })
+
+    build.onLoad({filter: /vendor\.css/}, async (x: any) => {
+      const M = readFileSync(x.path, 'utf8');
+      const txt = await generateStyles(M, false) as string;
+      const txt2 = await generateStyles(M, false, true) as StyleSheet;
+
+
+      let newCss = '';
+      M.replaceAll(/\/\*\s*@windi\s*(.*?)\s*\*\/\s*(.*?) {/gms, (...groups: string[]) => {
+        const origSel = groups[2];
+
+        const selectors = groups[1].trim().split(" ");
+        newCss += selectors.map(sel => {
+          return (txt2.children.filter(x => {
+            if(x.selector!.replaceAll("\\", "").indexOf(sel) == -1) return false;
+            return true;
+          }).map(x => {
+            x.selector = origSel;
+            return x.build(false, false);
+          }).join("\n"))
+        }).join("\n");
+        return groups[0];
+      })
+      return { contents: minifyCss(readFileSync(x.path, 'utf8')) + newCss, loader: 'text' }
     })
 
     build.onLoad({ filter: /.*/, namespace: 'material-icons' }, async (x: {pluginData: string[]}) => {
@@ -138,7 +166,7 @@ const isDebug = 'watch' in opts;
 
 const SHOW_REPORT = false; // show stats about asset size
 
-([/*'esm',*/ 'cjs']).map(fmt => {
+([/*'esm',*/ 'iife']).map(fmt => {
   const outf = path.join(outputDir, 'index.' + (fmt == 'esm' ? 'mjs' : 'js'));
   console.log(`Building ${fmt} into ${outf}...`)
   require('esbuild').build({
