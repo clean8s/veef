@@ -134,25 +134,25 @@ function Table() {
     </tr>
     <tr>
         <td>3</td>
-        <td>20/01/2020</td>
+        <td>2020/01/20</td>
         <td data-sort="3"><v-icon style="color: #FF3333" name="CircleFilled"></v-icon></td>
         
     </tr>
     <tr>
         <td>5367</td>
-        <td>10/01/2020</td>
+        <td>2020/10/01</td>
         <td data-sort="4"><v-icon style="color: #CC0000" name="CircleFilled"></v-icon></td>
         
     </tr>
     <tr>
         <td>251</td>
-        <td>5/05/2022</td>
+        <td>2022/05/05</td>
         <td data-sort="2"><v-icon style="color: #FF9999" name="CircleFilled"></v-icon></td>
         
     </tr>
     <tr>
         <td>938141</td>
-        <td>01/01/1999</td>
+        <td>1999/01/01</td>
         <td data-sort="1"><v-icon style="color: #f5dada" name="CircleFilled"></v-icon></td>
         
         </tr>
@@ -215,7 +215,7 @@ tbl.addEventListener('rowselect', (e) => {
         h => {
         let no = {first: 1, second: 2, third: 3, fourth: 4};
         this.compare = (a, b) => { // -1 if <, 1 if > and 0 if ==
-            return no[a.innerText] < no[b.innerText] ? 1 : -1;
+            return no[a.innerText] < no[b.innerText] ? -1 : 1;
         }
         this.querySelector("th").click();
         };
@@ -344,6 +344,13 @@ function Alert() {
 
 function Utilities() {
     return <Docs>
+                <v-card style="max-width: 250px; margin: 0 auto 20px;">
+                    <strong>Some card</strong>
+                    <v-card-divider></v-card-divider>
+                    Some card content. <br/>
+                    Blah blah.
+                </v-card>
+
         <Snippet code={`
         <v-controls columns="2">
             <div>
@@ -358,10 +365,8 @@ function Utilities() {
                 <label>Something else</label>
                 <input>
             </div>
-            <div>
-                <label>&nbsp;</label>
-                <button is="v-primary">Action</button>
-            </div>
+
+            <button is="v-primary">Action</button>
         </v-controls>
         `} />
     </Docs>
@@ -375,7 +380,7 @@ function App() {
                     <v-icon class="ptr" onclick="document.body.classList.toggle('N')" style="color: #000; width: 20px; height: 20px;" name="Close"></v-icon>
                 </div>
                 </v-grid>
-        {["v-search", "v-table", "v-dialog", "v-tree", "v-alert", "v-tabs", "v-icon", "v-editor", "utilities"].map(x => <a href={`#${x}`}>
+        {["v-search", "v-table", "v-dialog", "v-tree", "v-alert", "v-tabs", "v-icon", "utilities", "v-editor"].map(x => <a href={`#${x}`}>
             <v-icon name="Bolt" />{x}</a>)}
         <a href="#guide-web-components"><v-icon name="Help" /> Guide to Web Components</a>
         <a>Licensed under MIT.</a>
@@ -390,9 +395,8 @@ function App() {
     <Component name="v-alert" C={Alert} info="info boxes and toasts" />
     <Component name="v-tabs" C={Tabs} info="clickable tabs"/>
     <Component name="v-icon" C={Icons} info="A small collection of icons" />
-    <Component name="v-editor" C={Editor} info="A Monaco-based editor" />
     <Component name="utilities" C={Utilities} info="tiny components" nocustom />
-    
+    <Component name="v-editor" C={Editor} info="A Monaco-based editor" />
     </>
 }
 
@@ -400,7 +404,10 @@ function Editor() {
     return <>
     <div>
         <Docs>
-        <h3 style="margin: 20px 0 30px;">Note: veef doesn't bundle the syntax engine, it is loaded dynamically via CDN when you include this tag. </h3>
+        <h3 style="margin: 20px 0 30px;"><strong>Note: the syntax engine isn't built-in</strong>, it is loaded dynamically via CDN when you include this tag. </h3>
+        Monaco, VS Code's engine is a very useful component for developer-oriented apps, but note that appending this component to your DOM will trigger
+        500KB of network requests.
+        <br/><br/>
         <v-editor value={dedent(`
         /*
          * Put some JavaScript

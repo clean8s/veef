@@ -26,7 +26,7 @@ customElements.define(
               let maybeLine = null;
               
               if(x === 'Youtube' || x === 'Close' || x == 'Github') maybeLine = <div class="separator" />
-              return <>{maybeLine}<div style='margin: 15px 15px;text-align: center'>
+              return <>{maybeLine}<div style='margin: 5px;text-align: center; width: 120px; flex-basis: 120px;'>
                 <v-icon name={x} style='width: 40px; height: 40px' />
                 <div class="allIconsLabel">{x}</div>
               </div></>

@@ -1,203 +1,81 @@
 import React from 'react'
 import { render } from './style'
-import { Attrs, Slottable, TmSlot } from './slottable'
+import { Attrs, Props, Slottable, TmSlot } from './slottable'
+import { Transformable } from './transformable';
 
-@Attrs(["selectable", "sortable"], ["selectable", "sortable", "compare"])
-export class Table extends Slottable {
-  root: HTMLElement
-  _selectable = false;
-  _sortable = false;
-  _autosort = 0;
+@Props(["compare"], "doRender")
+export class Table extends Transformable {
+  sortCol = 0;
+  asc = true;
   _compare = (el1: HTMLElement, el2: HTMLElement, colIndex: number) : number | undefined => {
-    if(colIndex !== 3) return undefined;
+    if(!el1.hasAttribute("data-sort") || !el2.hasAttribute("data-sort")) return undefined;
     //@ts-ignore
     return parseInt(el1.getAttribute("data-sort")) - parseInt(el2.getAttribute("data-sort"));
   }
-  
-  constructor() {
-    super()
-    this.root = this.attachShadow({ mode: 'open' }) as any as HTMLElement
-  }
-
-  connectedCallback() {
-    this.render()
-    this.slotSetup(this.root, () => this.render())
-  }
-
-  getTable(): HTMLElement {
-    return this.root.querySelector('#table') as HTMLElement
-  }
-
-  setActive(cell: HTMLTableCellElement) : void {
-    [...this.querySelectorAll('td,th')].forEach(x => x.classList.remove('vf-active'));
-    cell.classList.add('vf-active')
-  }
 
   render() {
-    const parentPos = (c: HTMLElement): number => {
-      //@ts-ignore
-      return ([...c.parentElement.children] as HTMLElement[]).findIndex(x => x === c)
-    }
-    const ancestorPos = (c: HTMLElement, anc: string, selfSelector?: string): number => {
-      if(selfSelector) {
-        //@ts-ignore
-        return [...c.closest(anc).querySelectorAll(selfSelector)].findIndex(x => x === c);
-      }
-      //@ts-ignore
-      return c.closest(anc).findIndex(x => x === c)
+    const nicerStr = (cell: HTMLTableCellElement) : string | number => {
+      if(cell.textContent === null) return "";
+      let N = parseFloat(cell.textContent.trim())
+      if(!isNaN(N)) return N;
+      return cell.textContent.trim();
     }
 
-    type El = HTMLElement
-    const sortHandler = (e: MouseEvent) => {
-      if(!this._sortable) return;
-
-      this.everSorted = true
-
-      // get the row that belongs to the clicked element
-      let row = (e.target as El).closest('tr')
-      if (!row) return
-
-      // find location of row in respect to table
-      const rowIndex = ancestorPos(row, "table", "tr")
-      if (rowIndex !== 0) return;
-
-      // get the column that belongs to the clicked element
-      let col = (e.target as El).closest('td,th')
-      if (!col) return
-      
-      // find location of column in respect to table
-      const colIndex = parentPos(col)
-
-      // if we have a checkbox, ignore first column
-      if(colIndex === 0 && this._selectable) return;
-
-      this.setActive(col)
-      
-      const ascending = col.classList.toggle('desc')
-
-      let tbody: HTMLElement | null = this.querySelector("tbody");
-      let theTable: HTMLElement = tbody as HTMLElement;
-      if(tbody === null) {
-        theTable = this.querySelector("table") as HTMLElement;
+    let cmp = (v1: string | number, v2: string | number) => {
+      if(typeof v1 === 'number' && typeof v2 === 'number') {
+        return v1 - v2;
       }
 
-      const nicerStr = (cell: HTMLTableCellElement) : string | number => {
-        if(cell.textContent === null) return "";
-        let N = parseFloat(cell.textContent.trim())
-        if(!isNaN(N)) return N;
-        return cell.textContent.trim();
-      }
-
-      let comparer = (a: Element, b: Element): number => {
-        let col1 = a.children[colIndex] as HTMLTableCellElement;
-        let col2 = b.children[colIndex] as HTMLTableCellElement;
-        
-        const maybeCmp = this._compare(col1, col2, colIndex)
-        if(typeof maybeCmp !== 'undefined') return maybeCmp;
-
-        let v1 = nicerStr(col1);
-        let v2 = nicerStr(col2);
-        if(typeof v1 === 'number' && typeof v2 === 'number') {
-          return v1 - v2;
-        }
-
-        return v1.toString().localeCompare(v2.toString());
-      }
-
-      Array.from(this.querySelectorAll('tr:nth-child(n+2)'))
-        .sort((a, b) => comparer(ascending ? a : b, ascending ? b : a))
-        .map(tr => theTable.appendChild(tr))
-        .map(x => x.children[colIndex].classList.add('vf-active'))
+      return v1.toString().localeCompare(v2.toString());
     }
 
-    render(
-      <>
-      <div class="hidden"><slot name="A">pad a eb sin</slot></div>
-        <div id='table' class='w-full mb-8 overflow-hidden rounded-lg shadow-lg' onClick={e => sortHandler(e)}>
-          <slot></slot>
-        </div>
-      </>,
-      this.root,
-    )
-    
-
-    if(this._selectable) {
-      this.wasSelectable = true;
-      this.setupSelect()
-    } else  {
-      this.wasSelectable = false;
-      this.removeSelect()
-    }
-
-    if (!this.everSorted && this.slottedByTag("", "table").length > 0) {
-      let idx = parseInt(this._autosort.toString());
-      if(!isNaN(idx) && idx >= 0) {
-        const col = this.headerColByIndex(idx);
-        if(col)
-        col.click()
-      }
-    }
-
-    this.slotMutations()
-  }
-  wasSelectable = false;
-
-  slotHandled = new WeakMap<HTMLElement, boolean>();
-  slotMutations() {
-    // TODO: Don't leak memory if user keeps reslotting?
-    const unHandled = this.slottedAny("").filter(x => !this.slotHandled.has(x));
-
-    unHandled.forEach(x => {
-      new MutationObserver((e) => {
-        const changedRows = (x: MutationRecord) => {
-          return ([...x.removedNodes, ...x.addedNodes]).filter(x => x instanceof HTMLTableRowElement).length > 0;
-        }
-        const newRows = e.filter(x => x.type === "childList" && changedRows(x));
-        if(newRows.length > 0) {
-          this.removeSelect()
-          this.setupSelect()
-        }
-      }).observe(x, {childList: true, subtree: true});
-      this.slotHandled.set(x, true);
+    const R = [...this.querySelectorAll("tr:not(:first-child)")].map((x, idx) => {
+      return {el:x.children[this.sortCol] as HTMLTableCellElement, str: nicerStr(x.children[this.sortCol] as HTMLTableCellElement), idx }
     });
-  }
+    
+    R.sort((a, b) => {
+      const maybeCmp = this._compare(a.el, b.el, this.sortCol)
+      if(typeof maybeCmp !== 'undefined') return maybeCmp * (this.asc ? 1 : -1); 
+      return cmp(a.str, b.str) * (this.asc ? 1 : -1);
+    })
+    const orderMap = Object.fromEntries(R.map((x, idx) => {
+      return [idx, x.idx]
+    }));
 
-  removeSelect() {
-    Array.from(this.querySelectorAll('td,th')).filter(x => x.classList.contains('vf-checkbox')).map(x => x.remove());
-  }
+    let Check = () => {
+      return <div onClick={(e) => { 
+        if(!e.target) return;
+        if(e.target.tagName == "input") {
 
-  setupSelect() {
-    const hasSelect: boolean = this.querySelector('.vf-checkbox') !== null;
-    if(!hasSelect) {
-      const checkbox = (selectAll?: boolean) => {
-        const checkCol = document.createElement('td');
-        checkCol.classList.add('vf-checkbox');
-        const c = document.createElement('input');
-        c.type = 'checkbox';
-        checkCol.appendChild(c);
-        checkCol.addEventListener('click', (e) => {
-          if(!(e.target instanceof HTMLInputElement)) {
-            c.checked = !c.checked;
-          }
-          const checkBoxes = ([...this.querySelectorAll('td.vf-checkbox input')] as HTMLInputElement[])
-          checkBoxes.forEach(x => {
-            if(selectAll === true) x.checked = c.checked;
-          })
-          const rows = checkBoxes.filter((x, idx) => idx != 0 && x.checked).map(x => x.closest('tr'));
-          this.dispatchEvent(new CustomEvent('rowselect', {
-            detail: rows
-          }));
-        });
-        return checkCol;
-      }
-      this.querySelectorAll('tr').forEach((x, idx) => x.prepend(checkbox(idx === 0)))
+        } else {
+          e.target.querySelector('input').checked = !e.target.querySelector('input').checked;
+        }}} class={"cursor-pointer px-4 w-[20px] py-3 border table-cell " }>
+          <input type="checkbox" class="cursor-pointer" />
+      </div>;
     }
-  }
 
-  headerColByIndex(n: number) : HTMLElement {
-    const i = n + (this._selectable ? 1 : 0);
-    return [...this.querySelector(`tr:first-child`)!.querySelectorAll(`td,th`)][i] as HTMLElement;
+    return <div class="w-full mb-8 overflow-hidden rounded-lg shadow-lg table">
+        <div class="text-md cursor-pointer select-none font-semibold tracking-wide text-left text-gray-900 bg-gray-100 uppercase border-b border-gray-600 table-row">
+          <Check/>
+        {this.virtual("tr:first-child > td,th").map((x, idx) => {
+            return <div class={"px-4 py-3 border table-cell " + (this.sortCol == idx ? "bg-[#FF660010]" : "")} tabIndex="0" onClick={(e) => {
+              this.sortCol = idx;
+              this.asc = !this.asc;
+              this.doRender();
+              e.preventDefault()
+            }}>{x}
+            {this.sortCol == idx ? <v-icon name={this.asc ? "Expand" : "Collapse"} /> : ""}
+            </div>
+        })}
+        </div>
+        {this.virtual("tr:not(:first-child)").map((x, idx) => {
+          return <div class="table-row">
+            <Check/>
+            {this.virtual("tr:nth-child(" + (orderMap[idx] + 2) + ") > td").map((x, idx) => {
+              return <div class={"px-4 py-3 border table-cell " + (idx == this.sortCol ? "font-bold bg-[#FF660010] border-[#FF660030]" : "") }><this.Portal>{x}</this.Portal></div>
+            })}
+            </div>
+        })}
+    </div>
   }
-
-  everSorted = false
 }

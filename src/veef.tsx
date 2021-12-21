@@ -1,6 +1,7 @@
 
 import {Tabs } from "./tabs"
-import { Alert, Dropdown } from './alert'
+import { Alert } from './alert'
+import { Dropdown } from './dropdown'
 import { Dialog } from './dialog'
 import { Table } from './table'
 import { Tree } from './tree'

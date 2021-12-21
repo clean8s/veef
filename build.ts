@@ -88,11 +88,6 @@ let preactAlias = {
         path: path.resolve("node_modules/base16/lib/monokai.js")
       }
     });
-    build.onResolve({filter: /^prismjs$/}, (args: ResolveArgs) => {
-      return {
-        path: path.resolve("node_modules/prism-es6/prism.js")
-      }
-    })
 
     build.onLoad({filter: /vendor\.css/}, async (x: any) => {
       const M = readFileSync(x.path, 'utf8');

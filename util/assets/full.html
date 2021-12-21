@@ -20,7 +20,7 @@ html { scroll-behavior: smooth; }
 body { line-height: 1.5; tab-size: 4; font-size: 16px; color: rgb(31, 41, 55);
     font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;
     margin: 0; padding: 0; } * { box-sizing: border-box; -webkit-font-smoothing: antialiased; text-rendering: optimizelegibility; }
-    p { margin: 10px 0 30px;} aside { background: #eaeaea; padding: 20px; } a { text-decoration: none; color: #3366CC;}
+ aside { background: #eaeaea; padding: 20px; } a { text-decoration: none; color: #3366CC;}
 input { font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;}
     code { font-family: ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace;}
 header { background: hsl(var(--color-hs) 50%); position: sticky; inset: 0; bottom: auto; color: #fff; z-index: 40; padding: 5px 0; font-weight: 600; letter-spacing: 0.05em;}
@@ -176,7 +176,7 @@ body[data-theme="dark"] input.my-input {
 
 {% tpl "dropdemo" %}
 <div style="text-align: center">
-This is <strong>a standard</strong> <code>&lt;select&gt;</code> wrapped in <code>&lt;v-dropdown&gt;</code>:
+This is a standard <code>&lt;select&gt;</code> wrapped in <code>&lt;v-dropdown&gt;</code>:
 
 <div style="text-align: center; margin: 2rem 0;">
 <v-dropdown>
@@ -190,11 +190,15 @@ This is <strong>a standard</strong> <code>&lt;select&gt;</code> wrapped in <code
         }
     </script>
 </v-dropdown>
-<small style="margin-left: 1em; color: #999;">this.value = <strong id="curval">'copy'</strong></small>
 </div>
 
+<v-grid cols="2">
+    <div style="max-width: 300px">
     Enhance the component with <strong>custom rendering logic</strong> if JS is enabled: 
-    <div style="text-align: center; margin: 2rem 0;">
+    <style>
+        .mid > v-dropdown{ vertical-align: middle; }
+    </style>
+    <div style="text-align: center; margin: 2rem 0;" class="mid">
     <span id="dropdemo"></span>
 
 <v-dropdown>
@@ -207,7 +211,7 @@ This is <strong>a standard</strong> <code>&lt;select&gt;</code> wrapped in <code
         h => {
             let i = 1;
             setInterval(() => {
-                this.transform = (x, idx) => h`<strong> ${(i * (idx + 1)).toString()}</strong> <span style="color: #999">Counter</span>`
+                this.transform = (x, idx) => h`<span style="color: #999; margin-right: 0.3rem;">Pick counter</span><br/><strong> ${(i * (idx + 1)).toString()}</strong>`
                 i++;
                 i %= 20;
             }, 500);
@@ -215,6 +219,8 @@ This is <strong>a standard</strong> <code>&lt;select&gt;</code> wrapped in <code
     </script>
 </v-dropdown>
 </div>
+</div>
+<div style="max-width: 300px; text-align: center;">
 You can style the Shadow DOM using the <code>::part</code> CSS selector:
 <div style="margin: 2rem auto">
     <v-dropdown id="styled">
@@ -235,6 +241,8 @@ You can style the Shadow DOM using the <code>::part</code> CSS selector:
     </style>
     
 </div>
+</div>
+</v-grid>
 </div>
 {% endtpl %}
 
@@ -318,7 +326,7 @@ The most important parts to know are:
 A single component can contain children that are placed at different places. For example,
 you could program a dialog component can have a title part, a content part and action buttons:
 <br/><br/>
-<v-editor language="html">
+<v-editor language="html" highlight>
     &lt;some-dialog&gt;
       &lt;div slot="title" class="mytitle"&gt; Dialog title &lt;/div&gt;
       &lt;div slot="content"&gt; ..  &lt;/div&gt;
@@ -343,7 +351,7 @@ It can be used in webpages without transpiling using <strong>HTM template litera
 <a href="https://preactjs.com/guide/v10/getting-started/#alternatives-to-jsx">described in their tutorials</a>.
 For example, if you want to render a list of strings in your browser using preact + htm, they suggest using this:
 <br/><br/>
-<v-editor language="html">
+<v-editor language="html" highlight>
 &lt;script slot="h"&gt;
 (h) => {
      // The code inside this function

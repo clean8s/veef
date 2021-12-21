@@ -5,28 +5,75 @@ import { TmSlot, Attrs } from './slottable'
 import codeCss from '../icons/syntax-hl.css'
 import { reduceEachLeadingCommentRange } from 'typescript'
 
-@Attrs(["value", "language"])
+@Attrs(["value", "language", "highlight"])
 export class Editor extends HTMLElement {
   root: HTMLElement
+  hl;
+  mydiv;
+  mainSlot;
   constructor() {
     super()
     this.root = this.attachShadow({mode: 'open'}) as any as HTMLElement;
-    this.root.innerHTML = "<slot name='mydiv'></slot><div style='display:none;'><slot data-veef='1'></slot></div>"
-    const mainSlot = this.root.querySelector("slot[data-veef]") as HTMLSlotElement;
-    mainSlot.addEventListener("slotchange", () => {
-      const code = mainSlot.assignedNodes().filter(x => {
+    this.root.innerHTML = `
+    <code style='display:none' id='highlight'></code>
+    <slot name='mydiv'></slot>
+    <div style='display:none;'><slot data-veef='1'></slot></div>`
+    this.hl = this.root.querySelector("#highlight");
+    this.mydiv = this.root.querySelector("slot[name='mydiv']") as HTMLSlotElement;
+    this.mainSlot = this.root.querySelector("slot[data-veef]") as HTMLSlotElement;
+    this.mainSlot.addEventListener("slotchange", () => {
+      const code = this.mainSlot.assignedNodes().filter(x => {
         return (x.nodeType === Node.TEXT_NODE) 
       }).map(x => x.textContent).join("");
       if(code.length > 0) {
         this.value = dedent(code);
       }
     })
-    // this.root = this.attachShadow({mode: 'open'});
+  }
+
+  slottedCode() {
+    const code = this.mainSlot.assignedNodes().filter(x => {
+      return (x.nodeType === Node.TEXT_NODE) 
+    }).map(x => x.textContent).join("");
+    return dedent(code);
   }
 
   editor: null | object = null;
   _code = "// Hello World!";
   _language = "javascript";
+
+  _highlight = false;
+  set highlight(a: boolean) {
+    this._highlight = true;
+    this.setAttribute("loaded", "true");
+    let lastCode = ""
+    setInterval(() => {
+      let code = this.slottedCode();
+      if(typeof monaco == 'undefined') return;
+      if(lastCode === code) return;
+      lastCode = code;
+      console.log(code)
+      
+      if(this.editor !== null) {
+        this.editor.dispose()
+        this.editor = null;
+      }
+      this.querySelector("div[slot='mydiv']")!.setAttribute("data-lang", this._language);
+      const mydiv = this.querySelector("div[slot='mydiv']")!;
+      mydiv.innerHTML = "<pre data-lang='javascript' style='padding: 1rem; font-family: monospace; background: #333; font-size: 1rem; margin: 0; height: 100%;'></pre>"
+      mydiv.children[0]!.textContent = code;
+      this.style.minHeight = "0";
+    // this.querySelector("div[slot='mydiv']").innerText = code;
+    // this.hl?.setAttribute("data-lang", "javascript");
+    // this.hl?.setAttribute("style", "")
+
+    // this.root.setAttribute("data-lang", "javascript")
+    monaco.editor.colorizeElement(this.querySelector("div[slot='mydiv'] pre"), {
+      theme: "vs-dark"
+    })
+   }, 100);
+    // console.log("A")
+  }
 
   set language(s: string) {
     if(this.editor != null) {
@@ -53,13 +100,13 @@ export class Editor extends HTMLElement {
     let myDiv = document.createElement("div");
     myDiv.slot = "mydiv"
     this.append(myDiv)
-    this.root = myDiv;
+    // this.root = myDiv;
 
     const s = document.createElement('script');
     // globalThis.exports = undefined;
     // exports = undefined;
 
-    const elTarget = this.root;
+    const elTarget = myDiv;
 
     s.setAttribute('src', "https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.26.1/min/vs/loader.min.js");
     s.setAttribute("defer", "");
@@ -75,6 +122,7 @@ export class Editor extends HTMLElement {
       }
 
       winReq(["vs/editor/editor.main"], () => {
+        if(this.hasAttribute("highlight")) return;
         //@ts-ignore
         monaco.editor.setTheme("vs-dark");
         let editor = monaco.editor.create(elTarget, {

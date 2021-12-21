@@ -5,8 +5,12 @@ import {Ref, VNode, toChildArray } from 'preact'
 import { createPortal, useEffect } from 'preact/compat'
 
 function elementToVirtual(el: Element) {
+  const n = el.innerHTML.replaceAll(/<([a-zA-Z]+-[a-zA-Z0-9]+)(.*?)>.*?<\/\1>/gsm, (x, y, z) => {
+
+    return "<" + y + z + "></" + y + ">"
+  })
     //@ts-ignore
-    return html([el.innerHTML]) as React.ReactChild;
+    return html([n]) as React.ReactChild;
   }
   
   export function Portal (props: {children: any, target?: string, self: Transformable}) {
