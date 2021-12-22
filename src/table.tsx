@@ -1,9 +1,10 @@
 import React from 'react'
 import { render } from './style'
-import { Attrs, Props, Slottable, TmSlot } from './slottable'
+import { Attrs, Props, OnAttr, Slottable, TmSlot } from './slottable'
 import { Transformable } from './transformable';
 
-@Props(["compare"], "doRender")
+@OnAttr(["sortable"], (t) => t.sortable = true)
+@Props(["compare", "sortable"], "doRender")
 export class Table extends Transformable {
   sortCol = 0;
   asc = true;
@@ -12,6 +13,9 @@ export class Table extends Transformable {
     //@ts-ignore
     return parseInt(el1.getAttribute("data-sort")) - parseInt(el2.getAttribute("data-sort"));
   }
+  _sortable = false;
+
+  selectedIdx: Record<number, boolean> = {};
 
   render() {
     const nicerStr = (cell: HTMLTableCellElement) : string | number => {
@@ -42,37 +46,59 @@ export class Table extends Transformable {
       return [idx, x.idx]
     }));
 
-    let Check = () => {
-      return <div onClick={(e) => { 
+    let Check = (props: {idx: number}) => {
+      const maybeChecked = {};
+      if(this.selectedIdx[props.idx] === true) maybeChecked['checked'] = true;
+
+      return <div part="cell" onClick={(e) => { 
         if(!e.target) return;
         if(e.target.tagName == "input") {
 
         } else {
-          e.target.querySelector('input').checked = !e.target.querySelector('input').checked;
+          const inp = e.target.querySelector('input');
+          if(!inp) return;
+          inp.checked = !inp.checked;
+          inp.dispatchEvent(new Event("change"))
         }}} class={"cursor-pointer px-4 w-[20px] py-3 border table-cell " }>
-          <input type="checkbox" class="cursor-pointer" />
+          <input type="checkbox" onChange={(e) => {
+            const checked = e.target!.checked;
+            if(props.idx === -1) {
+              this.selectedIdx = {};
+              for(let i = 0; i < R.length; i++) {
+                this.selectedIdx[i] = checked;
+              }
+            }
+            if(checked)
+              this.selectedIdx[props.idx] = true;
+            else {
+              delete this.selectedIdx[props.idx];
+            }
+            this.doRender()
+          }} class="cursor-pointer" {...maybeChecked} />
       </div>;
     }
 
     return <div class="w-full mb-8 overflow-hidden rounded-lg shadow-lg table">
         <div class="text-md cursor-pointer select-none font-semibold tracking-wide text-left text-gray-900 bg-gray-100 uppercase border-b border-gray-600 table-row">
-          <Check/>
+          <Check idx={-1}/>
         {this.virtual("tr:first-child > td,th").map((x, idx) => {
-            return <div class={"px-4 py-3 border table-cell " + (this.sortCol == idx ? "bg-[#FF660010]" : "")} tabIndex="0" onClick={(e) => {
+          const active = this._sortable ? this.sortCol == idx : false;
+            return <div part={"cell" + (active ? " cell-active" : "")} class={"px-4 py-3 border table-cell " + (active ? "bg-[#FF660010]" : "")} tabIndex="0" onClick={(e) => {
               this.sortCol = idx;
               this.asc = !this.asc;
               this.doRender();
               e.preventDefault()
             }}>{x}
-            {this.sortCol == idx ? <v-icon name={this.asc ? "Expand" : "Collapse"} /> : ""}
+            {active ? <v-icon name={this.asc ? "Expand" : "Collapse"} /> : ""}
             </div>
         })}
         </div>
         {this.virtual("tr:not(:first-child)").map((x, idx) => {
-          return <div class="table-row">
-            <Check/>
+          return <div part="row" class="table-row">
+            <Check idx={idx}/>
             {this.virtual("tr:nth-child(" + (orderMap[idx] + 2) + ") > td").map((x, idx) => {
-              return <div class={"px-4 py-3 border table-cell " + (idx == this.sortCol ? "font-bold bg-[#FF660010] border-[#FF660030]" : "") }><this.Portal>{x}</this.Portal></div>
+              const active = this._sortable ? idx == this.sortCol : false;
+              return <div part={"cell" + (active ? " cell-active" : "")} class={"px-4 py-3 border table-cell " + (active ? "font-bold bg-[#FF660010] border-[#FF660030]" : "") }><this.Portal>{x}</this.Portal></div>
             })}
             </div>
         })}

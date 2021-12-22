@@ -10,7 +10,6 @@ function Dropdown() {
     <div>
         <Docs>
             <Template template="dropdemo" tagName="div" />
-        
         </Docs>
     </div>
     <div>
@@ -122,15 +121,15 @@ function Table() {
     <div class="t1">
     
     <article class="text-center pad y-2">
-        Try custom sort by clicking <strong style="color: var(--color)">on the third column.</strong>.
+        Try custom sort by clicking <strong style="color: var(--color)">on the Color column.</strong>
     </article>
-
+<v-grid>
     <v-table selectable sortable id="tbl" class="t1">
     <table>
     <tr>
         <td>Some num</td>
         <td>Some date</td>
-        <td>Some color</td>
+        <td>Color</td>
     </tr>
     <tr>
         <td>3</td>
@@ -158,6 +157,38 @@ function Table() {
         </tr>
     </table>
 </v-table>
+<v-table class="tiny">
+<table>
+<tr>
+    <td>tiny table</td>
+</tr>
+<tr>
+<td>this is some row</td>
+</tr><tr>
+<td>another one</td>
+</tr><tr>
+<td>bites the dust</td>
+</tr>
+</table>
+</v-table>
+</v-grid>
+{/* @raw
+<style>
+v-table.tiny {
+    display: flex;
+    max-width: 300px;
+    margin: 0 auto;
+}
+v-table.tiny::part(cell) {
+    padding-top: 0.1em;
+    padding-bottom: 0.1em;
+}
+v-table.tiny::part(cell-active) {
+    background: #00000010;
+    border-color: #00000010;
+    font-weight: normal;
+}
+</style> */}
 <script dangerouslySetInnerHTML={{__html: `
 tbl.addEventListener('rowselect', (e) => {
     dsc.innerText = "Selected rows: " + (e.detail.map(x => x.children[1].innerText).join(", ") || "none")

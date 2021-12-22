@@ -54,6 +54,19 @@ export function literalOrString(src: string) : string | boolean | number | objec
   }
 }
 
+export function OnAttr(attrList: string[], handler: (instance: any, attr: string, value: string)=>void) {
+  return (oldClass: any) => {
+    Object.defineProperty(oldClass, "observedAttributes", {
+      get() {
+        return attrList
+      }
+    })
+    oldClass.prototype.attributeChangedCallback = function(attr: string, oldVal: string, newVal: string) {
+      handler(this, attr, newVal) 
+    }
+  }
+}
+
 export function Props<T>(propList: string[], callbackName?: string) {
   return (oldClass: any) => {
     propList.map(x => {
@@ -65,9 +78,7 @@ export function Props<T>(propList: string[], callbackName?: string) {
           this["_" + x] = val;
           if(callbackName) {
             this[callbackName]()
-            // cb(this as T, val);
           }
-          // this.setupSuper("_" + x, val)
         }
       })
     });

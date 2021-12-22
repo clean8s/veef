@@ -5,10 +5,7 @@ import {Ref, VNode, toChildArray } from 'preact'
 import { createPortal, useEffect } from 'preact/compat'
 
 function elementToVirtual(el: Element) {
-  const n = el.innerHTML.replaceAll(/<([a-zA-Z]+-[a-zA-Z0-9]+)(.*?)>.*?<\/\1>/gsm, (x, y, z) => {
-
-    return "<" + y + z + "></" + y + ">"
-  })
+  const n = el.innerHTML;
     //@ts-ignore
     return html([n]) as React.ReactChild;
   }

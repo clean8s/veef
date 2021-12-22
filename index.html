@@ -272,44 +272,65 @@
             <v-icon name="Code"></v-icon> Code / sandbox
           </button>
           <div class="t1">
-            <article class="text-center pad y-2">Try custom sort by clicking <strong style="color: var(--color)">on the third column.</strong>.</article>
-            <v-table selectable sortable id="tbl" class="t1">
-              <table>
-                <tr>
-                  <td>Some num</td>
-                  <td>Some date</td>
-                  <td>Some color</td>
-                </tr>
-                <tr>
-                  <td>3</td>
-                  <td>2020/01/20</td>
-                  <td data-sort="3">
-                    <v-icon style="color: #FF3333" name="CircleFilled"></v-icon>
-                  </td>
-                </tr>
-                <tr>
-                  <td>5367</td>
-                  <td>2020/10/01</td>
-                  <td data-sort="4">
-                    <v-icon style="color: #CC0000" name="CircleFilled"></v-icon>
-                  </td>
-                </tr>
-                <tr>
-                  <td>251</td>
-                  <td>2022/05/05</td>
-                  <td data-sort="2">
-                    <v-icon style="color: #FF9999" name="CircleFilled"></v-icon>
-                  </td>
-                </tr>
-                <tr>
-                  <td>938141</td>
-                  <td>1999/01/01</td>
-                  <td data-sort="1">
-                    <v-icon style="color: #f5dada" name="CircleFilled"></v-icon>
-                  </td>
-                </tr>
-              </table>
-            </v-table>
+            <article class="text-center pad y-2">Try custom sort by clicking <strong style="color: var(--color)">on the Color column.</strong></article>
+            <v-grid>
+              <v-table selectable sortable id="tbl" class="t1">
+                <table>
+                  <tr>
+                    <td>Some num</td>
+                    <td>Some date</td>
+                    <td>Color</td>
+                  </tr>
+                  <tr>
+                    <td>3</td>
+                    <td>2020/01/20</td>
+                    <td data-sort="3">
+                      <v-icon style="color: #FF3333" name="CircleFilled"></v-icon>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>5367</td>
+                    <td>2020/10/01</td>
+                    <td data-sort="4">
+                      <v-icon style="color: #CC0000" name="CircleFilled"></v-icon>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>251</td>
+                    <td>2022/05/05</td>
+                    <td data-sort="2">
+                      <v-icon style="color: #FF9999" name="CircleFilled"></v-icon>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>938141</td>
+                    <td>1999/01/01</td>
+                    <td data-sort="1">
+                      <v-icon style="color: #f5dada" name="CircleFilled"></v-icon>
+                    </td>
+                  </tr>
+                </table>
+              </v-table>
+              <v-table class="tiny">
+                <table>
+                  <tr>
+                    <td>tiny table</td>
+                  </tr>
+                  <tr>
+                    <td>this is some row</td>
+                  </tr>
+                  <tr>
+                    <td>another one</td>
+                  </tr>
+                  <tr>
+                    <td>bites the dust</td>
+                  </tr>
+                </table>
+              </v-table>
+            </v-grid>
+            <div>
+              <style>v-table.tiny {display: flex;max-width: 300px;margin: 0 auto;}v-table.tiny::part(cell) {padding-top: 0.1em;padding-bottom: 0.1em;}v-table.tiny::part(cell-active) {background: #00000010;border-color: #00000010;font-weight: normal;}</style>
+            </div>
             <script>
               tbl.addEventListener('rowselect', (e) => {
                 dsc.innerText = "Selected rows: " + (e.detail.map(x => x.children[1].innerText).join(", ") || "none")

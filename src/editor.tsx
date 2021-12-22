@@ -123,6 +123,16 @@ export class Editor extends HTMLElement {
 
       winReq(["vs/editor/editor.main"], () => {
         if(this.hasAttribute("highlight")) return;
+        let isInit = false;
+        new IntersectionObserver((x) => {
+          x.map(y => {
+            if(y.intersectionRatio > 0.1 && !isInit) {
+              _init();
+              isInit = true;
+            }
+          })
+        }, {threshold: 1}).observe(this);
+        const _init = () => {
         //@ts-ignore
         monaco.editor.setTheme("vs-dark");
         let editor = monaco.editor.create(elTarget, {
@@ -145,6 +155,7 @@ export class Editor extends HTMLElement {
             }));
           });
         });
+      }
         
       });
     }

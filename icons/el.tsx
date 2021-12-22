@@ -1,13 +1,20 @@
-import { render } from 'preact'
+
 import React from 'react'
 import IconLibrary, { IconComponent, IconKey } from './lib/icons'
+import {render} from '../src/style'
 
 customElements.define(
   'v-icon',
   class extends HTMLElement {
-    connectedCallback() {
+    root
+    constructor() {
+      super()
+      this.root = this.attachShadow({ mode: 'open' })
       this.render()
     }
+    // connectedCallback() {
+    //   this.render()
+    // }
     render() {
       let SingleIcon: IconComponent
       let n = this.internalName
@@ -21,18 +28,20 @@ customElements.define(
 
       if (this.showAll) {
         render(
-          <div style='display: flex; flex-wrap: wrap;'>
+          <div style='display: flex; flex-wrap: wrap; justify-content: center;'>
             {Object.keys(IconLibrary).map(x => {
               let maybeLine = null;
               
-              if(x === 'Youtube' || x === 'Close' || x == 'Github') maybeLine = <div class="separator" />
+              if(x === 'Youtube' || x === 'Close' || x == 'Github') maybeLine = <div class="separator" style={`	flex-basis: 100%;
+              height: 10px;
+              border-bottom: 1px solid rgb(188, 188, 188);`} />
               return <>{maybeLine}<div style='margin: 5px;text-align: center; width: 120px; flex-basis: 120px;'>
-                <v-icon name={x} style='width: 40px; height: 40px' />
-                <div class="allIconsLabel">{x}</div>
+                <v-icon name={x} style='width: 40px; height: 40px;' />
+                <div style="font-weight: 500; color: #333;">{x}</div>
               </div></>
             })}
           </div>,
-          this,
+          this.root,
         )
         return
       }
@@ -40,7 +49,7 @@ customElements.define(
         <>
           <SingleIcon />
         </>,
-        this,
+        this.root,
       )
     }
     attributeChangedCallback(key: string, _: any, newVal: any) {
