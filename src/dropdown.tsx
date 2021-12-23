@@ -14,6 +14,12 @@ export class Dropdown extends Transformable {
       this.doRender()
     } else {
       this.visible = true;
+      const R = this.getBoundingClientRect();
+      const viewportH = visualViewport.height;
+      if(R.top > viewportH * 0.7) {
+        window.scroll(0, window.scrollY + R.top - viewportH * 0.5);
+      }
+      console.log(R.top + 0.3 * viewportH, viewportH) 
       this.doRender()
 
       if(!(e.target instanceof HTMLButtonElement)) {
@@ -87,7 +93,7 @@ export class Dropdown extends Transformable {
               </button>
           </div>
           <div style={hideStyle} part="box" class="origin-top-right py-1 z-40 absolute right-0 mt-[2px] w-56 rounded-md shadow-lg bg-white dark:bg-gray-800">
-              <div style="max-height: 150px; overflow-y: auto;">
+              <div style="max-height: 30vh; overflow-y: auto;">
               <div class="py-1 divide-y divide-gray-100" role="menu" aria-orientation="vertical" aria-labelledby="options-menu">
                 <this.Portal>
                   {this.virtual("option").map((x, idx) => {
@@ -108,62 +114,5 @@ export class Dropdown extends Transformable {
           </div>
       </div>
     </>
-  }
-}
-
-export class Dropdown2 extends Slottable {
-  root: HTMLElement
-  constructor() {
-    super()
-    this.root = this.attachShadow({ mode: 'open' }) as any as HTMLElement
-    this.render()
-    this.slotSetup(this.root, () => this.render())
-  }
-
-  isOpen = false;
-  value: string | null = null
-  render() {
-    if(this.value === null) {
-      const slt = this.slottedAny("");
-      if(slt.length > 0)
-      this.value = this.slottedAny("")[0].innerHTML!;
-    }
-
-    let overlayStyle = this.isOpen ? " " : "display: none";
-    let trigger = (state: boolean, e?: PointerEvent) => {
-      this.isOpen = state;
-      this.render();
-      if(e && this.querySelector("*[slot='hint']")!.contains(e.target)) {
-        e?.preventDefault();
-        this.root.querySelector("button")!.focus();
-      }
-    }
-
-    const hdlClick = (e) => {
-      this.value = e.target.closest("v-item").innerHTML;
-      this.render()
-    }
-
-    const maybeHint = <span id="veefPicked" dangerouslySetInnerHTML={{__html: this.value || ""}}></span>;
-
-    render(
-      <div class="relative inline-block text-left">
-        <style>{`::slotted()`}</style>
-          <div>
-              <button onBlur={() => trigger(false)} onClick={(e) => trigger(true, e)} type="button" class="border border-gray-300 bg-white dark:bg-gray-800 shadow-sm flex items-center justify-center w-full rounded-md  px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-50 hover:bg-gray-50 dark:hover:bg-gray-500 focus:outline-solid-orange-600" style="--tw-outline-opacity: 0.3;" id="options-menu">
-                  {maybeHint}
-                  <slot name="Q"></slot>
-                  <v-icon name="Expand"></v-icon>
-              </button>
-          </div>
-          <div onPointerDown={hdlClick} style={overlayStyle} id="optwrap" class="origin-top-right py-1 z-40 absolute right-0 mt-[2px] w-56 rounded-md shadow-lg bg-white dark:bg-gray-800">
-              <div style="max-height: 100px; overflow-y: auto;">
-              <div class="py-1 divide-y divide-gray-100" role="menu" aria-orientation="vertical" aria-labelledby="options-menu">
-                <slot></slot>
-              </div>
-              </div>
-          </div>
-      </div>
-      , this.root)
   }
 }

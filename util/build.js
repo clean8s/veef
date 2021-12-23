@@ -20,19 +20,22 @@ function buildSite() {
         });
         const src = fs.readFileSync("./main.tsx", "utf8");
 
-        const C = src.replace(/{\s*\/\*\s*@raw\s*(.*?)\*\/\s*}/gsm, (match, p1) => {
-            return `<div dangerouslySetInnerHTML={{__html: ${JSON.stringify(dedent(p1))}}}/>`
+        const C = src.replace(/{\s*\/\*\s*@raw\s*(".*?")?\s*(.*?)\*\/\s*}/gsm, (match, p1, p2) => {
+            return `<${p1 ? JSON.parse(p1) : "div"} dangerouslySetInnerHTML={{__html: ${JSON.stringify(dedent(p2))}}}/>`
         });
         fs.writeFileSync("./dist/main.tsx", C);
 
         // console.log([...C].map(x => dedent(x[1])))
         if(fs.statSync("./dist/dist/main.js", {throwIfNoEntry: false})) {
             console.log("Loading..")
-            require("./dist/dist/main.js")
+            try {
+                require("./dist/dist/main.js")
+            } catch(err) {
+                console.log(err)
+            }
         }
     }
-
-    buildh();
+    buildSite()
     build({
         entryPoints: getEntries(),
         watch: true,

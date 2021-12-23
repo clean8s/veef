@@ -151,8 +151,21 @@ let preactAlias = {
 const opts: Record<string, any> = {};
 const watchFlag = process.argv.findIndex(x => x === '--watch') > 0;
 
+import {spawn} from "child_process"
 if(watchFlag) {
   opts['watch'] = true;
+  let attempt = 0;
+  async function buildDemo() {
+    spawn("node build.js", {cwd: "util", shell: true, stdio: "inherit", }).on("close", () => {
+      let interval = 1000 * Math.pow(1.4, attempt + 1);
+      setTimeout(() => {
+        buildDemo();
+        attempt++;
+        attempt = attempt % 5;
+        }, interval);
+    });
+  }
+  buildDemo()
 }
 
 let outputDir = 'dist';

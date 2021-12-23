@@ -192,9 +192,12 @@ This is a standard <code>&lt;select&gt;</code> wrapped in <code>&lt;v-dropdown&g
 </v-dropdown>
 </div>
 
+<div style="margin: 0 0 0.8em; padding: 0.8em 0 0; height: 0; border-bottom: 1px solid #cacaca;">
+</div>
+
 <v-grid cols="2">
     <div style="max-width: 300px">
-    Enhance the component with <strong>custom rendering logic</strong> if JS is enabled: 
+    Enhance the component with <strong>custom rendering logic</strong> if JS is enabled:
     <style>
         .mid > v-dropdown{ vertical-align: middle; }
     </style>
@@ -226,10 +229,16 @@ You can style the Shadow DOM using the <code>::part</code> CSS selector:
     <v-dropdown id="styled">
         <select>
             <option>Item number one</option>
-            <option>Item number two</option>
-            <option>Item number three</option>
-            <option>Item lorem</option>
+            <option>Item called item two</option>
+            <option>Item three</option>
+            <option>Lorem item</option>
             <option>Item opsum</option>
+            <option>Another one</option>
+            <option>This is a long list</option>
+            <option>Or is it</option>
+            <option>Item pickers are cool</option>
+            <option>And so on</option>
+            <option>Something</option>
         </select>
     </v-dropdown>
     <style>
@@ -239,7 +248,7 @@ You can style the Shadow DOM using the <code>::part</code> CSS selector:
             color: #fff;
         }
     </style>
-    
+
 </div>
 </div>
 </v-grid>
@@ -288,7 +297,7 @@ document.addEventListener("DOMContentLoaded", () => {
         tab.style.display = 'none'
         tabDemo.append(tab)
     })
-    
+
 })
 </script>
 {% endtpl %}
@@ -326,13 +335,12 @@ The most important parts to know are:
 A single component can contain children that are placed at different places. For example,
 you could program a dialog component can have a title part, a content part and action buttons:
 <br/><br/>
-<v-editor language="html" highlight>
-    &lt;some-dialog&gt;
-      &lt;div slot="title" class="mytitle"&gt; Dialog title &lt;/div&gt;
-      &lt;div slot="content"&gt; ..  &lt;/div&gt;
-      &lt;input slot="button" type="button"&gt; Cancel &lt;/input&gt;
-    &lt;some-dialog&gt;
-</v-editor>
+<pre>
+    <code id="htmlViewer" style="color:rgb(171, 178, 191); font-weight:400;background-color:rgb(40, 44, 52);background:rgb(40, 44, 52);display:block;padding: .5em;"><span style="color:rgb(171, 178, 191); font-weight:400;">&lt;<span style="color:rgb(224, 108, 117); font-weight:400;">script</span>&gt;</span><span style="color:rgb(171, 178, 191); font-weight:400;">
+   (x) =&gt; {
+     <span style="color:rgb(198, 120, 221); font-weight:400;">let</span> y = <span style="color:rgb(209, 154, 102); font-weight:400;">3</span>;
+   };
+   </span><span style="color:rgb(171, 178, 191); font-weight:400;">&lt;/<span style="color:rgb(224, 108, 117); font-weight:400;">script</span>&gt;</span></code></pre>
 <br/>
 To specify where you want to put a child, you use the <code>slot=""</code> attribute. That
 attribute is supported on all tags in the browser.
@@ -351,20 +359,12 @@ It can be used in webpages without transpiling using <strong>HTM template litera
 <a href="https://preactjs.com/guide/v10/getting-started/#alternatives-to-jsx">described in their tutorials</a>.
 For example, if you want to render a list of strings in your browser using preact + htm, they suggest using this:
 <br/><br/>
-<v-editor language="html" highlight>
-&lt;script slot="h"&gt;
-(h) => {
-     // The code inside this function
-     // gets run after the element is set up.
-
-     // You have access to the 'h' literal,
-     // and you can use it to supply custom reactive nodes.
-
-     this.someFunction = () => h`&lt;div /&gt;`
-
-};
-&lt;/script&gt;
-</v-editor>
+<pre>
+    <code id="htmlViewer" style="color:rgb(171, 178, 191); font-weight:400;background-color:rgb(40, 44, 52);background:rgb(40, 44, 52);display:block;padding: .5em;"><span style="color:rgb(171, 178, 191); font-weight:400;">&lt;<span style="color:rgb(224, 108, 117); font-weight:400;">script</span>&gt;</span><span style="color:rgb(171, 178, 191); font-weight:400;">
+   (x) =&gt; {
+     <span style="color:rgb(198, 120, 221); font-weight:400;">let</span> y = <span style="color:rgb(209, 154, 102); font-weight:400;">3</span>;
+   };
+   </span><span style="color:rgb(171, 178, 191); font-weight:400;">&lt;/<span style="color:rgb(224, 108, 117); font-weight:400;">script</span>&gt;</span></code></pre>
 <br/>
 Notes about preact and HTM syntax:
 <ul>

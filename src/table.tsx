@@ -46,11 +46,11 @@ export class Table extends Transformable {
       return [idx, x.idx]
     }));
 
-    let Check = (props: {idx: number}) => {
+    let Check = (props: {idx: number, part: string}) => {
       const maybeChecked = {};
       if(this.selectedIdx[props.idx] === true) maybeChecked['checked'] = true;
 
-      return <div part="cell" onClick={(e) => { 
+      return <div part={props.part} onClick={(e) => { 
         if(!e.target) return;
         if(e.target.tagName == "input") {
 
@@ -79,11 +79,11 @@ export class Table extends Transformable {
     }
 
     return <div class="w-full mb-8 overflow-hidden rounded-lg shadow-lg table">
-        <div class="text-md cursor-pointer select-none font-semibold tracking-wide text-left text-gray-900 bg-gray-100 uppercase border-b border-gray-600 table-row">
-          <Check idx={-1}/>
+        <div part="row row-header" class="text-md cursor-pointer select-none font-semibold tracking-wide text-left text-gray-900 bg-gray-100 hover:bg-[#00000010] uppercase border-b border-gray-600 table-row">
+          <Check part="cell cell-header" idx={-1}/>
         {this.virtual("tr:first-child > td,th").map((x, idx) => {
           const active = this._sortable ? this.sortCol == idx : false;
-            return <div part={"cell" + (active ? " cell-active" : "")} class={"px-4 py-3 border table-cell " + (active ? "bg-[#FF660010]" : "")} tabIndex="0" onClick={(e) => {
+            return <div part={"cell cell-header " + (active ? " cell-active" : "")} class={"px-4 py-3 border table-cell " + (active ? "bg-[#FF660010]" : "")} tabIndex="0" onClick={(e) => {
               this.sortCol = idx;
               this.asc = !this.asc;
               this.doRender();
@@ -93,9 +93,12 @@ export class Table extends Transformable {
             </div>
         })}
         </div>
+
+        {/* Table body begin */}
+
         {this.virtual("tr:not(:first-child)").map((x, idx) => {
-          return <div part="row" class="table-row">
-            <Check idx={orderMap[idx]}/>
+          return <div part="row" class="table-row hover:bg-[#00000010]">
+            <Check idx={orderMap[idx]} part="cell" />
             {this.virtual("tr:nth-child(" + (orderMap[idx] + 2) + ") > td").map((x, idx) => {
               const active = this._sortable ? idx == this.sortCol : false;
               return <div part={"cell" + (active ? " cell-active" : "")} class={"px-4 py-3 border table-cell " + (active ? "font-bold bg-[#FF660010] border-[#FF660030]" : "") }><this.Portal>{x}</this.Portal></div>
