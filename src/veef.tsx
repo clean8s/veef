@@ -1,7 +1,7 @@
 
 import {Tabs } from "./tabs"
 import { Alert } from './alert'
-import { Dropdown } from './dropdown'
+import {Dropdown, VItem} from './dropdown'
 import { Dialog } from './dialog'
 import { Table } from './table'
 import { Tree } from './tree'
@@ -19,6 +19,7 @@ export function loadComponents(extra: Record<string, CustomElementConstructor>) 
   Object.entries(extra).forEach(([name, ctor]) => {
     customElements.define(name, ctor)
   })
+  customElements.define('v-item', VItem);
   customElements.define('v-dialog', Dialog)
   customElements.define('v-table', Table)
   customElements.define('v-alert', Alert)

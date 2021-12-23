@@ -7,7 +7,8 @@ import nunjucks from "nunjucks"
 
 //@ts-ignore
 globalThis["__internalFn"] = () => {
-    window.__q = [h, Fragment];
+    //@ts-ignore
+    globalThis.__q = [h, Fragment];
 }
 
 function Dropdown() {
@@ -242,7 +243,7 @@ function Table() {
                             <td>938141</td>
                             <td>1999/01/01</td>
                             <td data-sort="1">
-                                <v-icon style="color: #f5dada" name="CircleFilled"></v-icon>
+                                <v-icon style="color: #f5dada" name="CircleFilled"/>
                             </td>
 
                         </tr>
@@ -272,16 +273,6 @@ v-table.tiny {
     max-width: 300px;
     margin: 0 auto;
 }
-v-table.tiny::part(cell-header) {
-    background: #222;
-    color: #fff;
-    font-weight: 400;
-    border-color: #555;
-}
-v-table.tiny::part(cell) {
-    border-color: #555;
-    color: #ccc;
-}
 v-table.tiny::part(row):hover {
     background: #666;
 }
@@ -291,6 +282,14 @@ v-table.tiny::part(row) {
 v-table.tiny::part(cell) {
     padding-top: 0.1em;
     padding-bottom: 0.1em;
+    border-color: #555;
+    color: #ccc;
+}
+v-table.tiny::part(cell-header) {
+    background: #222;
+    color: #fff;
+    font-weight: 400;
+    border-color: #555;
 }
 v-table.tiny::part(cell-active) {
     background: #00000010;
@@ -440,7 +439,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 anything. <br/><br/>
                 <strong>Note that N tab buttons need N elements, ordered in the same sequence.</strong>
                 <DocSection>Styling</DocSection>
-                You can style buttons inside your page's CSS using usual <code>v-tabs > button{'{ .. }'}</code> rules.
+                You can style buttons inside your page's CSS using usual <code>{`v-tabs > button{'{ .. }'}`}</code> rules.
 
             </Docs>
         </div>
@@ -873,9 +872,6 @@ function Component(props: { name: string, C: FunctionComponent, info?: string, n
     </div>
 }
 
-function page() {
-    return render(<App/>)
-}
 
 function Icons() {
     return <>

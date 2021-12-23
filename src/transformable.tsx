@@ -24,6 +24,20 @@ function elementToVirtual(el: Element) {
     </>
   }
 
+  class Virtual extends HTMLElement {
+  root
+  constructor() {
+    super();
+    this.root = this.attachShadow({mode: "open"})
+    this.root.innerHTML = "<slot></slot>"
+  }
+  }
+  try {
+    customElements.define("v-virtual", Virtual)
+  }catch (e) {
+
+  }
+  
   export abstract class Transformable extends HTMLElement {
     root: ShadowRoot;
     constructor() {
@@ -31,6 +45,8 @@ function elementToVirtual(el: Element) {
       this.root = this.attachShadow({mode: 'open'})
   
       this.Portal = (props: {children: any, target?: string, self?: Transformable}) =>{
+        return props.children;
+        // return <v-virtual>{props.children}</v-virtual>
         if(!props.self) {
           props.self = this;
         }
@@ -63,37 +79,37 @@ function elementToVirtual(el: Element) {
       this.append(div);
       return div;
     }
-  
+
+    observers: MutationObserver[] = [];
     onChildrenChange() {
-      [...this.children].map(x => {
+      this.observers.map(x => x.disconnect());
+      this.observers = [...this.children].map(x => {
         if(x.slot.startsWith("__veef_")) return;
-        this.getVirtualChildren(x);
-        new MutationObserver(() => {
-          this.getVirtualChildren(x);
-        }).observe(x, {childList: true, characterData: true, subtree: true})
-      })
+        const obs = (new MutationObserver(() => {
+          this.doRender();
+        }));
+        obs.observe(x, {childList: true, characterData: true, subtree: true})
+        return obs;
+      }).filter(x => x instanceof MutationObserver) as MutationObserver[];
       this.doRender();
     }
-  
+
+    afterRender(childrenChanged: boolean) : void {
+      this.__inside_afterRender = true;
+    }
+
+    private __inside_afterRender = false;
+    private __childrenChanged = false;
+
     virtual(selector: string) {
       return [...this.querySelectorAll(selector)].map(x => {
         return elementToVirtual(x);
       })
     }
 
-    getVirtualChildren(x: Element) {
-      //@ts-ignore
-      // let vnode = toChildArray ( html([x.innerHTML!]) ) as React.ReactChild[];
-      // this.vchildren[0] = vnode;
-  
-      // this.vchildren[1] = [...x.children].map(x => { 
-      //   //@ts-ignore
-      //   return html([x.innerHTML!]);
-      // }) as React.ReactChild[];
-  
-      // this.virtualChildren.set(x.tagName.toLowerCase(), vnode);
-      this.doRender();
-    }
+    // getVirtualChildren(x: Element) {
+    //   this.doRender();
+    // }
   
     virtualChildren: Map<string, React.ReactChild[]> = new Map();
     vchildren: Record<number, React.ReactChild[]> = {};
@@ -105,14 +121,19 @@ function elementToVirtual(el: Element) {
     defaultSlot = createRef<HTMLSlotElement>();
   
     abstract render(): VNode;
-  
+
     counter = 0;
     doRender(firstCall?: boolean) {
       this.counter = 0;
       render(<>
-      <div style="display:none"><slot ref={this.defaultSlot}/></div>
+      <slot style="display:none" ref={this.defaultSlot}/>
       {this.render()}
       </>, this.root)
+      if(!this.__inside_afterRender) {
+        this.afterRender(this.innerHTML == this.lastInner)
+        this.lastInner = this.innerHTML
+        this.__inside_afterRender = false;
+      }
   
       if(firstCall === true) {
         this.onChildrenChange();
@@ -122,4 +143,5 @@ function elementToVirtual(el: Element) {
         firstCall = false;
       }
     }
+    lastInner = ""
   }

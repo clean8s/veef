@@ -9,7 +9,9 @@ async function generateStyles(html: string, preflight?: boolean, asSheet?: boole
   let out = await K.applyExtractors(html)
   
   // Get windi processor
-  const processor = new Processor()
+  const processor = new Processor({
+
+  })
   
   const htmlClasses = (out.classes as string[]).join(' ')
   
@@ -101,6 +103,7 @@ let preactAlias = {
 
         const selectors = groups[1].trim().split(" ");
         newCss += selectors.map(sel => {
+          if(sel.trim().length === 0) return;
           return (txt2.children.filter(x => {
             if(x.selector!.replaceAll("\\", "").indexOf(sel) == -1) return false;
             return true;

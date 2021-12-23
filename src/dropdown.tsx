@@ -3,24 +3,53 @@ import { render, alertCss, renderWithCss } from './style'
 import { Slottable, TmSlot, html, rawExecute, Props, Attrs } from './slottable'
 import {Portal, Transformable} from "./transformable"
 
+export class VItem extends HTMLElement {
+  root
+  constructor() {
+    super();
+    this.root = this.attachShadow({mode: "open"})
+    render(<button part="button" class="w-full text-left hover:bg-[#00000010] focus:outline-none appearance-none flex
+    items-center block px-4 py-2 text-[1rem] text-gray-700 dark:text-gray-100 dark:hover:text-white dark:hover:bg-gray-600">
+      <slot class="inline-block"/></button>, this.root)
+  }
+}
 @Props(["transform"], "doRender")
 export class Dropdown extends Transformable {
   visible = false;
   blurTimeout: NodeJS.Timeout | null = null;
 
+  showTop = false;
   toggle(visible: boolean, e?: PointerEvent) {
     if(!visible) {
+      if(this.matches(':focus-within')) return;
+      this.root.querySelector(`div[part="box"]`)!.style.opacity = 0;
+
       this.visible = false;
       this.doRender()
+
     } else {
+      this.root.querySelector(`div[part="box"]`)!.style.opacity = 1;
       this.visible = true;
-      const R = this.getBoundingClientRect();
-      const viewportH = visualViewport.height;
-      if(R.top > viewportH * 0.7) {
-        window.scroll(0, window.scrollY + R.top - viewportH * 0.5);
-      }
-      console.log(R.top + 0.3 * viewportH, viewportH) 
+      // const R = this.getBoundingClientRect();
+      // const viewportH = visualViewport.height;
+      this.showTop = false;
+
       this.doRender()
+      const R = this.measureDiv.current!.getBoundingClientRect();
+
+      this.showTop = true;
+      this.doRender();
+
+      const R2 = this.measureDiv.current!.getBoundingClientRect();
+
+      if(R.height === R2.height) {
+        this.showTop = R.bottom > visualViewport.height;
+      } else {
+        this.showTop = R2.height > R.height;
+      }
+
+      this.doRender();
+
 
       if(!(e.target instanceof HTMLButtonElement)) {
         this.root.querySelector("button")!.focus();
@@ -30,9 +59,12 @@ export class Dropdown extends Transformable {
   }
 
   selectedIdx = 0;
+  measureProxy: React.RefObject<HTMLDivElement> = createRef();
+  measureProxyHide = true;
 
   pick(idx: number) {
     this.selectedIdx = idx;
+    this.visible = false;
     this.doRender()
     this.querySelector("select")!.selectedIndex = this.selectedIdx;
     this.querySelector("select")!.dispatchEvent(new Event("change"));
@@ -46,44 +78,68 @@ export class Dropdown extends Transformable {
   highlight = 0;
   measureDiv = createRef<HTMLDivElement>()
   hideMeasure = false;
-  fixedWidth = 0;
+
+  afterRender(childrenChanged: boolean) {
+    super.afterRender(childrenChanged)
+    if(!childrenChanged) return;
+    if(!this.measureProxy || !this.measureProxy.current) return;
+    this.measureProxyHide = false;
+    this.doRender()
+    const R = this.measureProxy.current.getBoundingClientRect();
+    console.log(R)
+    this.itemsWidth = R.width;
+    this.measureProxyHide = true;
+    this.doRender()
+  }
+  itemsWidth = 0;
   render() {
-    // if(this.measureDiv.current) {
-    //   this.measureDiv.current.style.display = "block"
-    //   const R = this.measureDiv.current.getBoundingClientRect()
-    //   this.measureDiv.current.style.display = "none"
-    //   this.fixedWidth = Math.round(R.width);
-    // }
 
-    let btnStyle = "width: 14rem;"
+    let topAuto: any = "", bottomAuto: any = "";
 
-    const hideStyle = this.visible ? "" : "display:none;"
-    const btnKey = (kbdEvent: KeyboardEvent) => {
-      if (kbdEvent.key === 'Enter' && this.visible) {
-        this.selectedIdx = this.highlight;
-        kbdEvent.preventDefault();
-      }
-      if (kbdEvent.key === 'ArrowDown') {
-        this.highlight++;
-        kbdEvent.preventDefault()
-      }
-      if (kbdEvent.key === 'ArrowUp') {
-        this.highlight--;
-        kbdEvent.preventDefault()
-      }
-      if (kbdEvent.key === 'Escape' && this.visible) {
-        this.toggle(false, kbdEvent);
-        kbdEvent.preventDefault()
-      }
-      this.highlight = this.highlight % this.virtual("option").length;
-      if(this.highlight < 0) this.highlight += this.virtual("option").length;
-      this.doRender()
+    let autocomplete = <div ref={this.measureDiv} style="opacity: 1;" part="box"
+                            className={(this.visible ? "" : "hidden ") + (this.showTop ? "bottom-0 " : "") + "origin-top-right transition-opacity py-1 z-40 absolute right-0 mt-[2px] flex max-w-56 rounded-md shadow-lg bg-white dark:bg-gray-800"}>
+      <div style="max-height: 30vh; overflow-y: auto;">
+        <div className="py-1 divide-y divide-gray-100" role="menu" aria-orientation="vertical"
+             aria-labelledby="options-menu">
+
+            {this.virtual("option").map((x, idx) => {
+
+              const active = this.highlight === idx;
+              return <button
+                  tabIndex="0"
+                  onBlur={(e) => this.toggle(false, e)}
+                  onClick={() => {
+                    this.highlight = idx;
+                    this.pick(idx);
+                  }}
+                  part={"button" + (active ? " button-active" : "")} className="text-left hover:bg-[#00000010] focus:outline-none focus:bg-[#00000010] appearance-none block w-full
+    items-center px-4 py-2 text-[1rem] text-gray-700 dark:text-gray-100 dark:hover:text-white dark:hover:bg-gray-600">
+                {this._transform(x, idx)}
+              </button>
+            })}
+
+        </div>
+      </div>
+    </div>;
+    if(this.showTop) {
+      topAuto = autocomplete;
+    } else {
+      bottomAuto = autocomplete;
     }
     return <>
+          <div class="relative">
+            {topAuto}
+          </div>
+
+      <div class={"fixed top-[10%] left-[10%]" + (this.measureProxyHide ? " hidden": "")} ref={this.measureProxy}>
+      {this.virtual("option").map((x, idx) => <div>{this._transform(x, idx)}</div>)}
+      </div>
+
           <div class="relative inline-block text-left">
-          <div>
-              <button onKeyDown={btnKey} part="select" type="button" onBlur={(e) => this.toggle(false, e)} onClick={(e) => this.toggle(true, e)}
-              class="border border-gray-300 bg-white dark:bg-gray-800
+              <button part="select" type="button" onBlur={(e) => this.toggle(false, e)} onClick={(e) => this.toggle(true, e)}
+              style={this.itemsWidth == 0 ? "" : `min-width: ${Math.round(this.itemsWidth)}px;`}
+                      class="
+              border border-gray-300 bg-white dark:bg-gray-800
               shadow-sm flex items-center justify-center w-full rounded-md
               px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-50 hover:bg-gray-50 dark:hover:bg-gray-500 focus:ring-opacity-30 focus:outline-none focus:ring-2 focus:ring-orange-600" id="options-menu">
                 <this.Portal>
@@ -91,27 +147,9 @@ export class Dropdown extends Transformable {
                 </this.Portal>
                 <v-icon name="Expand"></v-icon>
               </button>
-          </div>
-          <div style={hideStyle} part="box" class="origin-top-right py-1 z-40 absolute right-0 mt-[2px] w-56 rounded-md shadow-lg bg-white dark:bg-gray-800">
-              <div style="max-height: 30vh; overflow-y: auto;">
-              <div class="py-1 divide-y divide-gray-100" role="menu" aria-orientation="vertical" aria-labelledby="options-menu">
-                <this.Portal>
-                  {this.virtual("option").map((x, idx) => {
-                    let maybeActive = {};
-                    if(idx === this.highlight) {
-                      maybeActive = { active: "true" }
-                    }
-                    let itemHov = () => {
-                      if(idx == this.highlight) return;
-                      this.highlight = idx;
-                      this.doRender()
-                    }
-                    return <v-item tabIndex="0" {...maybeActive} onPointerOver={() => itemHov()} onPointerDown={() => this.pick(idx)}>{this._transform(x, idx)}</v-item>
-                  })}
-                </this.Portal>
-              </div>
-              </div>
-          </div>
+      </div>
+      <div class="relative">
+        {bottomAuto}
       </div>
     </>
   }

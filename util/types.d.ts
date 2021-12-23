@@ -13,12 +13,20 @@ declare module "preact" {
             'template': any,
             'v-grid': any,
             'v-card': any,
+            'v-editor': any,
+            'v-controls': any,
+            'v-divider': any,
+            'v-card-divider': any,
         }
 
         interface IntrinsicAttributes {
             dangerouslySetInnerHTML?: {
                 __html: string;
             };
+        }
+
+        interface HTMLAttributes {
+            onclick?: string
         }
     }
 }

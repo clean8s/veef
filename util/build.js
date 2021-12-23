@@ -10,7 +10,7 @@ const getEntries = () => {
 function buildSite() {
     fs.statSync("./dist", {throwIfNoEntry: false}) || fs.mkdirSync("./dist");
 
-    const buildh = async () => {
+    const beforebuild = async () => {
         getEntries().map(x => {
             try {
                 delete require.cache[require.resolve(`./dist/${x}`.replace(/\.\w{2,4}$/, ".js"))]
@@ -24,18 +24,16 @@ function buildSite() {
             return `<${p1 ? JSON.parse(p1) : "div"} dangerouslySetInnerHTML={{__html: ${JSON.stringify(dedent(p2))}}}/>`
         });
         fs.writeFileSync("./dist/main.tsx", C);
-
-        // console.log([...C].map(x => dedent(x[1])))
+    }
+    const afterbuild = async () => {
         if(fs.statSync("./dist/dist/main.js", {throwIfNoEntry: false})) {
             console.log("Loading..")
-            try {
-                require("./dist/dist/main.js")
-            } catch(err) {
-                console.log(err)
-            }
+
+            require("./dist/dist/main.js")
+
         }
     }
-    buildSite()
+    beforebuild()
     build({
         entryPoints: getEntries(),
         watch: true,
@@ -55,9 +53,9 @@ function buildSite() {
         jsxFactory: "h",
         jsxFragment: "Fragment",
         watch: {
-            onRebuild: async function() { await buildh(); }
+            onRebuild: async function() { await afterbuild(); }
         }
-    }).then(x => buildh()).catch(x => {
+    }).then(x => { afterbuild() }).catch(x => {
         throw x;
     })
 }

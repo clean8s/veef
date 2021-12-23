@@ -22,7 +22,7 @@ class ScriptSetup {
     } else if(this.fullLoad) {
       cb();
     }
-    this.callbacks.push(cb);
+    window.addEventListener("monacoloaded", cb);
   }
 
   scriptCreate() {
@@ -42,9 +42,7 @@ class ScriptSetup {
     winReq.config({ paths: { 'vs': 'https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.26.1/min/vs' }});
     winReq(["vs/editor/editor.main"], () => {
       this.fullLoad = true;
-      this.callbacks.map(x => {
-        x();
-      })
+      window.dispatchEvent(new CustomEvent("monacoloaded"))
     });
   }
 }
