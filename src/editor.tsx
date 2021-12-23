@@ -116,14 +116,21 @@ export class Editor extends HTMLElement {
     let isInit = false;
 
     window.MonacoSetup.init(() => {
-     new IntersectionObserver((x) => {
-          x.map(y => {
-            if(y.intersectionRatio > 0.1 && !isInit) {
-              _init();
-              isInit = true;
-            }
-          })
-        }, {threshold: 1}).observe(this);
+      const intr = setInterval(() => {
+        const C = this.getBoundingClientRect();
+        if(C.width == 0) return;
+        clearInterval(intr);
+          _init();
+          isInit = true;
+      }, 1000);
+    //  new IntersectionObserver((x) => {
+    //       x.map(y => {
+    //         if(y.intersectionRatio > 0.1 && !isInit) {
+    //           _init();
+    //           isInit = true;
+    //         }
+    //       })
+    //     }, {threshold: 1}).observe(this);
         const _init = () => {
         //@ts-ignore
         monaco.editor.setTheme("vs-dark");
