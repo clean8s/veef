@@ -5,6 +5,54 @@ import { TmSlot, Attrs } from './slottable'
 import codeCss from '../icons/syntax-hl.css'
 import { reduceEachLeadingCommentRange } from 'typescript'
 
+class ScriptSetup {
+  attemptLoad = false;
+  fullLoad = false;
+  callbacks: (()=>void)[] = [];
+  init(cb: ()=>void) {
+    if (document.readyState === "complete") {
+      this.initNow(cb)
+    } else {
+      window.addEventListener("load", () => this.initNow(cb));
+    }
+  }
+  initNow(cb: ()=>void) {
+    if(!this.attemptLoad) {
+      this.scriptCreate();
+    } else if(this.fullLoad) {
+      cb();
+    }
+    this.callbacks.push(cb);
+  }
+
+  scriptCreate() {
+    const s = document.createElement('script');
+    s.setAttribute('src', "https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.26.1/min/vs/loader.min.js");
+    s.setAttribute("defer", "");
+    s.onload = () => this.onScriptLoad();
+    document.head.append(s);
+    this.attemptLoad = true;
+  }
+  onScriptLoad() {
+    let winReq = (window as any).require;
+    // if(typeof winReq != 'function') {
+    //   setTimeout(() => onScriptLoad(false), 100);
+    //   return
+    // }
+    winReq.config({ paths: { 'vs': 'https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.26.1/min/vs' }});
+    winReq(["vs/editor/editor.main"], () => {
+      this.fullLoad = true;
+      this.callbacks.map(x => {
+        x();
+      })
+    });
+  }
+}
+
+if(typeof window.MonacoSetup == 'undefined') {
+  window.MonacoSetup = new ScriptSetup();
+}
+
 @Attrs(["value", "language", "highlight"])
 export class Editor extends HTMLElement {
   root: HTMLElement
@@ -15,10 +63,8 @@ export class Editor extends HTMLElement {
     super()
     this.root = this.attachShadow({mode: 'open'}) as any as HTMLElement;
     this.root.innerHTML = `
-    <code style='display:none' id='highlight'></code>
     <slot name='mydiv'></slot>
     <div style='display:none;'><slot data-veef='1'></slot></div>`
-    this.hl = this.root.querySelector("#highlight");
     this.mydiv = this.root.querySelector("slot[name='mydiv']") as HTMLSlotElement;
     this.mainSlot = this.root.querySelector("slot[data-veef]") as HTMLSlotElement;
     this.mainSlot.addEventListener("slotchange", () => {
@@ -41,39 +87,6 @@ export class Editor extends HTMLElement {
   editor: null | object = null;
   _code = "// Hello World!";
   _language = "javascript";
-
-  _highlight = false;
-  set highlight(a: boolean) {
-    this._highlight = true;
-    this.setAttribute("loaded", "true");
-    let lastCode = ""
-    setInterval(() => {
-      let code = this.slottedCode();
-      if(typeof monaco == 'undefined') return;
-      if(lastCode === code) return;
-      lastCode = code;
-      console.log(code)
-      
-      if(this.editor !== null) {
-        this.editor.dispose()
-        this.editor = null;
-      }
-      this.querySelector("div[slot='mydiv']")!.setAttribute("data-lang", this._language);
-      const mydiv = this.querySelector("div[slot='mydiv']")!;
-      mydiv.innerHTML = "<pre data-lang='javascript' style='padding: 1rem; font-family: monospace; background: #333; font-size: 1rem; margin: 0; height: 100%;'></pre>"
-      mydiv.children[0]!.textContent = code;
-      this.style.minHeight = "0";
-    // this.querySelector("div[slot='mydiv']").innerText = code;
-    // this.hl?.setAttribute("data-lang", "javascript");
-    // this.hl?.setAttribute("style", "")
-
-    // this.root.setAttribute("data-lang", "javascript")
-    monaco.editor.colorizeElement(this.querySelector("div[slot='mydiv'] pre"), {
-      theme: "vs-dark"
-    })
-   }, 100);
-    // console.log("A")
-  }
 
   set language(s: string) {
     if(this.editor != null) {
@@ -100,31 +113,10 @@ export class Editor extends HTMLElement {
     let myDiv = document.createElement("div");
     myDiv.slot = "mydiv"
     this.append(myDiv)
-    // this.root = myDiv;
+    let isInit = false;
 
-    const s = document.createElement('script');
-    // globalThis.exports = undefined;
-    // exports = undefined;
-
-    const elTarget = myDiv;
-
-    s.setAttribute('src', "https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.26.1/min/vs/loader.min.js");
-    s.setAttribute("defer", "");
-
-    const onScriptLoad = (doRequire?: boolean) => {
-      let winReq = (window as any).require;
-      if(typeof winReq != 'function') {
-        setTimeout(() => onScriptLoad(false), 100);
-        return
-      }
-      if(doRequire === true) {
-        winReq.config({ paths: { 'vs': 'https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.26.1/min/vs' }});
-      }
-
-      winReq(["vs/editor/editor.main"], () => {
-        if(this.hasAttribute("highlight")) return;
-        let isInit = false;
-        new IntersectionObserver((x) => {
+    window.MonacoSetup.init(() => {
+     new IntersectionObserver((x) => {
           x.map(y => {
             if(y.intersectionRatio > 0.1 && !isInit) {
               _init();
@@ -135,7 +127,7 @@ export class Editor extends HTMLElement {
         const _init = () => {
         //@ts-ignore
         monaco.editor.setTheme("vs-dark");
-        let editor = monaco.editor.create(elTarget, {
+        let editor = monaco.editor.create(myDiv, {
           value: this._code,
           language: this._language,
           // theme: 'vs-dark',
@@ -155,27 +147,68 @@ export class Editor extends HTMLElement {
             }));
           });
         });
-      }
-        
-      });
-    }
+      };
+    });
+    // this.root = myDiv;
 
-    const setup = () => {
-      if(window.monacoLoaded !== true) {
-        (window as any).monacoLoaded = true;
-        s.onload = () => onScriptLoad(true);
-        document.head.append(s);
-      } else {
-        onScriptLoad()
-      }
-    }
-    if (document.readyState === "complete") {
-      setup()
-    } else {
-      window.addEventListener("load", () => setup());
+    // const s = document.createElement('script');
+    // // globalThis.exports = undefined;
+    // // exports = undefined;
+
+    // const elTarget = myDiv;
+
+    // s.setAttribute('src', "https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.26.1/min/vs/loader.min.js");
+    // s.setAttribute("defer", "");
+
+    // const onScriptLoad = (doRequire?: boolean) => {
+    //   let winReq = (window as any).require;
+    //   if(typeof winReq != 'function') {
+    //     setTimeout(() => onScriptLoad(false), 100);
+    //     return
+    //   }
+    //   if(doRequire === true) {
+    //     winReq.config({ paths: { 'vs': 'https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.26.1/min/vs' }});
+    //   }
+
+    //   winReq(["vs/editor/editor.main"], () => {
+    //     if(this.hasAttribute("highlight")) return;
+    //     let isInit = false;
+    //     new IntersectionObserver((x) => {
+    //       x.map(y => {
+    //         if(y.intersectionRatio > 0.1 && !isInit) {
+    //           _init();
+    //           isInit = true;
+    //         }
+    //       })
+    //     }, {threshold: 1}).observe(this);
+    //     const _init = () => {
+    //     //@ts-ignore
+    //     monaco.editor.setTheme("vs-dark");
+    //     let editor = monaco.editor.create(elTarget, {
+    //       value: this._code,
+    //       language: this._language,
+    //       // theme: 'vs-dark',
+    //       fontFamily: "monospace",
+    //       fontSize: 16,
+    //       automaticLayout: true
+    //     });
+
+
+    //     this.editor = editor;
+    //     this.setAttribute("loaded", "true")
+        
+    //     editor.getModel().onDidChangeContent(() => {
+    //       ["change", "input"].map(x => {
+    //         this.dispatchEvent(new CustomEvent(x, {
+    //           detail: this.value
+    //         }));
+    //       });
+    //     });
+    //   }
+        
+    //   });
     }
   }
-}
 
 function dedent(code: string) : string {
   let nonSpace = [...code].findIndex(x => !x.match(/\s/));

@@ -740,6 +740,7 @@ ${env.render("footer", {})}
 ` 
     const origs: string[] = [];
     let idx = -1;
+    BASE = BASE.replace("<script src=\"dist/index.js\"></script>", `<script src="dist/index.js?v${Math.random().toString(16).substring(3)}"></script>`)
     BASE = BASE.replaceAll(/<v-code.*?<\/v-code>/gs, (x) => {
         origs.push(x);
         return `/*code-ref*/`;

@@ -95,7 +95,7 @@ export class Table extends Transformable {
         </div>
         {this.virtual("tr:not(:first-child)").map((x, idx) => {
           return <div part="row" class="table-row">
-            <Check idx={idx}/>
+            <Check idx={orderMap[idx]}/>
             {this.virtual("tr:nth-child(" + (orderMap[idx] + 2) + ") > td").map((x, idx) => {
               const active = this._sortable ? idx == this.sortCol : false;
               return <div part={"cell" + (active ? " cell-active" : "")} class={"px-4 py-3 border table-cell " + (active ? "font-bold bg-[#FF660010] border-[#FF660030]" : "") }><this.Portal>{x}</this.Portal></div>
