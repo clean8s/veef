@@ -86,7 +86,6 @@ export class Dropdown extends Transformable {
     this.measureProxyHide = false;
     this.doRender()
     const R = this.measureProxy.current.getBoundingClientRect();
-    console.log(R)
     this.itemsWidth = R.width;
     this.measureProxyHide = true;
     this.doRender()

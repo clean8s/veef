@@ -22,7 +22,7 @@ class ScriptSetup {
     } else if(this.fullLoad) {
       cb();
     }
-    window.addEventListener("monacoloaded", cb);
+    window.addEventListener("monacoLoaded", cb);
   }
 
   scriptCreate() {

@@ -128,52 +128,38 @@ v-dialog *[slot="actions"] > *{
 } */
 
 
-v-grid {	
-	/* grid-template-columns: repeat(auto-fit, minmax(calc(300px * 1/var(--cols)), 1fr)); */
+v-grid {
 	text-align: left;
-	display: flex;
 	flex-wrap: wrap;
 	align-items: center;
 	justify-content: space-around;
+	display: flex;
+	--grid-margin: 0.5rem;
 }
-v-grid[center-y] {
-	align-items: center;
+v-grid[y-top] {
+	align-items: flex-start;
 }
-v-grid[center-x] {
-	justify-content: center;
-}
-v-grid[edges-x] {
+v-grid[edges] {
 	justify-content: space-between;
 }
-v-grid > *{
-	margin: 0.5rem !important;
-}
-v-controls > button {
-	margin: 1rem 0.5rem 0.5rem;
-}
-
-v-card {
-	box-shadow: 0px 3px 3px -2px rgb(0 0 0 / 20%), 0px 3px 4px 0px rgb(0 0 0 / 14%), 0px 1px 8px 0px rgb(0 0 0 / 12%);
-	border-radius: 4px;
-	padding: 0.5em 1em;
-	display: block;
-}
-v-card-divider {
-	display: block;
-	width: calc(100% + 2em);
-	transform: translateX(-1em);
-	margin: 0.4em 0;
-	flex-basis: 100%;
-	height: 1px;
-	border-bottom: 1px solid rgb(218, 218, 218);
-}
-
 v-grid[center] {
 	align-items: center;
 }
-v-grid>* {
-	flex-basis: calc(-1.2em + 100% * var(--v-span, 1) / var(--cols));
+
+v-grid > * {
+	flex-basis: calc(-2 * var(--grid-margin, 1rem) + 100% * var(--v-span, 1) / var(--cols));
 	flex-grow: 1;
+	min-width: calc(-2 * var(--grid-margin, 1rem) + 100% * var(--v-span, 1) / var(--cols));
+	max-width: calc(100% * var(--v-span, 1) / var(--cols, 1));
+	flex-shrink: 0;
+	box-sizing: border-box;
+	margin: var(--grid-margin);
+	/*min-width: calc((var(--cols) - 1) * var(--grid-margin) * -1 + 100% * var(--v-span, 1) / var(--cols, 1));*/
+	/*max-width: calc((var(--cols) - 1) * var(--grid-margin) * -1 + 100% * var(--v-span, 1) / var(--cols, 1));*/
+}
+
+v-grid > *[is~="expand"] {
+	min-width: 400px;
 }
 
 *[columns="1"] { --cols: 1; } *[columns="2"]{ --cols: 2; }  *[columns="3"]{ --cols: 3; }   *[columns="4"]{ --cols: 4;}   *[columns="5"]{ --cols: 5;}  
@@ -181,9 +167,28 @@ v-grid>* {
 
 
 *[is~="span-1"] { --v-span: 1; } *[is~="span-2"]{ --v-span: 2; }  *[is~="span-3"]{ --v-span: 3; }   *[is~="span-4"]{ --v-span: 4;}   *[is~="span-5"]{ --v-span: 5;}  
-*[is~="span-6"]{ --v-span: 6;} *[is~="span-7"]{ --v-span: 7;}   *[is~="span-8"]{ --v-span: 8;}   *[is~="span-9"]{ --v-span: 9;}  
+*[is~="span-6"]{ --v-span: 6;} *[is~="span-7"]{ --v-span: 7;}   *[is~="span-8"]{ --v-span: 8;}   *[is~="span-9"]{ --v-span: 9;}
+																								 
+@media screen and (max-width: 640px) {
+	*[is~="sm-span-1"] { --v-span: 1; } *[is~="sm-span-2"]{ --v-span: 2; }  *[is~="sm-span-3"]{ --v-span: 3; }   *[is~="sm-span-4"]{ --v-span: 4;}   *[is~="sm-span-5"]{ --v-span: 5;}
+	*[is~="sm-span-6"]{ --v-span: 6;} *[is~="sm-span-7"]{ --v-span: 7;}   *[is~="sm-span-8"]{ --v-span: 8;}   *[is~="sm-span-9"]{ --v-span: 9;}
+}
 
-v-controls input:not([type]), v-controls input[type="text"], v-controls input[type="number"], v-controls input[type="password"], v-controls input[type="email"], v-controls input[type="date"], v-controls input[type="time"], v-controls input[type="datetime-local"], v-controls input[type="month"], v-controls input[type="week"], v-controls input[type="search"], v-controls input[type="tel"], v-controls input[type="url"], v-controls input[type="file"], v-controls select, v-controls textarea {
+@media screen and (max-width: 768px) {
+	*[is~="md-span-1"] { --v-span: 1; } *[is~="md-span-2"]{ --v-span: 2; }  *[is~="md-span-3"]{ --v-span: 3; }   *[is~="md-span-4"]{ --v-span: 4;}   *[is~="md-span-5"]{ --v-span: 5;}
+	*[is~="md-span-6"]{ --v-span: 6;} *[is~="md-span-7"]{ --v-span: 7;}   *[is~="md-span-8"]{ --v-span: 8;}   *[is~="md-span-9"]{ --v-span: 9;}
+}
+
+v-grid[form] {
+	margin: 1rem 0;
+}
+
+v-grid[form] > * {
+	position: relative;
+	padding-top: 30px;
+}
+
+v-grid[form] input:not([type]), v-grid[form] input[type="text"], v-grid[form] input[type="number"], v-grid[form] input[type="password"], v-grid[form] input[type="email"], v-grid[form] input[type="date"], v-grid[form] input[type="time"], v-grid[form] input[type="datetime-local"], v-grid[form] input[type="month"], v-grid[form] input[type="week"], v-grid[form] input[type="search"], v-grid[form] input[type="tel"], v-grid[form] input[type="url"], v-grid[form] input[type="file"], v-grid[form] select, v-grid[form] textarea {
 	border: 1px solid rgb(209, 213, 219);
 	box-shadow: rgba(0, 0, 0, 0.2) 0px 1px 2px 0px;
 	padding: 8px 12px;
@@ -192,21 +197,68 @@ v-controls input:not([type]), v-controls input[type="text"], v-controls input[ty
 	width: 100%;
 	display: block;
 }
-v-controls input[type="range"] {
+v-grid[form] input[type="range"] {
 	height: 30px;
 }
-v-controls input[type="text"]:focus {
+v-grid[form] input[type="text"]:focus {
 	outline: 1px solid var(--color, #3366CC);
 }
 
-v-controls label {
+v-grid[form] label {
 	color: rgb(55,65,81);
 	font-size: .875rem;
     line-height: 1.25rem;
 	font-weight: 600;
 	display: block;
 	margin: 10px 0;
+	margin-top: -30px;
 	font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;
+}
+
+
+v-card {
+	box-shadow: 0px 3px 3px -2px rgb(0 0 0 / 20%), 0px 3px 4px 0px rgb(0 0 0 / 14%), 0px 1px 8px 0px rgb(0 0 0 / 12%);
+	border-radius: 4px;
+	padding: 0.5em 1em;
+	display: block;
+}
+
+v-card > div {
+	display: block;
+	width: calc(100% + 2em);
+	transform: translateX(-1em);
+}
+
+v-card > div:last-child {
+	transform: translateX(-1em) translateY(0.55rem);
+	overflow: hidden;
+	border-bottom-left-radius: 6px;
+	border-bottom-right-radius: 6px;
+}
+
+v-card > div:first-child {
+	transform: translateX(-1em) translateY(-0.55rem);
+	overflow: hidden;
+	border-top-left-radius: 6px;
+	border-top-right-radius: 6px;
+}
+
+v-card > div:only-child {
+	border-bottom-left-radius: 0px;
+	border-bottom-right-radius: 0px;
+}
+
+v-card hr {
+	display: block;
+	width: calc(100% + 2em);
+	transform: translateX(-1em);
+	margin: 0.5em 0;
+	background: transparent;
+	border: 0px solid transparent;
+	background: #cacaca;
+	min-height: 1px;
+	height: 1px;
+	color: #eee;
 }
 
 v-icon[data-veef="message"] {
@@ -217,7 +269,7 @@ v-icon[data-veef="message"] {
 	margin: 0 auto;
 }
 
-v-controls button, *[is^="v-"] {
+v-grid[form] button, *[is^="v-"] {
 	font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;
 	cursor: pointer;
 	display: inline-block;
@@ -235,12 +287,9 @@ v-controls button, *[is^="v-"] {
 	box-shadow: rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0.05) 0px 1px 2px 0px;
 	text-align: center;
 	--tw-text-opacity: 1;
-	color: rgba(255, 255, 255, var(--tw-text-opacity));
 	-webkit-transition-property: background-color, border-color, color, fill, stroke, opacity, -webkit-box-shadow, -webkit-transform, filter, backdrop-filter;
 	-o-transition-property: background-color, border-color, color, fill, stroke, opacity, box-shadow, transform, filter, backdrop-filter;
 	transition-property: background-color, border-color, color, fill, stroke, opacity, box-shadow, -webkit-box-shadow, transform, -webkit-transform, filter, backdrop-filter;
-	transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
-	transition-duration: 150ms;
 	transition-timing-function: cubic-bezier(0.4, 0, 1, 1);
 	transition-duration: 200ms;
 	border: 1px solid var(--color-border, #55555535);
@@ -250,19 +299,19 @@ v-controls button, *[is^="v-"] {
 	--bg: 1;
 }
 
-*[is="v-primary"] {
-	background-color: var(--color, #3366CC);
-	color: #fff;
-}
-
-v-controls button:hover, *[is^="v-"]:hover {
+v-grid[form] button:hover, *[is^="v-"]:hover {
 	--bg: 0.85;
 }
 
-v-controls button:focus, *[is^="v-"]:focus {
+v-grid[form] button:focus, *[is^="v-"]:focus {
 	outline: 2px solid transparent;
 	outline-offset: 2px;
 	box-shadow: rgb(255, 255, 255) 0px 0px 0px 0px, rgb(var(--color-rgb, #3366CC),0.3) 0px 0px 0px 3px, rgba(0, 0, 0, 0.05) 0px 1px 2px 0px;
+}
+
+*[is="v-primary"] {
+	background-color: var(--color, #3366CC) !important;
+	color: #fff !important;
 }
 
 v-code {

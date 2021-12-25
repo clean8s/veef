@@ -5,7 +5,11 @@ import {Ref, VNode, toChildArray } from 'preact'
 import { createPortal, useEffect } from 'preact/compat'
 
 function elementToVirtual(el: Element) {
-  const n = el.innerHTML;
+  const n = el.innerHTML.replaceAll(/<([^\s]+)((.+?)<\/\1>)/gsm, (x, y, z) => {
+    if(z.indexOf("data-id") == -1)
+    return `<${y} data-id="${Math.random().toString(16).substring(3)}" ${z}`
+    return x;
+  });
     //@ts-ignore
     return html([n]) as React.ReactChild;
   }
@@ -102,7 +106,7 @@ function elementToVirtual(el: Element) {
     private __childrenChanged = false;
 
     virtual(selector: string) {
-      return [...this.querySelectorAll(selector)].map(x => {
+      return [...this.querySelectorAll(selector)].map((x, idx) => {
         return elementToVirtual(x);
       })
     }

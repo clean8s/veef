@@ -280,8 +280,9 @@ v-table.tiny::part(row) {
     background: #444;
 }
 v-table.tiny::part(cell) {
-    padding-top: 0.1em;
-    padding-bottom: 0.1em;
+    font-size: 0.85rem;
+    padding-top: 0.13em;
+    padding-bottom: 0.13em;
     border-color: #555;
     color: #ccc;
 }
@@ -450,7 +451,7 @@ function Alert() {
     return <>
         <div>
             <v-grid columns="2">
-                <div>
+                <div style="min-width: 300px;">
                     <div class='t1'></div>
                     <v-alert error="">This is an error message. You can put <strong>whatever HTML</strong> you like.
                     </v-alert>
@@ -458,9 +459,9 @@ function Alert() {
                     <v-alert success="">This is a success!</v-alert>
                     <v-alert info="">This is an alert, a classic.</v-alert>
                 </div>
-                <div>
+                <div style="min-width: 300px;">
                     <form id="toasty">
-                        <v-controls columns="2">
+                        <v-grid form columns="2">
                             <div>
                                 <label>Message</label>
                                 <input type="text" id="toastMsg" value="Some message"/>
@@ -468,15 +469,15 @@ function Alert() {
                             <div>
                                 <label>Duration</label>
                                 <v-grid columns="3" center>
-                                    <input v-span="2" style="max-width: 120px" type="range" id="toastRange" min="300"
+                                    <input is="span-2" style="max-width: 120px" type="range" id="toastRange" min="300"
                                            max="10000" step="100" value="1500"></input>
-                                    <span v-span="1" id="toastRangeLabel"/>
+                                    <span is="span-1" id="toastRangeLabel"/>
                                 </v-grid>
                             </div>
-                            <div v-span="2">
+                            <div is="span-2">
                                 <button is="v-primary" type="submit" style="width: 100%">Create toast</button>
                             </div>
-                        </v-controls>
+                        </v-grid>
                     </form>
                 </div>
                 {/* <v-code lang="html">{`
@@ -514,16 +515,48 @@ function Alert() {
 
 function Utilities() {
     return <Docs>
-        <v-card style="max-width: 250px; margin: 0 auto 20px;">
-            <strong>Some card</strong>
-            <v-card-divider></v-card-divider>
-            Some card content. <br/>
-            Blah blah. <br/><br/>
-            <v-card>
-                a card within a card.
+
+            {/* @raw "style"
+            .grid-demo > div {
+                background: #262D35;
+                padding: 0.8rem;
+                color: #fff;
+                font-size: 1.8rem;
+                text-align: center;
+            }
+            
+            */}
+
+        Grid with <code>columns="4"</code> and D with <code>span="2"</code> <br/><br/>
+        <v-grid columns="3" className="grid-demo">
+            <div>
+                A
+            </div>
+            <div>
+                B
+            </div>
+            <div>
+                C
+            </div>
+            <div is="span-2">
+                D
+            </div>
+            <div>
+                E
+            </div>
+            <div is="md-span-3">
+                Will expand on small screens.
+            </div>
+            <v-card is="span-2">
+                <strong>Some card</strong>
+                <hr/>
+                This is a card and it contains something.
+                <div>
+                    <img style="margin: 0; padding: 0; display: block" src="https://raw.githubusercontent.com/neutraltone/awesome-stock-resources/master/img/splash.jpg" width="100%"/>
+                </div>
             </v-card>
-        </v-card>
-        <v-controls columns="2">
+        </v-grid>
+        <v-grid form columns="2">
             <div>
                 <label>Some name</label>
                 <input/>
@@ -532,13 +565,16 @@ function Utilities() {
                 <label>Some date</label>
                 <input type="date"/>
             </div>
-            <div is="span-2">
+            <div>
                 <label>Something else</label>
                 <input/>
             </div>
+            <div>
+                <button>Button one</button>
+                <button is="v-primary">Button two</button>
+            </div>
+        </v-grid>
 
-            <button is="v-primary">Action</button>
-        </v-controls>
     </Docs>
 }
 
@@ -711,7 +747,7 @@ function Dialog() {
             <v-dialog id="d2">
                 <div>
                     <form>
-                        <v-controls columns="2">
+                        <v-grid form columns="2">
                             <div>
                                 <label>Some name</label>
                                 <input/>
@@ -724,7 +760,7 @@ function Dialog() {
                                 <label>Something else</label>
                                 <input/>
                             </div>
-                        </v-controls>
+                        </v-grid>
                     </form>
                 </div>
                 <section slot="actions">

@@ -81,6 +81,9 @@ const renderChain: typeof preactRender = (x, y) => {
   })
 }
 
+function genSpan() {
+  Array.from(Array(9)).map((_, idx) => `*[is~="md-span-${idx}"] { --v-span: ${idx}; }`);
+}
 export const objCss = windiCss + vendorCss
 
 function supportsStyles() {

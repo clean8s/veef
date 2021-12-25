@@ -5,19 +5,12 @@ const {spawn} = require("child_process")
 const fs = require("fs")
 
 const getEntries = () => {
-    return ["main.tsx", "./dist/main.tsx",  ...sync("*.{css,demo.js}"), ...sync("assets/*") ]
+    return ["main.tsx",  ...sync("*.{css,demo.js}"), ...sync("assets/*") ]
 }
 function buildSite() {
     fs.statSync("./dist", {throwIfNoEntry: false}) || fs.mkdirSync("./dist");
 
     const beforebuild = async () => {
-        getEntries().map(x => {
-            try {
-                delete require.cache[require.resolve(`./dist/${x}`.replace(/\.\w{2,4}$/, ".js"))]
-            }catch(err) {
-                // console.log(err)
-            }
-        });
         const src = fs.readFileSync("./main.tsx", "utf8");
 
         const C = src.replace(/{\s*\/\*\s*@raw\s*(".*?")?\s*(.*?)\*\/\s*}/gsm, (match, p1, p2) => {
@@ -26,6 +19,14 @@ function buildSite() {
         fs.writeFileSync("./dist/main.tsx", C);
     }
     const afterbuild = async () => {
+        beforebuild();
+        [...getEntries(), "dist/main.js"].map(x => {
+            try {
+                delete require.cache[require.resolve(`./dist/${x}`.replace(/\.\w{2,4}$/, ".js"))]
+            }catch(err) {
+                // console.log(err)
+            }
+        });
         if(fs.statSync("./dist/dist/main.js", {throwIfNoEntry: false})) {
             console.log("Loading..")
 
@@ -35,7 +36,7 @@ function buildSite() {
     }
     beforebuild()
     build({
-        entryPoints: getEntries(),
+        entryPoints: [...getEntries(), "./dist/main.tsx"],
         watch: true,
         target: "node12",
         outdir: 'dist',
