@@ -47,20 +47,20 @@ function elementToVirtual(el: Element) {
   
       this.Portal = (props: {children: any, target?: string, self?: Transformable}) =>{
         return props.children;
-        // if(!props.self) {
-        //   props.self = this;
-        // }
-        // let out = ""
-        // if(!props.target) {
-        //   out = props.self.counter.toString();
-        //   props.self.counter++;
-        // } else {
-        //   out = props.target;
-        // }
-        // return <>
-        // {createPortal(props.children, props.self.makeVirtualSlot(out))}
-        // <slot name={"__veef_" + out} />
-        // </>
+        if(!props.self) {
+          props.self = this;
+        }
+        let out = ""
+        if(!props.target) {
+          out = props.self.counter.toString();
+          props.self.counter++;
+        } else {
+          out = props.target;
+        }
+        return <>
+        {createPortal(props.children, props.self.makeVirtualSlot(out))}
+        <slot name={"__veef_" + out} />
+        </>
       }
     }
   

@@ -1,10 +1,6 @@
 import React, { createRef } from 'react'
 import { render, alertCss, renderWithCss } from './style'
 import { Slottable, TmSlot, html, rawExecute, Props, Attrs } from './slottable'
-import {Ref, VNode, toChildArray } from 'preact'
-import { createPortal, useEffect } from 'preact/compat'
-import tabStyle from '../icons/tabs.css';
-import {Portal, Transformable} from "./transformable"
 
 export class Alert extends Slottable {
   root: HTMLElement

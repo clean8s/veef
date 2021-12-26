@@ -212,6 +212,10 @@ export class Search extends Transformable {
       });
       this.input.setAttribute("data-veef-search", 1)
     }
+    const autoList = document.querySelector("#autolist")
+    if(autoList) {
+      autoList.scrollIntoView()
+    }
   }
 
   loadData() {

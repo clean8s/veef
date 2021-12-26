@@ -21,6 +21,7 @@ export class Dropdown extends Transformable {
 
   showTop = false;
   blurTimeouts: NodeJS.Timeout[] = [];
+  _preventBlur = false;
   toggle(visible: boolean, e?: PointerEvent) {
     if(!visible) {
       this.root.querySelector(`div[part="box"]`)!.style.opacity = 0;
@@ -38,8 +39,7 @@ export class Dropdown extends Transformable {
       this.blurTimeouts.forEach(x => clearTimeout(x))
       this.root.querySelector(`div[part="box"]`)!.style.opacity = 1;
       this.visible = true;
-      // const R = this.getBoundingClientRect();
-      // const viewportH = visualViewport.height;
+
       this.showTop = false;
 
       this.doRender()
@@ -60,7 +60,7 @@ export class Dropdown extends Transformable {
 
 
       if(!(e.target instanceof HTMLButtonElement)) {
-        this.root.querySelector("button")!.focus();
+        this.root.querySelector("button[part='select']")!.focus();
         e?.preventDefault();
       }
     }
