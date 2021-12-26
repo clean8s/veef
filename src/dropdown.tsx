@@ -18,15 +18,21 @@ export class Dropdown extends Transformable {
   visible = false;
   blurTimeout: NodeJS.Timeout | null = null;
 
+
   showTop = false;
   toggle(visible: boolean, e?: PointerEvent) {
     if(!visible) {
-      if(this.matches(':focus-within')) return;
-      this.root.querySelector(`div[part="box"]`)!.style.opacity = 0;
+      setTimeout(() => {
+        console.log(document.activeElement, this.root.activeElement)
+        if (this.matches(':focus-within')) return;
+        if (this.root && this.root.querySelector("#__over")) {
+          if (this.root.querySelector("#__over")!.matches(":focus-within")) return;
+        }
+        this.root.querySelector(`div[part="box"]`)!.style.opacity = 0;
 
-      this.visible = false;
-      this.doRender()
-
+        this.visible = false;
+        this.doRender()
+      }, 250);
     } else {
       this.root.querySelector(`div[part="box"]`)!.style.opacity = 1;
       this.visible = true;
@@ -97,7 +103,7 @@ export class Dropdown extends Transformable {
 
     let autocomplete = <div ref={this.measureDiv} style="opacity: 1;" part="box"
                             className={(this.visible ? "" : "hidden ") + (this.showTop ? "bottom-0 " : "") + "origin-top-right transition-opacity py-1 z-40 absolute right-0 mt-[2px] flex max-w-56 rounded-md shadow-lg bg-white dark:bg-gray-800"}>
-      <div style="max-height: 30vh; overflow-y: auto;">
+      <div id="__over" style="max-height: 30vh; overflow-y: auto;">
         <div className="py-1 divide-y divide-gray-100" role="menu" aria-orientation="vertical"
              aria-labelledby="options-menu">
 
@@ -105,7 +111,6 @@ export class Dropdown extends Transformable {
 
               const active = this.highlight === idx;
               return <button
-                  tabIndex="0"
                   onBlur={(e) => this.toggle(false, e)}
                   onClick={() => {
                     this.highlight = idx;

@@ -30,9 +30,9 @@ function elementToVirtual(el: Element) {
   
   export abstract class Transformable extends HTMLElement {
     root: ShadowRoot;
-    constructor() {
+    constructor(args?: object) {
       super()
-      this.root = this.attachShadow({mode: 'open'})
+      this.root = this.attachShadow({mode: 'open', ...args})
   
       this.Portal = (props: {children: any, target?: string, self?: Transformable}) =>{
         return props.children;

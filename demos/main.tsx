@@ -20,7 +20,7 @@ function Dropdown() {
 
                 <div style="text-align: center; margin: 2rem 0;">
                     <v-dropdown>
-                        <select onChange="curval.innerText = '\'' + this.value + '\''">
+                        <select>
                             <option value="copy">Some copy operation</option>
                             <option value="bolt">A bolt</option>
                         </select>
@@ -175,7 +175,7 @@ function DocSection(props: { children: any }) {
 
 function code(snippet: string, lang?: string) {
     const snip = snippet.replaceAll("~", "`");
-    return <v-code lang={lang || "html"} style="margin: 20px 0;">{snippet}</v-code>
+    return <v-code language={lang || "html"} style="margin: 20px 0;">{snippet}</v-code>
 }
 
 function Table() {
@@ -304,19 +304,6 @@ tbl.addEventListener('rowselect', (e) => {
     </table>
   </v-table>
         `}/>
-                <DocSection>Selection event</DocSection>
-                You can use JavaScript to detect when a row is selected with the <code>rowselect</code> event.
-                A list of all rows is available in <code>event.detail</code>.
-                {code(`
-    <v-table id="myTable"> <table> .. </table> </div>
-    <script>
-    var t = document.getElementById('myTable');
-    t.addEventListener('rowselect', (e) => {
-        console.log(e.detail);
-        // list of rows
-    });
-    </script>
-    `)}
                 <DocSection>Attributes / props</DocSection>
                 <strong>selectable</strong>: adds a checkbox for selecting rows <br/>
                 <strong>sortable</strong>: sorts a column when you click on its header <br/>
@@ -494,7 +481,7 @@ function Alert() {
 function Utilities() {
     return <Docs>
 
-            {/* @raw "style"
+        {/* @raw "style"
             .grid-demo > div {
                 background: #262D35;
                 padding: 0.8rem;
@@ -842,22 +829,19 @@ function Search() {
                 </v-search>
             </div>
         </div>
-         <div class="t2">
+        <div class="t2">
             <Docs>
 
-                <Snippet code={`<script>
-                        this.data = "queen-json"
-                        this.searchKey = "name"
-                        this.itemRender = (item, hl) => {
-                            return h'<span><v-icon name="Headset" /> {hl}</span>'
-                        }
-                        this.itemToString = (item) => {
-                            return item.name
-                        }
-                        </script>`} />
+                <Snippet code={`
+                <v-search placeholder="Search fruits">
+                    <ul>
+                        <li>Banana</li>
+                        <li>Apple</li>
+                    </ul>
+                </v-search>`} />
 
-                </Docs>
-            </div>
+            </Docs>
+        </div>
     </>
 }
 
