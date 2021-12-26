@@ -20,20 +20,22 @@ export class Dropdown extends Transformable {
 
 
   showTop = false;
+  blurTimeouts: NodeJS.Timeout[] = [];
   toggle(visible: boolean, e?: PointerEvent) {
     if(!visible) {
-      setTimeout(() => {
-        console.log(document.activeElement, this.root.activeElement)
+      this.root.querySelector(`div[part="box"]`)!.style.opacity = 0;
+      const blurTimeout = setTimeout(() => {
         if (this.matches(':focus-within')) return;
         if (this.root && this.root.querySelector("#__over")) {
           if (this.root.querySelector("#__over")!.matches(":focus-within")) return;
         }
-        this.root.querySelector(`div[part="box"]`)!.style.opacity = 0;
 
         this.visible = false;
         this.doRender()
       }, 250);
+      this.blurTimeouts.push(blurTimeout)
     } else {
+      this.blurTimeouts.forEach(x => clearTimeout(x))
       this.root.querySelector(`div[part="box"]`)!.style.opacity = 1;
       this.visible = true;
       // const R = this.getBoundingClientRect();

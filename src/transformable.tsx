@@ -4,14 +4,24 @@ import { Slottable, TmSlot, html, rawExecute } from './slottable'
 import {Ref, VNode, toChildArray } from 'preact'
 import { createPortal, useEffect } from 'preact/compat'
 
+export function strToNode(s: string) {
+  return html([s]) as React.ReactChild;
+}
+
 function elementToVirtual(el: Element) {
-  const n = el.innerHTML.replaceAll(/<([^\s]+)((.+?)<\/\1>)/gsm, (x, y, z) => {
-    if(z.indexOf("data-id") == -1)
-    return `<${y} data-id="${Math.random().toString(16).substring(3)}" ${z}`
-    return x;
-  });
+  let H = el.innerHTML
+  // if(el instanceof HTMLTemplateElement) {
+  //   H = (el.content.cloneNode(true) as HTMLElement).
+  // }
+  // console.log(H)
+  // console.log()
+  // const n = el.innerHTML.replaceAll(/<([^\s]+)((.+?)<\/\1>)/gsm, (x, y, z) => {
+  //   if(z.indexOf("data-id") == -1)
+  //   return `<${y} data-id="${Math.random().toString(16).substring(3)}" ${z}`
+  //   return x;
+  // });
     //@ts-ignore
-    return html([n]) as React.ReactChild;
+    return html([H]) as React.ReactChild;
   }
 
   class Virtual extends HTMLElement {
@@ -30,13 +40,13 @@ function elementToVirtual(el: Element) {
   
   export abstract class Transformable extends HTMLElement {
     root: ShadowRoot;
-    constructor(args?: object) {
+    constructor(customSlot?: boolean) {
       super()
-      this.root = this.attachShadow({mode: 'open', ...args})
+      this.root = this.attachShadow({mode: 'open'})
+      if(customSlot === true) this.__customSlot = true;
   
       this.Portal = (props: {children: any, target?: string, self?: Transformable}) =>{
         return props.children;
-        // return <v-virtual>{props.children}</v-virtual>
         // if(!props.self) {
         //   props.self = this;
         // }
@@ -97,16 +107,25 @@ function elementToVirtual(el: Element) {
     defaultSlot = createRef<HTMLSlotElement>();
     jsxSlot = createRef<HTMLSlotElement>();
   
-    abstract render(): VNode;
+    abstract render(slot?: React.ReactNode): VNode;
+
+    private __customSlot = false;
 
     counter = 0;
+
     doRender(firstCall?: boolean) {
       this.counter = 0;
-      render(<>
-        <slot style={"display:none"} name="jsx" ref={this.jsxSlot} />
-      <slot style="display:none" ref={this.defaultSlot}/>
-      {this.render()}
-      </>, this.root)
+      const slotElement = <slot ref={this.defaultSlot}/>;
+      let slotOutput: React.ReactNode = null
+      if(this.__customSlot) {
+        slotOutput = this.render(slotElement)
+      } else {
+        slotOutput = <>
+          <div style={"display:none;"}>{slotElement}</div>
+          {this.render()}
+        </>
+      }
+      render(slotOutput, this.root)
       if(!this.__inside_afterRender) {
         this.afterRender(this.innerHTML == this.lastInner)
         this.lastInner = this.innerHTML
@@ -115,11 +134,6 @@ function elementToVirtual(el: Element) {
   
       if(firstCall === true) {
         this.onChildrenChange();
-        this.jsxSlot.current!.addEventListener("slotchange", () => {
-          this.jsxSlot.current!.assignedNodes().map(x => {
-            console.log(x)
-          })
-        });
         this.defaultSlot.current?.addEventListener("slotchange", () => {
           this.onChildrenChange();
         })

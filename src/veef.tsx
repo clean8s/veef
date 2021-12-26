@@ -1,5 +1,5 @@
 
-import {Tabs } from "./tabs"
+import {Tabs, Tabs2} from "./tabs"
 import { Alert } from './alert'
 import {Dropdown, VItem} from './dropdown'
 import { Dialog } from './dialog'
@@ -25,6 +25,7 @@ export function loadComponents(extra: Record<string, CustomElementConstructor>) 
   customElements.define('v-table', Table)
   customElements.define('v-alert', Alert)
   customElements.define('v-tabs', Tabs);
+  customElements.define('v-tabs2', Tabs2);
   customElements.define('v-code', CodeEditor);
   customElements.define('v-dropdown', Dropdown);
   customElements.define('v-search', Search);

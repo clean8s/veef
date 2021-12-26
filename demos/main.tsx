@@ -11,7 +11,7 @@ globalThis["__internalFn"] = () => {
 }
 
 function Dropdown() {
-    return <>
+    return [
         <div>
             <Docs>
                 {/*@raw
@@ -46,17 +46,20 @@ function Dropdown() {
 
                             <v-dropdown>
                                 <select>
-                                    <option value="opt1">Some counter: 0</option>
-                                    <option value="opt2">Some counter: 0</option>
-                                    <option value="opt2">Some counter: 0</option>
+                                    <option value="opt1">Even counter: 2</option>
+                                    <option value="opt2">Odd counter: 0</option>
                                 </select>
                                 <script slot="h">
                                     h => {
-                                    let i = 1;
+                                    let i = 2;
                                     setInterval(() => {
-                                    this.transform = (x, idx) => h`<span style="color: #999; margin-right: 0.3rem;">Pick counter</span><br/><strong> ${(i * (idx + 1)).toString()}</strong>`
-                                    i++;
+                                    this.transform = (x, idx) => {
+                                        let even = idx == 0;
+                                        return h`<span style="color: #999; margin-right: 0.3rem;">${even ? "Even": "Odd"} counter</span><br/><strong> ${(i + idx).toString()}</strong>`
+                                    }
+
                                     i %= 20;
+                                    i+= 2;
                                 }, 500);
                                 }
                                 </script>
@@ -94,7 +97,7 @@ function Dropdown() {
                 </v-grid>
             </div>*/}
             </Docs>
-        </div>
+        </div>,
         <div>
             <Docs>
                 <h3>A basic example</h3>
@@ -132,7 +135,7 @@ function Dropdown() {
             `} />
             </Docs>
         </div>
-    </>
+    ]
 }
 
 function Snippet(props: { code: string, width?: number, height?: number }) {
@@ -145,11 +148,9 @@ function Snippet(props: { code: string, width?: number, height?: number }) {
 
     return <>
         <v-grid columns="3" style="align-items:start">
-            <div is={"span-2"}>
-                <v-code language="html" style={S} value={props.code}
-                        onchange="this.nextElementSibling.children[1].innerHTML = this.value"></v-code>
-            </div>
-            <div is="sm-span-3 md-span-3" style={typeof props.width == 'undefined' ? "" : "max-width:" + (props.width) + "px"}>
+            <v-code is="md-span-3 span-2" language="html" style={S} value={props.code}
+                    onchange="this.nextElementSibling.children[1].innerHTML = this.value"></v-code>
+            <div is="md-span-3" style={typeof props.width == 'undefined' ? "" : "max-width:" + (props.width) + "px"}>
                 <span style="background:#eee; padding: 10px;margin: 0 auto 15px;display: block;"><v-icon
                     name="Preview"></v-icon> Sandbox preview:</span>
                 <div dangerouslySetInnerHTML={{__html: props.code}}/>
@@ -179,7 +180,7 @@ function code(snippet: string, lang?: string) {
 }
 
 function Table() {
-    return <>
+    return [
         <div class="t1">
 
             <article class="text-center pad y-2">
@@ -283,7 +284,7 @@ tbl.addEventListener('rowselect', (e) => {
 })
 `
             }}/>
-        </div>
+        </div>,
         <div class="t2">
             <Docs>
                 <Snippet code={`
@@ -331,34 +332,34 @@ tbl.addEventListener('rowselect', (e) => {
     `}/>
             </Docs>
         </div>
-    </>
+    ]
 }
 
 function Tabs() {
-    return <>
+    return [
         <div class="t1" style="padding: 15px">
             <button is="v-primary" id="createTab">Create tab</button>
             <v-tabs id="tabDemo">
-                <button slot="tab" style="filter: hue-rotate(90deg)" data-target=".t1">Some really really long label
-                </button>
-                <button slot="tab" style="filter: hue-rotate(90deg)" data-target=".t2">And another really really long
+                <a style="filter: hue-rotate(90deg)" href="#t1">Some really really long label
+                </a>
+                <a style="filter: hue-rotate(90deg)" href="#t2">And another really really long
                     one
-                </button>
-                <button slot="tab" style="filter: hue-rotate(90deg)" data-target=".t3">A short one</button>
-                <div class="t1">
+                </a>
+                <a style="filter: hue-rotate(90deg)" href="#t3">A short one</a>
+                <div slot="content" id={"t1"}>
                     <h1 class="text-center">Tab 1</h1>
                     <p class="text-center">
                         You got here because the tab <code>target</code> selector
                         matches the content.
                     </p>
                 </div>
-                <div class="t2 text-center">
+                <div slot="content" id={"t2"}>
                     <h1 class="text-center">Tab 2</h1>
                     <p>
                         Something.
                     </p>
                 </div>
-                <div class="t3 text-center">
+                <div slot="content" id={"t3"}>
                     <h1>Tab 3</h1>
                     <p>
                         Nothing interesting anymore.
@@ -369,26 +370,27 @@ function Tabs() {
             <script>
 document.addEventListener("DOMContentLoaded", () => {
     createTab.addEventListener('click', () => {
-        const btn = document.createElement("button");
-        btn.slot = "tab";
+        const btn = document.createElement("a");
 
         const vtabs = createTab.nextElementSibling;
-        const i = Array.from(vtabs.querySelectorAll('button')).length + 1;
+        const i = Array.from(vtabs.querySelectorAll('a')).length + 1;
         btn.textContent = "Tab";
-        let bq = Array.from(tabDemo.querySelectorAll("button"))
+        let bq = Array.from(tabDemo.querySelectorAll("a"))
         bq[bq.length - 1].after(btn)
 
         const tab = document.createElement("div");
-        // tab.style.display = 'none'
-        tab.innerHTML = `<h1>This is tab #${i}</h1>`
-        tab.style.display = 'none'
+        tab.id = `t-${i}`
+        tab.slot = "content"
+        tab.innerHTML = `<h1 style="text-align: center">This is tab #${i}</h1>`
         tabDemo.append(tab)
+
+        btn.href = `#${tab.id}`
     })
 
 })
 </script>
             */}
-        </div>
+        </div>,
         <div>
             <Docs>
                 Using <code>v-tab</code> is just a matter of adding buttons and content in the right order as children:
@@ -409,20 +411,24 @@ document.addEventListener("DOMContentLoaded", () => {
 
             </Docs>
         </div>
-    </>
+    ]
 }
 
 function Alert() {
-    return <>
+    return [
         <div>
             <v-grid columns="2">
                 <div style="min-width: 300px;">
                     <div class='t1'></div>
-                    <v-alert error="">This is an error message. You can put <strong>whatever HTML</strong> you like.
-                    </v-alert>
-                    <v-alert warning="">This is a warning. It means something, I think ...</v-alert>
-                    <v-alert success="">This is a success!</v-alert>
-                    <v-alert info="">This is an alert, a classic.</v-alert>
+                    <v-alert error>This is an error message. You can put <strong>whatever HTML</strong> you like.</v-alert>
+                    <v-alert warning>This is a warning. It means something, I think ...</v-alert>
+                    <v-alert success>This is a success!</v-alert>
+                    <v-alert info text>This is an icon-less info.</v-alert>
+
+                    <v-alert tiny error>tiny error</v-alert>
+                    <v-alert tiny info>tiny info</v-alert>
+                    <v-alert tiny success>tiny success</v-alert>
+                    <v-alert tiny warning>tiny warning</v-alert>
                 </div>
                 <div style="min-width: 300px;">
                     <form id="toasty">
@@ -452,7 +458,7 @@ function Alert() {
             ~v-alert info~Put any HTML here.~/v-alert~
         `}</v-code> */}
             </v-grid>
-        </div>
+        </div>,
         <div>
             <Docs>
                 <Snippet code={`
@@ -469,17 +475,17 @@ function Alert() {
             <v-alert info id="inf1">
                 This is a toasty info.
             </v-alert>
-            <button onclick="document.querySelector('#inf1').toast = true">
-                Open as toast
+            <button onclick="document.querySelector('#inf1').toast = true" is="v-primary">
+                Convert to toast
             </button>
             `}/>
             </Docs>
         </div>
-    </>;
+    ];
 }
 
 function Utilities() {
-    return <Docs>
+    return [<Docs>
 
         {/* @raw "style"
             .grid-demo > div {
@@ -540,7 +546,7 @@ function Utilities() {
             </div>
         </v-grid>
 
-    </Docs>
+    </Docs>, <div/>]
 }
 
 export function App() {
@@ -575,7 +581,7 @@ export function App() {
 
         </nav>
 
-        <Component name="v-search" C={Search} info="smart fuzzy autocomplete" />
+        <Component name="v-search" C={Search} info="put smart autocomplete to your <input>" />
         <Component name="v-dropdown" C={Dropdown} info="enhance your <select>"/>
         <Component name="v-table" C={Table} info="sortable and checkable datatable" rawinfo={true}/>
         <Component name="v-dialog" C={Dialog} info="modals over the screen"/>
@@ -589,7 +595,7 @@ export function App() {
 }
 
 function Editor() {
-    return <>
+    return [
         <div>
             <Docs>
                 <h3 style="margin: 20px 0 30px;"><strong>Note: the syntax engine isn't built-in</strong>, it is loaded
@@ -616,7 +622,7 @@ function Editor() {
           }
         `)}/>
             </Docs>
-        </div>
+        </div>,
         <div>
             <Docs>
                 Use <code>&lt;v-code&gt;&lt;/v-code&gt;</code> to display the editor.
@@ -635,11 +641,11 @@ function Editor() {
                 </ul>
             </Docs>
         </div>
-    </>
+    ]
 }
 
 function Tree() {
-    return <>
+    return [
         <div class="t1">
             <div class="pad y-2 text-center">
                 Show <strong>JSON structures</strong> & API responses in tree structures.
@@ -656,7 +662,7 @@ function Tree() {
             </main>
 
         </div>
-        <div class="t2">
+        , <div class="t2">
             <Docs>
                 <DocSection>Simple JSON tree</DocSection>
                 <Snippet code={`
@@ -679,13 +685,11 @@ function Tree() {
             </v-tree>
             `}/>
             </Docs>
-        </div>
-    </>
+        </div>];
 }
 
 function Dialog() {
-    return <>
-        {/* <main> */}
+    return [
         <div>
             <article class="pad x-2 text-center">
                 Try closing it with <code>Esc</code>, the close icon or the area behind the modal.<br/><br/>
@@ -743,7 +747,7 @@ function Dialog() {
                     <button is="v-primary" onclick="d2.open = false">Okay</button>
                 </section>
             </v-dialog>
-        </div>
+        </div>,
         <div>
             <Docs>
                 <Snippet code={`
@@ -763,8 +767,7 @@ function Dialog() {
 
 
             </Docs>
-        </div>
-    </>
+        </div>];
 }
 
 function Search() {
@@ -773,27 +776,24 @@ function Search() {
         ["searchKey", "string", "each item object must contain this key which will be used for indexing and filtering"],
         ["searchRender", "(item: object) => htm", "renders a single item"]
     ]
-    return <>
-        <div>
+    return [(
             <div style="margin: 50px auto; max-width: 500px; font-size: 1.2rem;">
-
-                Static page autocomplete with Fuzzy.js:<br/>
                 You can type <strong>bo<span style="color: red">eh</span>man</strong> and you'll
                 still find <strong>Bohemian Rhapsody</strong>!
                 <v-search placeholder={"Search Queen songs..."}>
 
                     {
-                        /* @raw "template slot='script'"
-                        <script>
-                        this.data = "queen-json"
-                        this.searchKey = "name"
-                        this.itemRender = (item, hl) => {
-                            return h`<span><v-icon name="Headset" /> ${hl}</span>`
+                        /* @raw "script slot='h'"
+                            h => {
+                            this.data = "queen-json"
+                            this.searchKey = "name"
+                            this.itemRender = (item, hl) => {
+                                return h`<span><v-icon name="Headset" /> ${hl}</span>`
+                            }
+                            this.itemToString = (item) => {
+                                return item.name
+                            }
                         }
-                        this.itemToString = (item) => {
-                            return item.name
-                        }
-                        </script>
                          */
                     }
                 </v-search>
@@ -828,45 +828,60 @@ function Search() {
                 */}
                 </v-search>
             </div>
-        </div>
+       ), (
         <div class="t2">
             <Docs>
 
                 <Snippet code={`
                 <v-search placeholder="Search fruits">
-                    <ul>
-                        <li>Banana</li>
-                        <li>Apple</li>
-                    </ul>
+                    <template>
+                        <data value="/banana-tips">Banana</data>
+                        <data value="/some-apple">Apple</data>
+                        <data value="/strw">Strawberry</data>
+                        <data value="/best-grapes">Grape</data>
+                        <data value="/orange">Orange</data>
+                        <data value="/wmelon">Watermelon</data>
+                        <data value="/bberry">Blueberry</data>
+                    </template>
                 </v-search>`} />
 
             </Docs>
-        </div>
-    </>
+        </div>)];
 }
-
-function Component(props: { name: string, C: FunctionComponent, info?: string, nocustom?: boolean, rawinfo?: boolean }) {
+import { toChildArray } from 'preact';
+import {ReactNode} from "react";
+function Component(props: { name: string, C: () => JSX.Element[], info?: string, nocustom?: boolean, rawinfo?: boolean }) {
     let hinfo = props.info || ""
     if (props.rawinfo === true) {
         //@ts-ignore
         hinfo = <span dangerouslySetInnerHTML={{__html: props.info}}></span>;
     }
+    const [partA, partB] = props.C()
+    // console.log(PartA, PartB)
+    const k = Math.random().toString(16).substring(3)
     return <div class="element-docs" id={props.name}>
         <div class="container showcase">
-            <h2 style="margin-top: 1rem"><b>{'<' + props.name + '>'}</b> <span>{hinfo}</span>
+            <h2 style="color: #FF6325; margin-top: 1rem"><b>{'<' + props.name + '>'}</b> <span>{hinfo}</span>
             </h2>
             <v-tabs via="style">
-                <button slot="tab" role="tab">
+                <a role="tab" href={"#a_" + k}>
                     <v-icon name="Bolt"></v-icon>
                     Demo
-                </button>
+                </a>
                 {props.nocustom ? null :
-                    <button slot="tab" role="tab">
+                    <a role="tab" href={"#b_" + k }>
                         <v-icon name="Code"></v-icon>
                         Code / sandbox
-                    </button>}
+                        <template>
+                        </template>
+                    </a>}
+                <div id={"a_" + k} slot={"content"}>
+                    {partA}
+                </div>
+                <div id={"b_" + k} slot={"content"}>
+                    {partB}
+                </div>
 
-                <props.C/>
             </v-tabs>
         </div>
     </div>
@@ -874,7 +889,7 @@ function Component(props: { name: string, C: FunctionComponent, info?: string, n
 
 
 function Icons() {
-    return <>
+    return [
         <div class="t1">
             <div class="pad y-2 text-center">
                 <strong>v-icons contains a small curated list of icons. <sup><a
@@ -884,7 +899,7 @@ function Icons() {
             <div id="icon-notice">
                 <sup>[1] - based on Material Icons by Google and Hero Icons by https://heroicons.com/</sup>
             </div>
-        </div>
+        </div>,
         <div>
             <Docs>
                 The syntax for showing an icon:
@@ -911,7 +926,7 @@ function Icons() {
                 to show all the icons.
             </Docs>
         </div>
-    </>
+    ]
 
 }
 

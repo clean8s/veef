@@ -214,6 +214,25 @@ export class Search extends Transformable {
     }
   }
 
+  loadData() {
+    const data = [...this.querySelectorAll("template")];
+    if(data.length > 0) {
+      let newdata: {label: string, value: string}[] = [];
+      data.forEach(x => {
+        const fragment = x.content.cloneNode(true);
+        [...fragment.querySelectorAll("data")].map(x => {
+          newdata.push({
+            label: x.innerText,
+            value: x.getAttribute("value") || x.innerText
+          })
+        })
+      })
+      this._data = newdata
+      this._searchKey = "label"
+      this._itemToString = (o: object) => (o as {label: string}).label
+    }
+  }
+
   getHandlers() : Record<string, (e: Event) => void> {
     return Object.fromEntries(['onInput', 'onChange', 'onBlur', 'onFocus', 'onContextMenu', 'onSelect', 'onKeyUp', 'onKeyDown', 'onKeyPress']
         .map(ev => {
@@ -222,12 +241,7 @@ export class Search extends Transformable {
   }
   public hideSuggestions = false
   render() {
-    const data = [...this.querySelectorAll("li")];
-    if(data.length > 0) {
-      //@ts-ignore
-      this._data = data.map(x => ({label: x.innerText, id: x.getAttribute("data-id") || x.innerText}));
-      this._searchKey = "label"
-    }
+    this.loadData()
     return (
         <div className='flex flex-col relative input-wrapper-root'>
           <div part="input-wrapper" className='flex input-wrapper imp'>

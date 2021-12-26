@@ -1,8 +1,13 @@
-
-::slotted(button) {
+::slotted([slot="content"]) {
+    display: none;
+}
+::slotted([slot="content"].active) {
+    display: block;
+}
+::slotted(a) {
 display: block;
 --tw-bg-opacity: 1;
-background-color: rgba(238, 238, 238, var(--tw-bg-opacity));
+background-color: rgba(227,227,227, var(--tw-bg-opacity));
 border-top-left-radius: 0.5rem;
 border-top-right-radius: 0.5rem;
 font-weight: 500;
@@ -20,7 +25,7 @@ padding-bottom: 0.625rem;
 --tw-ring-opacity: 0.6;
 --tw-text-opacity: 1;
 --tw-text-opacity: 1;
-color: rgba(70, 70, 70, var(--tw-text-opacity));
+color: rgba(70, 70, 70, var(--tw-text-opacity)) !important;
 width: 100%;
 text-align: center;
 transition: border 0.2s, background-color 0.2s, color 0.2s, box-shadow 0.2s;
@@ -29,15 +34,16 @@ border: 0px solid transparent;
 border-bottom-width: 2px;
 user-select: none;
 }
-::slotted(button:hover) {
+
+::slotted(a:hover) {
     background: #fff;
     color: var(--color);
     box-shadow: rgba(0, 0, 0, 0.1) 0px 10px 15px -3px, rgba(0, 0, 0, 0.05) 0px 4px 6px -2px, #00000010 0 -10px 15px -3px;
 }
-::slotted(button:last-of-type) {
+::slotted(a:last-of-type) {
     margin-right: 0;
 }
-::slotted(*.active) {
+::slotted(a.active) {
 --tw-bg-opacity: 1;
 font-weight: 600;
 background-color: rgba(255, 255, 255, var(--tw-bg-opacity));
