@@ -1,6 +1,6 @@
 {
   "name": "veef",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "description": "A Web Components Kit",
   "main": "dist/index.js",
   "files": [
@@ -15,6 +15,7 @@
     "@types/prismjs": "^1.16.6",
     "@windicss/plugin-utils": "^1.5.3",
     "clean-css": "^5.2.2",
+    "dedent": "^0.7.0",
     "glob": "^7.2.0",
     "htm": "^3.1.0",
     "preact": "^10.6.1",
@@ -30,7 +31,7 @@
   },
   "scripts": {
     "build": "ts-node build.ts",
-    "build-web": "cd util && node build.js"
+    "build-web": "cd demos && node build.js"
   },
   "devDependencies": {
     "@types/nunjucks": "^3.2.0",

@@ -5,7 +5,7 @@ const {spawn} = require("child_process")
 const fs = require("fs")
 
 const getEntries = () => {
-    return ["main.tsx",  ...sync("*.{css,demo.js}"), ...sync("assets/*") ]
+    return ["writer.tsx", "main.tsx",  ...sync("*.{css,demo.js}"), ...sync("assets/*") ]
 }
 function buildSite() {
     fs.statSync("./dist", {throwIfNoEntry: false}) || fs.mkdirSync("./dist");
@@ -30,7 +30,7 @@ function buildSite() {
         if(fs.statSync("./dist/dist/main.js", {throwIfNoEntry: false})) {
             console.log("Loading..")
 
-            require("./dist/dist/main.js")
+            require("./dist/writer.js")
 
         }
     }

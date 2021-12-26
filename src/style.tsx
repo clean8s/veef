@@ -8,19 +8,6 @@ export {vendorCss, alertCss, windiCss};
 import { render as preactRender } from 'preact'
 import { fnCall, fnCallSetup } from './slottable';
 
-// export function genCss(classes: string) {
-//   function escapeRegex(s) {
-//     return s.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
-// }
-//   let cls = classes.split(' ');
-//   cls.push("*", "html", "::after");
-//   return cls.map(x => {
-//     let rgx = new RegExp(escapeRegex(x) + "\\s*{(.*?)}", 's');
-//     let oo = windiCss.match(rgx);
-//     if(oo && oo[1]) return oo[1];
-//     return null
-//   }).filter(x => x != null).join("\n")
-// }
 
 let globalSlotReady : WeakMap<HTMLElement, boolean>;
 if(typeof window["globalSlotReady"] == "undefined") {

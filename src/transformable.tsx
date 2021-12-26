@@ -13,20 +13,6 @@ function elementToVirtual(el: Element) {
     //@ts-ignore
     return html([n]) as React.ReactChild;
   }
-  
-  export function Portal (props: {children: any, target?: string, self: Transformable}) {
-    let out = ""
-    if(!props.target) {
-      out = props.self.counter.toString();
-      props.self.counter++;
-    } else {
-      out = props.target;
-    }
-    return <>
-    {createPortal(props.children, props.self.makeVirtualSlot(out))}
-    <slot name={"__veef_" + out} />
-    </>
-  }
 
   class Virtual extends HTMLElement {
   root
@@ -51,20 +37,20 @@ function elementToVirtual(el: Element) {
       this.Portal = (props: {children: any, target?: string, self?: Transformable}) =>{
         return props.children;
         // return <v-virtual>{props.children}</v-virtual>
-        if(!props.self) {
-          props.self = this;
-        }
-        let out = ""
-        if(!props.target) {
-          out = props.self.counter.toString();
-          props.self.counter++;
-        } else {
-          out = props.target;
-        }
-        return <>
-        {createPortal(props.children, props.self.makeVirtualSlot(out))}
-        <slot name={"__veef_" + out} />
-        </>
+        // if(!props.self) {
+        //   props.self = this;
+        // }
+        // let out = ""
+        // if(!props.target) {
+        //   out = props.self.counter.toString();
+        //   props.self.counter++;
+        // } else {
+        //   out = props.target;
+        // }
+        // return <>
+        // {createPortal(props.children, props.self.makeVirtualSlot(out))}
+        // <slot name={"__veef_" + out} />
+        // </>
       }
     }
   
@@ -72,16 +58,6 @@ function elementToVirtual(el: Element) {
   
     connectedCallback() {
       this.doRender(true)
-    }
-    
-    makeVirtualSlot(tgtName: string) {
-      tgtName = "__veef_" + tgtName;
-      let alreadySlot = this.querySelector(`div[slot="${tgtName}"]`);
-      if(alreadySlot) return alreadySlot;
-      const div = document.createElement("div");
-      div.slot = tgtName;
-      this.append(div);
-      return div;
     }
 
     observers: MutationObserver[] = [];
@@ -111,10 +87,6 @@ function elementToVirtual(el: Element) {
       })
     }
 
-    // getVirtualChildren(x: Element) {
-    //   this.doRender();
-    // }
-  
     virtualChildren: Map<string, React.ReactChild[]> = new Map();
     vchildren: Record<number, React.ReactChild[]> = {};
   
@@ -123,6 +95,7 @@ function elementToVirtual(el: Element) {
     }
   
     defaultSlot = createRef<HTMLSlotElement>();
+    jsxSlot = createRef<HTMLSlotElement>();
   
     abstract render(): VNode;
 
@@ -130,6 +103,7 @@ function elementToVirtual(el: Element) {
     doRender(firstCall?: boolean) {
       this.counter = 0;
       render(<>
+        <slot style={"display:none"} name="jsx" ref={this.jsxSlot} />
       <slot style="display:none" ref={this.defaultSlot}/>
       {this.render()}
       </>, this.root)
@@ -141,6 +115,11 @@ function elementToVirtual(el: Element) {
   
       if(firstCall === true) {
         this.onChildrenChange();
+        this.jsxSlot.current!.addEventListener("slotchange", () => {
+          this.jsxSlot.current!.assignedNodes().map(x => {
+            console.log(x)
+          })
+        });
         this.defaultSlot.current?.addEventListener("slotchange", () => {
           this.onChildrenChange();
         })

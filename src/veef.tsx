@@ -5,14 +5,15 @@ import {Dropdown, VItem} from './dropdown'
 import { Dialog } from './dialog'
 import { Table } from './table'
 import { Tree } from './tree'
-import {Editor} from './editor'
+import {CodeEditor} from './codeEditor'
 import {render as preactRender} from 'preact'
 import { h as preactH } from 'preact'
 import htm from 'htm'
 export const html = htm.bind(preactH)
 
+import {Search} from "./search";
 
-export {Tree, Dialog, Table, Alert, Tabs, VeefElement, Editor};
+export {Tree, Dialog, Table, Alert, Tabs, VeefElement, CodeEditor, Search};
 
 export function loadComponents(extra: Record<string, CustomElementConstructor>) {
   customElements.define('v-tree', Tree)
@@ -24,8 +25,9 @@ export function loadComponents(extra: Record<string, CustomElementConstructor>) 
   customElements.define('v-table', Table)
   customElements.define('v-alert', Alert)
   customElements.define('v-tabs', Tabs);
-  customElements.define('v-editor', Editor);
+  customElements.define('v-code', CodeEditor);
   customElements.define('v-dropdown', Dropdown);
+  customElements.define('v-search', Search);
 
   customElements.define('v-controls', class extends HTMLElement {
     constructor() {

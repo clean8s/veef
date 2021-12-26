@@ -3,7 +3,6 @@ import React from 'react'
 import { TmSlot, Attrs } from './slottable'
 
 import codeCss from '../icons/syntax-hl.css'
-import { reduceEachLeadingCommentRange } from 'typescript'
 
 class ScriptSetup {
   attemptLoad = false;
@@ -22,7 +21,7 @@ class ScriptSetup {
     } else if(this.fullLoad) {
       cb();
     }
-    window.addEventListener("monacoLoaded", cb);
+    window.addEventListener("monacoloaded", cb);
   }
 
   scriptCreate() {
@@ -52,7 +51,7 @@ if(typeof window.MonacoSetup == 'undefined') {
 }
 
 @Attrs(["value", "language", "highlight"])
-export class Editor extends HTMLElement {
+export class CodeEditor extends HTMLElement {
   root: HTMLElement
   hl;
   mydiv;
@@ -62,12 +61,12 @@ export class Editor extends HTMLElement {
     this.root = this.attachShadow({mode: 'open'}) as any as HTMLElement;
     this.root.innerHTML = `
     <slot name='mydiv'></slot>
-    <div style='display:none;'><slot data-veef='1'></slot></div>`
+    <slot style="display:none;" data-veef='1'></slot>`
     this.mydiv = this.root.querySelector("slot[name='mydiv']") as HTMLSlotElement;
     this.mainSlot = this.root.querySelector("slot[data-veef]") as HTMLSlotElement;
     this.mainSlot.addEventListener("slotchange", () => {
       const code = this.mainSlot.assignedNodes().filter(x => {
-        return (x.nodeType === Node.TEXT_NODE) 
+        return (x.nodeType === Node.TEXT_NODE)
       }).map(x => x.textContent).join("");
       if(code.length > 0) {
         this.value = dedent(code);
@@ -77,7 +76,7 @@ export class Editor extends HTMLElement {
 
   slottedCode() {
     const code = this.mainSlot.assignedNodes().filter(x => {
-      return (x.nodeType === Node.TEXT_NODE) 
+      return (x.nodeType === Node.TEXT_NODE)
     }).map(x => x.textContent).join("");
     return dedent(code);
   }
@@ -130,6 +129,7 @@ export class Editor extends HTMLElement {
     //       })
     //     }, {threshold: 1}).observe(this);
         const _init = () => {
+          this.setAttribute("loaded", "true")
         //@ts-ignore
         monaco.editor.setTheme("vs-dark");
         let editor = monaco.editor.create(myDiv, {
@@ -143,8 +143,7 @@ export class Editor extends HTMLElement {
 
 
         this.editor = editor;
-        this.setAttribute("loaded", "true")
-        
+
         editor.getModel().onDidChangeContent(() => {
           ["change", "input"].map(x => {
             this.dispatchEvent(new CustomEvent(x, {
@@ -154,64 +153,6 @@ export class Editor extends HTMLElement {
         });
       };
     });
-    // this.root = myDiv;
-
-    // const s = document.createElement('script');
-    // // globalThis.exports = undefined;
-    // // exports = undefined;
-
-    // const elTarget = myDiv;
-
-    // s.setAttribute('src', "https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.26.1/min/vs/loader.min.js");
-    // s.setAttribute("defer", "");
-
-    // const onScriptLoad = (doRequire?: boolean) => {
-    //   let winReq = (window as any).require;
-    //   if(typeof winReq != 'function') {
-    //     setTimeout(() => onScriptLoad(false), 100);
-    //     return
-    //   }
-    //   if(doRequire === true) {
-    //     winReq.config({ paths: { 'vs': 'https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.26.1/min/vs' }});
-    //   }
-
-    //   winReq(["vs/editor/editor.main"], () => {
-    //     if(this.hasAttribute("highlight")) return;
-    //     let isInit = false;
-    //     new IntersectionObserver((x) => {
-    //       x.map(y => {
-    //         if(y.intersectionRatio > 0.1 && !isInit) {
-    //           _init();
-    //           isInit = true;
-    //         }
-    //       })
-    //     }, {threshold: 1}).observe(this);
-    //     const _init = () => {
-    //     //@ts-ignore
-    //     monaco.editor.setTheme("vs-dark");
-    //     let editor = monaco.editor.create(elTarget, {
-    //       value: this._code,
-    //       language: this._language,
-    //       // theme: 'vs-dark',
-    //       fontFamily: "monospace",
-    //       fontSize: 16,
-    //       automaticLayout: true
-    //     });
-
-
-    //     this.editor = editor;
-    //     this.setAttribute("loaded", "true")
-        
-    //     editor.getModel().onDidChangeContent(() => {
-    //       ["change", "input"].map(x => {
-    //         this.dispatchEvent(new CustomEvent(x, {
-    //           detail: this.value
-    //         }));
-    //       });
-    //     });
-    //   }
-        
-    //   });
     }
   }
 
@@ -221,18 +162,18 @@ function dedent(code: string) : string {
       // No non-space characters
       return code
   }
-  
+
   // The first newline is considered redundant
   // because source usually looks like this:
   //
   // <code>
   // code begins here
   // </code>
-  if(code.startsWith('\n')) { 
+  if(code.startsWith('\n')) {
       code = code.substring(1);
       nonSpace--;
   }
-  
+
   const weight = (spc: string): number => {
       return spc.split('').reduce((acc, x) => {
       if (x === '\t') acc+= 4;
@@ -240,15 +181,15 @@ function dedent(code: string) : string {
       return acc
       }, 0)
   };
-  
+
   const detectedSpace = code.substring(0, nonSpace);
   const detectedWeight = detectedSpace.split('\n').reduce((acc, x) => {
       if (weight(x) > acc) acc = weight(x);
       return acc
       }, 0);
-  
+
   // const detectedWeight = weight(detectedSpace);
-  
+
   const restString = code.substring(nonSpace);
   return restString.split("\n").map(x => {
       for(let i = 0; i < detectedWeight; i++) {
