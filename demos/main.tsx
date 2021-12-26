@@ -192,7 +192,7 @@ function Table() {
                 Try custom sort by clicking <strong style="color: var(--color)">on the Color column.</strong>
             </article>
             <v-grid columns={"2"}>
-                <v-item>
+                <v-item md-span-2 style={"max-width: 300px !important;"}>
                 <v-table selectable sortable id="tbl" class="t1">
                     <table>
                         <tr>
@@ -235,7 +235,7 @@ function Table() {
                     </table>
                 </v-table>
                 </v-item>
-                <v-item>
+                <v-item md-span-2>
                 <v-table class="tiny">
                     <table>
                         <tr>
