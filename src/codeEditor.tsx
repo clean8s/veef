@@ -138,7 +138,7 @@ export class CodeEditor extends HTMLElement {
           // theme: 'vs-dark',
           fontFamily: "ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,\"Liberation Mono\",\"Courier New\",monospace",
           fontWeight: "normal",
-          fontSize: 16,
+          fontSize: 14,
           automaticLayout: true
         });
 

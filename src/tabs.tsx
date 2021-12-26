@@ -80,7 +80,8 @@ export class Tabs extends Transformable {
     render(customSlot?: React.ReactNode) {
         return <><div part="tabwrap" id="#tabwrap" onClick={(e) => {
             if(!(e.target instanceof Element)) return;
-            const el = e.target.closest("a")!;
+            const el = e.target.closest("a");
+            if(!el) return
             let oldId = this.selectedId
             const id = new URL(el.href).hash.substring(1);
             if(id == this.selectedId) return;

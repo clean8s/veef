@@ -447,6 +447,13 @@ background: #333;
         window.scrollTo(0, y)
         e.preventDefault()
     }))
+    document.addEventListener("click", (e) => {
+        if(document.body.classList.contains("N")) return
+        if(e.target == null || typeof e.target.tagName == 'undefined') return
+        if(e.target.tagName.toLowerCase() === 'v-icon') return;
+        if(mainMenu.contains(e.target)) return
+        document.body.classList.toggle('N')
+    })
 </script>
 <div style="background: #000; padding: 30px 0; color: #fff;">
     <div class="container">
