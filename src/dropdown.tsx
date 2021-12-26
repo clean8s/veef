@@ -78,9 +78,13 @@ export class Dropdown extends Transformable {
     this.querySelector("select")!.dispatchEvent(new Event("change"));
     this.dispatchEvent(new Event("change"))
   }
-  
-  _transform = (node: React.ReactChild, idx: number) => {
-    return node;
+
+  _transform(o: {option: React.ReactNode, dom: HTMLElement, idx: number}) {
+    return o.option;
+  }
+
+  _transformChain = (node: {virtual: React.ReactNode, dom: HTMLElement}, idx: number) => {
+    return this._transform({option: node.virtual, dom: node.dom, idx});
   }
 
   highlight = 0;
@@ -120,7 +124,7 @@ export class Dropdown extends Transformable {
                   }}
                   part={"button" + (active ? " button-active" : "")} className="text-left hover:bg-[#00000010] focus:outline-none focus:bg-[#00000010] appearance-none block w-full
     items-center px-4 py-2 text-[1rem] text-gray-700 dark:text-gray-100 dark:hover:text-white dark:hover:bg-gray-600">
-                {this._transform(x, idx)}
+                {this._transformChain(x, idx)}
               </button>
             })}
 
@@ -138,7 +142,7 @@ export class Dropdown extends Transformable {
           </div>
 
       <div class={"fixed top-[10%] left-[10%]" + (this.measureProxyHide ? " hidden": "")} ref={this.measureProxy}>
-      {this.virtual("option").map((x, idx) => <div>{this._transform(x, idx)}</div>)}
+      {this.virtual("option").map((x, idx) => <div>{this._transformChain(x, idx)}</div>)}
       </div>
 
           <div class="relative inline-block text-left">
@@ -149,7 +153,7 @@ export class Dropdown extends Transformable {
               shadow-sm flex items-center justify-center w-full rounded-md
               px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-50 hover:bg-gray-50 dark:hover:bg-gray-500 focus:ring-opacity-30 focus:outline-none focus:ring-2 focus:ring-orange-600" id="options-menu">
                 <this.Portal>
-                  <div style="user-select:none;">{this.virtual("option").length > this.selectedIdx ? this._transform(this.virtual("option")[this.selectedIdx], this.selectedIdx) : ""}</div>
+                  <div style="user-select:none;">{this.virtual("option").length > this.selectedIdx ? this._transformChain(this.virtual("option")[this.selectedIdx], this.selectedIdx) : ""}</div>
                 </this.Portal>
                 <v-icon name="Expand"></v-icon>
               </button>

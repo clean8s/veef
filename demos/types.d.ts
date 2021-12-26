@@ -17,6 +17,7 @@ declare module "preact" {
             'v-controls': any,
             'v-divider': any,
             'v-card-divider': any,
+            'v-item': any,
         }
 
         interface IntrinsicAttributes {

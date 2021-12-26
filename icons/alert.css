@@ -22,7 +22,7 @@
 	width: 16px;
 	height: 16px;
 }
-:host(*[text]) v-icon {
+:host(*[text]) v-icon, :host(*[simple]) v-icon {
 	display: none;
 }
 
@@ -47,7 +47,7 @@
 }
 
 #alert.simple {
-	background-color: hsla(0 50% 50% / var(--opacity));
+	background-color: hsla(0 0% 10% / var(--opacity));
 	color: #333;
 }
 
@@ -65,9 +65,14 @@
 	background-color: hsla(var(--er) / var(--opacity));
 	color: hsla(var(--er)/1);
 }
-
+:host(*[tiny]) #alert {
+	flex-direction: row;
+}
 @media (min-width: 768px) {
 	#alert {
+		flex-direction: row;
+	}
+	:host(*[tiny]) #alert {
 		flex-direction: row;
 	}
 }

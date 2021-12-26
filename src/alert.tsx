@@ -26,16 +26,16 @@ export class Alert extends Slottable {
 
   alertType() {
     const typ = Alert.observedAttributes.filter(x => x !== "toast" && x !== "duration").find(x => this.getAttribute(x) != null);
-    return typ ? typ : 'basic'
+    return typ ? typ : 'info'
   }
 
   render() {
-    let icon = 'Info'
-    const currentType = this.alertType()
 
-    if (typeof currentType != 'undefined' && currentType != 'basic') {
-      icon = `${currentType[0].toUpperCase()}${currentType.substring(1)}`
-    }
+    const currentType = this.alertType()
+    let icon = `${currentType[0].toUpperCase()}${currentType.substring(1)}`
+    // if (typeof currentType != 'undefined' && currentType != 'basic') {
+    //   icon = `${currentType[0].toUpperCase()}${currentType.substring(1)}`
+    // }
 
     let iconElement: React.ReactNode = <v-icon name={icon} className='flex-shrink-0 w-6 h-6 fill-current mr-2'/>;
     // if(this.hasAttribute("simple")) {
@@ -127,6 +127,6 @@ export class Alert extends Slottable {
   }
 
   static get observedAttributes() {
-    return ['info', 'warning', 'success', 'error', 'toast', 'duration']
+    return ['info', 'warning', 'success', 'error', 'simple', 'toast', 'duration']
   }
 }

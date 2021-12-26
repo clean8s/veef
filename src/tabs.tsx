@@ -27,14 +27,14 @@ export class Tabs extends Transformable {
     }
     firstCheck() {
         if(this.selectedId !== "") return
-        let currentURL = new URL(window.location);
-        const _id = currentURL.hash.substring(1)
-        const maybeEl = document.getElementById(_id)
-        if(maybeEl && this.contains(maybeEl)) {
-            this.pickTab(maybeEl as HTMLAnchorElement)
-        } else {
-            if(Array.isArray(history.state)) {
-                const candidate = history.state.map(x => this.querySelector("#" + x)).find(x => x != null);
+        // let currentURL = new URL(window.location);
+        // const _id = currentURL.hash.substring(1)
+        // const maybeEl = document.getElementById(_id)
+        // if(maybeEl && this.contains(maybeEl)) {
+        //     this.pickTab(maybeEl as HTMLAnchorElement)
+        // } else {
+            if(history.state != null && Array.isArray(history.state["__veef_tabs"])) {
+                const candidate = history.state["__veef_tabs"].map(x => this.querySelector("#" + x)).find(x => x != null);
                 if(candidate) {
                     console.log(candidate)
                     this.pickTab(candidate)
@@ -45,7 +45,7 @@ export class Tabs extends Transformable {
             if(el) {
                 this.pickTab(el)
             }
-        }
+        // }
     }
 
     pickTab(el: HTMLAnchorElement | HTMLDivElement) {
@@ -85,9 +85,13 @@ export class Tabs extends Transformable {
             const id = new URL(el.href).hash.substring(1);
             if(id == this.selectedId) return;
             this.pickTab(el)
-            let s: string[] = window.history.state
-            if(typeof s == 'undefined' || !Array.isArray(s)) s = []
-            window.history.replaceState([...(s.filter(x => x != oldId)), this.selectedId], "", window.location)
+            let s: any = window.history.state
+            if(typeof s == 'undefined' || s == null) s = {}
+            if(typeof s["__veef_tabs"] == 'undefined') s = {...s, __veef_tabs: []};
+            const tabs: string[] = s.__veef_tabs.filter(x => x != oldId);
+            const curTabs: string[] = [...tabs, this.selectedId];
+
+            window.history.replaceState({...s, __veef_tabs: curTabs}, "", window.location)
             // window.history.pushState({id: this.selectedId}, "", el.href)
             e.preventDefault()
             return

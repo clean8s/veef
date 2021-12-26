@@ -21,12 +21,14 @@ function Dropdown() {
                 <div style="text-align: center; margin: 2rem 0;">
                     <v-dropdown>
                         <select>
-                            <option value="copy">Some copy operation</option>
-                            <option value="bolt">A bolt</option>
+                            <option value="Cube">Select a cube?</option>
+                            <option value="Copy">Some copy operation</option>
+                            <option value="Bolt">A bolt</option>
+                            <option value="Key">And some key</option>
                         </select>
                         <script slot="h">
                         h => {
-                            this.transform = (x, idx) => h`<v-icon style='color: orange' name=${idx > 0 ? 'Bolt' : 'Copy'}/> ${x}`
+                            this.transform = (item) => h`<v-icon style='color: orange' name=${item.dom.value}/> ${item.dom.innerText}`
                         }
                         </script>
                     </v-dropdown>
@@ -53,9 +55,10 @@ function Dropdown() {
                                     h => {
                                     let i = 2;
                                     setInterval(() => {
-                                    this.transform = (x, idx) => {
-                                        let even = idx == 0;
-                                        return h`<span style="color: #999; margin-right: 0.3rem;">${even ? "Even": "Odd"} counter</span><br/><strong> ${(i + idx).toString()}</strong>`
+                                    this.transform = (item) => {
+                                        let even = item.idx == 0;
+                                        return h`<span style="color: #999; margin-right: 0.3rem;">${even ? "Even": "Odd"} counter</span>
+                                        <br/><strong> ${(i + item.idx).toString()}</strong>`
                                     }
 
                                     i %= 20;
@@ -148,13 +151,15 @@ function Snippet(props: { code: string, width?: number, height?: number }) {
 
     return <>
         <v-grid columns="3" style="align-items:start">
-            <v-code is="md-span-3 span-2" language="html" style={S} value={props.code}
+            <v-item md-span-3 span-2>
+            <v-code language="html" style={S} value={props.code}
                     onchange="this.nextElementSibling.children[1].innerHTML = this.value"></v-code>
-            <div is="md-span-3" style={typeof props.width == 'undefined' ? "" : "max-width:" + (props.width) + "px"}>
+            </v-item>
+            <v-item md-span-3 style={typeof props.width == 'undefined' ? "" : "max-width:" + (props.width) + "px"}>
                 <span style="background:#eee; padding: 10px;margin: 0 auto 15px;display: block;"><v-icon
                     name="Preview"></v-icon> Sandbox preview:</span>
                 <div dangerouslySetInnerHTML={{__html: props.code}}/>
-            </div>
+            </v-item>
         </v-grid>
 
     </>
@@ -186,7 +191,8 @@ function Table() {
             <article class="text-center pad y-2">
                 Try custom sort by clicking <strong style="color: var(--color)">on the Color column.</strong>
             </article>
-            <v-grid>
+            <v-grid columns={"2"}>
+                <v-item>
                 <v-table selectable sortable id="tbl" class="t1">
                     <table>
                         <tr>
@@ -228,6 +234,8 @@ function Table() {
                         </tr>
                     </table>
                 </v-table>
+                </v-item>
+                <v-item>
                 <v-table class="tiny">
                     <table>
                         <tr>
@@ -244,6 +252,7 @@ function Table() {
                         </tr>
                     </table>
                 </v-table>
+                </v-item>
             </v-grid>
             {/* @raw
 <style>
@@ -416,49 +425,59 @@ document.addEventListener("DOMContentLoaded", () => {
 
 function Alert() {
     return [
-        <div>
             <v-grid columns="2">
-                <div style="min-width: 300px;">
+                <v-item md-span-2>
                     <div class='t1'></div>
                     <v-alert error>This is an error message. You can put <strong>whatever HTML</strong> you like.</v-alert>
                     <v-alert warning>This is a warning. It means something, I think ...</v-alert>
                     <v-alert success>This is a success!</v-alert>
-                    <v-alert info text>This is an icon-less info.</v-alert>
+                    <v-grid columns={"2"} pad={"1"}>
+                        <v-item md-span-2>
+                            <v-alert info>This is an info box.</v-alert>
+                        </v-item>
+                        <v-item md-span-2>
+                            <v-alert info text>This is an icon-less info.</v-alert>
+                        </v-item>
+                    </v-grid>
 
                     <v-alert tiny error>tiny error</v-alert>
                     <v-alert tiny info>tiny info</v-alert>
                     <v-alert tiny success>tiny success</v-alert>
                     <v-alert tiny warning>tiny warning</v-alert>
-                </div>
-                <div style="min-width: 300px;">
+                    <v-alert tiny simple>tiny simple</v-alert>
+                </v-item>
+                <v-item md-span-2>
                     <form id="toasty">
                         <v-grid form columns="2">
-                            <div>
+                            <v-item>
                                 <label>Message</label>
                                 <input type="text" id="toastMsg" value="Some message"/>
-                            </div>
-                            <div>
+                            </v-item>
+                            <v-item>
                                 <label>Duration</label>
                                 <v-grid columns="3" center>
-                                    <input is="span-2" style="max-width: 120px" type="range" id="toastRange" min="300"
+                                    <v-item md-span-2>
+                                    <input  style="max-width: 120px" type="range" id="toastRange" min="300"
                                            max="10000" step="100" value="1500"></input>
-                                    <span is="span-1" id="toastRangeLabel"/>
+                                    </v-item>
+                                    <v-item md-span-1>
+                                        <span md-span-1 id="toastRangeLabel"/>
+                                    </v-item>
                                 </v-grid>
-                            </div>
-                            <div is="span-2">
+                            </v-item>
+                            <v-item span-2>
                                 <button is="v-primary" type="submit" style="width: 100%">Create toast</button>
-                            </div>
+                            </v-item>
                         </v-grid>
                     </form>
-                </div>
+                </v-item>
                 {/* <v-code lang="html">{`
             ~v-alert success~Put any HTML here.~/v-alert~
             ~v-alert warning~Put any HTML here.~/v-alert~
             ~v-alert error~Put any HTML here.~/v-alert~
             ~v-alert info~Put any HTML here.~/v-alert~
         `}</v-code> */}
-            </v-grid>
-        </div>,
+            </v-grid>,
         <div>
             <Docs>
                 <Snippet code={`
@@ -488,10 +507,13 @@ function Utilities() {
     return [<Docs>
 
         {/* @raw "style"
-            .grid-demo > div {
+            .grid-demo v-item > div {
                 background: #262D35;
-                padding: 0.8rem;
                 color: #fff;
+                padding: 2rem;
+                margin: 0;
+                display: block;
+                width: 100%;
                 font-size: 1.8rem;
                 text-align: center;
             }
@@ -500,50 +522,54 @@ function Utilities() {
 
         Grid with <code>columns="4"</code> and D with <code>span="2"</code> <br/><br/>
         <v-grid columns="3" className="grid-demo">
-            <div>
-                A
-            </div>
-            <div>
-                B
-            </div>
-            <div>
-                C
-            </div>
-            <div is="span-2">
-                D
-            </div>
-            <div>
-                E
-            </div>
-            <div is="md-span-3">
-                Will expand on small screens.
-            </div>
-            <v-card is="span-2">
+            <v-item>
+                <div>A</div>
+            </v-item>
+            <v-item>
+                <div>B</div>
+            </v-item>
+            <v-item>
+                <div>C</div>
+            </v-item>
+            <v-item span-2>
+                <div>D</div>
+            </v-item>
+            <v-item>
+                <div>E</div>
+            </v-item>
+            <v-item md-span-3>
+                <div>
+                    Will expand on small screens.
+                </div>
+            </v-item>
+            <v-item span-2>
+            <v-card>
                 <strong>Some card</strong>
                 <hr/>
                 This is a card and it contains something.
                 <div>
-                    <img style="margin: 0; padding: 0; display: block" src="https://raw.githubusercontent.com/neutraltone/awesome-stock-resources/master/img/splash.jpg" width="100%"/>
+                    <img style="height: 50px; margin: 1rem 0 0;" src="https://raw.githubusercontent.com/neutraltone/awesome-stock-resources/master/img/splash.jpg" />
                 </div>
             </v-card>
+            </v-item>
         </v-grid>
         <v-grid form columns="2">
-            <div>
+            <v-item>
                 <label>Some name</label>
                 <input/>
-            </div>
-            <div>
+            </v-item>
+            <v-item>
                 <label>Some date</label>
                 <input type="date"/>
-            </div>
-            <div>
+            </v-item>
+            <v-item>
                 <label>Something else</label>
                 <input/>
-            </div>
-            <div>
+            </v-item>
+            <v-item>
                 <button>Button one</button>
                 <button is="v-primary">Button two</button>
-            </div>
+            </v-item>
         </v-grid>
 
     </Docs>, <div/>]
@@ -552,12 +578,12 @@ function Utilities() {
 export function App() {
     return <>
         <nav>
-            <v-grid>
-                <div>Contents</div>
-                <div style="max-width: 50px;">
+            <v-grid columns={"5"}>
+                <v-item span-4>Contents</v-item>
+                <v-item span-1>
                     <v-icon class="ptr" onclick="document.body.classList.toggle('N')"
                             style="color: #000; width: 20px; height: 20px;" name="Close"></v-icon>
-                </div>
+                </v-item>
             </v-grid>
             {["v-search", "v-table", "v-dialog", "v-tree", "v-alert", "v-tabs", "v-icon", {"Form/Grid": "v-utils"}, "v-code"].map(x => {
                 let link = "", name = "";
@@ -833,7 +859,9 @@ function Search() {
             <Docs>
 
                 <Snippet code={`
-                <v-search placeholder="Search fruits">
+                <v-alert tiny id="fruit_input"></v-alert>
+                <v-search>
+                    <input slot="input" oninput="fruit_input.innerText = this.value" placeholder="Search fruits (try banana)" />
                     <template>
                         <data value="/banana-tips">Banana</data>
                         <data value="/some-apple">Apple</data>
@@ -843,7 +871,9 @@ function Search() {
                         <data value="/wmelon">Watermelon</data>
                         <data value="/bberry">Blueberry</data>
                     </template>
-                </v-search>`} />
+                </v-search>
+</script>
+`} />
 
             </Docs>
         </div>)];
@@ -858,7 +888,7 @@ function Component(props: { name: string, C: () => JSX.Element[], info?: string,
     }
     const [partA, partB] = props.C()
     // console.log(PartA, PartB)
-    const k = Math.random().toString(16).substring(3)
+    const k = props.name;
     return <div class="element-docs" id={props.name}>
         <div class="container showcase">
             <h2 style="color: #FF6325; margin-top: 1rem"><b>{'<' + props.name + '>'}</b> <span>{hinfo}</span>
@@ -895,7 +925,11 @@ function Icons() {
                 <strong>v-icons contains a small curated list of icons. <sup><a
                     href="#icon-notice">[1]</a></sup></strong>
             </div>
-            <v-icon all></v-icon>
+            <v-reveal>
+                <v-reveal-btn is={"v-toggle"}>Open</v-reveal-btn>
+                <v-icon all></v-icon>
+            </v-reveal>
+
             <div id="icon-notice">
                 <sup>[1] - based on Material Icons by Google and Hero Icons by https://heroicons.com/</sup>
             </div>

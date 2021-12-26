@@ -8,7 +8,7 @@ export function strToNode(s: string) {
   return html([s]) as React.ReactChild;
 }
 
-function elementToVirtual(el: Element) {
+function elementToVirtual(el: HTMLElement) {
   let H = el.innerHTML
   // if(el instanceof HTMLTemplateElement) {
   //   H = (el.content.cloneNode(true) as HTMLElement).
@@ -21,7 +21,7 @@ function elementToVirtual(el: Element) {
   //   return x;
   // });
     //@ts-ignore
-    return html([H]) as React.ReactChild;
+    return html([H]) as React.ReactNode;
   }
 
   class Virtual extends HTMLElement {
@@ -93,7 +93,7 @@ function elementToVirtual(el: Element) {
 
     virtual(selector: string) {
       return [...this.querySelectorAll(selector)].map((x, idx) => {
-        return elementToVirtual(x);
+        return { virtual: elementToVirtual(x), dom: x };
       })
     }
 

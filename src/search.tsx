@@ -93,6 +93,7 @@ export class Search extends Transformable {
   private handleNativeInput(e: Event) {
     const curVal = this.input.value
     if (e.type == 'input' && this._lastRealValue != curVal) {
+      this.selectedIndex = -1;
       this._lastRealValue = curVal
       this.dispatchEvent(new Event(e.type))
       this.doRender()
@@ -100,6 +101,7 @@ export class Search extends Transformable {
     }
     if (e.type === 'blur') {
       this.hideSuggestions = true
+      this.value = this._lastRealValue
       this.doRender()
     }
     if (e.type === 'focus') {
@@ -118,6 +120,8 @@ export class Search extends Transformable {
       if (e.type !== 'keydown') return
 
       if (kbdEvent.key === 'Enter') {
+        if(this.selectedIndex != -1)
+        this.accept(this.selectedIndex, false)
         this.input.blur()
       }
       if (kbdEvent.key === 'ArrowDown') {
@@ -129,6 +133,7 @@ export class Search extends Transformable {
         e.preventDefault()
       }
       if (kbdEvent.key === 'Escape') {
+        this.value = this._lastRealValue
         this.input.blur()
       }
     }
@@ -137,6 +142,7 @@ export class Search extends Transformable {
   // puts an Item into <input> if Item.toString()
   // is defined. if not, it returns false
   private putSuggestionIntoField(item: Item): boolean {
+    return true
     const maybeStr = this._itemToString(item);
     if(maybeStr === null) {
       // the item cannot be put into text fields
@@ -152,12 +158,15 @@ export class Search extends Transformable {
 
     const item = this.filteredData[idx]
     // const inpText = this._itemToString(this.suggestions[idx]);
-    if(!this.putSuggestionIntoField(item)) {
+    // if(!this.putSuggestionIntoField(item)) {
+    //
+    // }
 
-    }
-
-    this._lastRealValue = this.value
-    this.hideSuggestions = true
+    this._lastRealValue = this._itemToString(item)
+    this.input.value = this._lastRealValue;
+        this.hideSuggestions = true
+    this.input.dispatchEvent(new InputEvent("change"))
+    this.input.dispatchEvent(new InputEvent("input"))
     this.dispatchEvent(
         new CustomEvent('pick', {
           detail: this.filteredData[idx],

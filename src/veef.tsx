@@ -15,12 +15,53 @@ import {Search} from "./search";
 
 export {Tree, Dialog, Table, Alert, Tabs, VeefElement, CodeEditor, Search};
 
+class Reveal extends HTMLElement {
+  getIdx() {
+    const idx = [...document.querySelectorAll("v-reveal")].findIndex(x => x === this);
+    return idx;
+  }
+  connectedCallback() {
+    this.parentElement.setAttribute("closed", "true")
+    if(window.history.state != null && window.history.state[`__reveal_${this.getIdx()}`] === "1") {
+      this.toggle(true)
+    }
+    this.addEventListener("click", () => this.toggle())
+  }
+  stateSet(val: string) {
+    const S = window.history.state || {};
+    S[`__reveal_${this.getIdx()}`] = val
+    //@ts-ignore
+    window.history.replaceState(S, "", window.location)
+  }
+  toggle(newState?: boolean) {
+      let isClosed = this.parentElement.hasAttribute("closed");
+      if(newState === true) {
+        isClosed = true;
+      }
+
+      if(isClosed) {
+        this.parentElement.removeAttribute("closed")
+        this.stateSet("1")
+        this.innerText = "Close"
+      } else {
+        this.parentElement.setAttribute("closed", "true")
+        this.stateSet("0")
+        this.innerText = "Open"
+      }
+  }
+}
+function getPosition(element: Element) {
+  var clientRect = element.getBoundingClientRect();
+  return {left: clientRect.left + document.body.scrollLeft,
+    top: clientRect.top + document.body.scrollTop};
+}
+
 export function loadComponents(extra: Record<string, CustomElementConstructor>) {
   customElements.define('v-tree', Tree)
   Object.entries(extra).forEach(([name, ctor]) => {
     customElements.define(name, ctor)
   })
-  customElements.define('v-item', VItem);
+  // customElements.define('v-item', VItem);
   customElements.define('v-dialog', Dialog)
   customElements.define('v-table', Table)
   customElements.define('v-alert', Alert)
@@ -29,6 +70,7 @@ export function loadComponents(extra: Record<string, CustomElementConstructor>) 
   customElements.define('v-code', CodeEditor);
   customElements.define('v-dropdown', Dropdown);
   customElements.define('v-search', Search);
+  customElements.define('v-reveal-btn', Reveal)
 
   customElements.define('v-controls', class extends HTMLElement {
     constructor() {

@@ -81,7 +81,8 @@ export class Table extends Transformable {
     return <div class="w-full mb-8 overflow-hidden rounded-lg shadow-lg table">
         <div part="row row-header" class="text-md cursor-pointer select-none font-semibold tracking-wide text-left text-gray-900 bg-gray-100 hover:bg-[#00000010] uppercase border-b border-gray-600 table-row">
           <Check part="cell cell-header" idx={-1}/>
-        {this.virtual("tr:first-child > td,th").map((x, idx) => {
+        {this.virtual("tr:first-child > td,th").map((y, idx) => {
+          const x = y.virtual;
           const active = this._sortable ? this.sortCol == idx : false;
             return <div part={"cell cell-header " + (active ? " cell-active" : "")} class={"px-4 py-3 border table-cell " + (active ? "bg-[#FF660010]" : "")} tabIndex="0" onClick={(e) => {
               this.sortCol = idx;
@@ -101,7 +102,10 @@ export class Table extends Transformable {
             <Check idx={orderMap[idx]} part="cell" />
             {this.virtual("tr:nth-child(" + (orderMap[idx] + 2) + ") > td").map((x, idx) => {
               const active = this._sortable ? idx == this.sortCol : false;
-              return <div part={"cell" + (active ? " cell-active" : "")} class={"px-4 py-3 border table-cell " + (active ? "font-bold bg-[#FF660010] border-[#FF660030]" : "") }><this.Portal>{x}</this.Portal></div>
+              return <div part={"cell" + (active ? " cell-active" : "")}
+                          class={"px-4 py-3 border table-cell " + (active ? "font-bold bg-[#FF660010] border-[#FF660030]" : "") }>
+                <this.Portal>{x.virtual}</this.Portal>
+              </div>
             })}
             </div>
         })}
