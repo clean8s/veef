@@ -149,7 +149,7 @@ function Snippet(props: { code: string, width?: number, height?: number }) {
                 <v-code language="html" style={S} value={props.code}
                         onchange="this.nextElementSibling.children[1].innerHTML = this.value"></v-code>
             </div>
-            <div style={typeof props.width == 'undefined' ? "" : "max-width:" + (props.width) + "px"}>
+            <div is="sm-span-3 md-span-3" style={typeof props.width == 'undefined' ? "" : "max-width:" + (props.width) + "px"}>
                 <span style="background:#eee; padding: 10px;margin: 0 auto 15px;display: block;"><v-icon
                     name="Preview"></v-icon> Sandbox preview:</span>
                 <div dangerouslySetInnerHTML={{__html: props.code}}/>
