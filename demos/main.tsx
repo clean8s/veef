@@ -577,7 +577,7 @@ function Utilities() {
 
 export function App() {
     return <>
-        <nav>
+        <nav id={"mainMenu"}>
             <v-grid columns={"5"}>
                 <v-item span-4>Contents</v-item>
                 <v-item span-1>

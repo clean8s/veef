@@ -33,6 +33,7 @@ class Reveal extends HTMLElement {
     //@ts-ignore
     window.history.replaceState(S, "", window.location)
   }
+  lastPos: number  = 0
   toggle(newState?: boolean) {
       let isClosed = this.parentElement.hasAttribute("closed");
       if(newState === true) {
@@ -40,6 +41,9 @@ class Reveal extends HTMLElement {
       }
 
       if(isClosed) {
+        this.getBoundingClientRect()
+        this.lastPos = document.documentElement.scrollTop
+
         this.parentElement.removeAttribute("closed")
         this.stateSet("1")
         this.innerText = "Close"
@@ -47,6 +51,9 @@ class Reveal extends HTMLElement {
         this.parentElement.setAttribute("closed", "true")
         this.stateSet("0")
         this.innerText = "Open"
+
+        this.getBoundingClientRect()
+        window.scrollTo(0, this.lastPos)
       }
   }
 }
