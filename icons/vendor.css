@@ -19,7 +19,7 @@ v-code {
 	display: flex;
 	flex-direction: row;
 	align-items: stretch;
-	background: #00000020;
+	background: #1E1E1E;
 }
 
 v-code::before {
@@ -27,7 +27,7 @@ v-code::before {
     text-align: center;
     width: 100%;
     line-height: 3em;
-    color: rgb(85, 85, 85);
+    color: #fff;
     display: block;
 	flex-basis: 100%;
 	flex-grow: 1;

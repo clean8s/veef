@@ -151,14 +151,14 @@ function Snippet(props: { code: string, width?: number, height?: number }) {
 
     return <>
         <v-grid columns="3" style="align-items:start">
-            <v-item md-span-3 span-2>
-            <v-code language="html" style={S} value={props.code}
-                    onchange="this.nextElementSibling.children[1].innerHTML = this.value"></v-code>
-            </v-item>
             <v-item md-span-3 style={typeof props.width == 'undefined' ? "" : "max-width:" + (props.width) + "px"}>
                 <span style="background:#eee; padding: 10px;margin: 0 auto 15px;display: block;"><v-icon
                     name="Preview"></v-icon> Sandbox preview:</span>
                 <div dangerouslySetInnerHTML={{__html: props.code}}/>
+            </v-item>
+            <v-item md-span-3 span-2>
+                <v-code language="html" style={S} value={props.code}
+                        onchange="this.previousElementSibling.children[1].innerHTML = this.value"></v-code>
             </v-item>
         </v-grid>
 
@@ -910,7 +910,7 @@ function Component(props: { name: string, C: () => JSX.Element[], info?: string,
                 {props.nocustom ? null :
                     <a role="tab" href={"#b_" + k } onclick={"this.parentElement.parentElement.classList.add('fullw')"}>
                         <v-icon name="Code"></v-icon>
-                        Code / sandbox
+                        {"\u00A0"} View Code / Pen
                         <template>
                         </template>
                     </a>}
