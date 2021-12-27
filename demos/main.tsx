@@ -167,7 +167,7 @@ function Snippet(props: { code: string, width?: number, height?: number }) {
 
 function Docs(props: { children?: any }) {
     return <>
-        <div style="padding: 20px; font-size: 1.1em">
+        <div style={"padding: 1rem 0; font-size: 1.1em;"}>
             {props.children}
         </div>
     </>
@@ -189,9 +189,9 @@ function Table() {
         <div class="t1">
 
             <article class="text-center pad y-2">
-                Try custom sort by clicking <strong style="color: var(--color)">on the Color column.</strong>
+                Try custom sort by clicking on the <strong style="color: var(--color)">Color</strong> column.
             </article>
-            <v-grid columns={"2"}>
+            <v-grid columns={"2"} pad={"0"}>
                 <v-item md-span-2 style={"max-width: 300px !important;"}>
                 <v-table selectable sortable id="tbl" class="t1">
                     <table>
@@ -560,7 +560,7 @@ function Utilities() {
             </v-item>
             <v-item>
                 <label>Some date</label>
-                <input type="date"/>
+                <input type="date" placeholder={"Pick date"}/>
             </v-item>
             <v-item>
                 <label>Something else</label>
@@ -576,6 +576,16 @@ function Utilities() {
 }
 
 export function App() {
+    const icons : Record<string, string> = {
+        "v-search": "Search",
+        "v-table": "Table",
+        "v-dialog": "Help",
+        "v-tree": "Tree",
+        "v-alert": "Warning",
+        "v-tabs": "Tabs",
+        'v-grid': 'Grid',
+        'v-code': 'Code'
+    }
     return <>
         <nav id={"mainMenu"}>
             <v-grid columns={"5"}>
@@ -585,7 +595,7 @@ export function App() {
                             style="color: #000; width: 20px; height: 20px;" name="Close"></v-icon>
                 </v-item>
             </v-grid>
-            {["v-search", "v-table", "v-dialog", "v-tree", "v-alert", "v-tabs", "v-icon", {"Form/Grid": "v-utils"}, "v-code"].map(x => {
+            {["v-search", "v-table", "v-dialog", "v-tree", "v-alert", "v-tabs", "v-icon", {"v-grid & form": "v-grid"}, "v-code"].map(x => {
                 let link = "", name = "";
                 if(typeof x == 'object') {
                     const [k, v] = Object.entries(x)[0]
@@ -596,14 +606,13 @@ export function App() {
                     name = x;
                 }
                 return <a href={`#${link}`}>
-                    <v-icon name="Bolt"/>
+                    <v-icon name={icons[link] || "Bolt"}/> {"\u00A0"}
                     {name}</a>
             })
             }
             <a href="#guide-web-components">
-                <v-icon name="Help"/>
+                <v-icon name="Tutorial"/> {"\u00A0"}
                 Guide to Web Components</a>
-            <a>Licensed under MIT.</a>
 
         </nav>
 
@@ -615,7 +624,7 @@ export function App() {
         <Component name="v-alert" C={Alert} info="info boxes and toasts"/>
         <Component name="v-tabs" C={Tabs} info="clickable tabs"/>
         <Component name="v-icon" C={Icons} info="A small collection of icons"/>
-        <Component name="v-utils" C={Utilities} info="CSS only utilities" nocustom/>
+        <Component name="v-grid" C={Utilities} info="CSS grid/form utilities" nocustom/>
         <Component name="v-code" C={Editor} info="A Monaco-based editor"/>
     </>
 }
@@ -859,9 +868,9 @@ function Search() {
             <Docs>
 
                 <Snippet code={`
-                <v-alert tiny id="fruit_input"></v-alert>
+                <v-alert tiny id="fruit_input">oninput: </v-alert>
                 <v-search>
-                    <input slot="input" oninput="fruit_input.innerText = this.value" placeholder="Search fruits (try banana)" />
+                    <input slot="input" oninput="fruit_input.innerText = 'oninput: ' + this.value" placeholder="Search fruits (try banana)" />
                     <template>
                         <data value="/banana-tips">Banana</data>
                         <data value="/some-apple">Apple</data>

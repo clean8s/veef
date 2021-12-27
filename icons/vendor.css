@@ -387,6 +387,7 @@ v-grid[form] button:focus, *[is^="v-"]:focus {
 
 v-table {
 	display: block;
+	overflow: auto;
 }
 v-table table {
 	width: 100%;

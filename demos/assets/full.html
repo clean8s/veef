@@ -44,12 +44,12 @@
     main>v-code[lang="html"]:before{ content: "SOURCE"; font-weight: 500; color: #fff; background:#333333; border-radius: 20px; padding: 3px 10px; }
     main>div:before,.demo:before { content: "DEMO"; font-weight: 500; color: #fff; background:#FB5012; border-radius: 20px; padding: 3px 10px;}
     h2>code{ color: #996699;  } h2>code:before{content:"<";}h2>code:after{content:">";}
-    nav { color: #888; position: fixed; top: 0px; bottom: 0; width: var(--sidebar); box-shadow: 0px 0px 10px rgba(0,0,0,0.2); left: 0px; padding: 20px; z-index: 40; background: #fff; }
+    nav { transition: opacity 0.3s; color: #888; position: fixed; top: 0px; bottom: 0; width: var(--sidebar); box-shadow: 0px 0px 10px rgba(0,0,0,0.2); left: 0px; padding: 20px; z-index: 40; background: #fff; }
     nav>a{display: block; color: #FB5012; font-weight: 500; padding: 5px 0; }
     nav>a:hover { color: #000; }
     header .ptr { display: none; float: right; } nav .ptr { display: none; } sup { font-size: 0.8rem; }
     .ptr { cursor: pointer; }
-    @media screen and (max-width: 600px) { .nonmobile { display: none; } nav .ptr { display: block; } body{--sidebar:0; } nav{ width: 80vw; display: block;} .N nav { display: none; } header .ptr { display: inline-block; } main { flex-direction: column; max-height: none; } main>* { width: 100%; flex-basis: 100%; } }
+    @media screen and (max-width: 600px) { .nonmobile { display: none; } nav .ptr { display: block; } body{--sidebar:0; } nav{ width: 80vw; display: block;} .zero-op { opacity: 0; } .N nav { display: none; } header .ptr { display: inline-block; } main { flex-direction: column; max-height: none; } main>* { width: 100%; flex-basis: 100%; } }
     code { background: #282c34; padding: 3px 5px; color: #fff; border-radius: 5px;
         font-family: Consolas, Monaco, "Andale Mono", "Ubuntu Mono", monospace;
     } .text-center { text-align: center; } .pad { padding: var(--y, 0) var(--x, 0); } .x-1 { --x: 10px; } .x-2 { --x: 20px; } .y-1 { --y: 10px; } .y-2 { --y: 20px; }
@@ -149,7 +149,7 @@
     <div class="container">
         <h3 style="margin: 0 0 35px; font-size: 3rem; letter-spacing: -0.025em; line-height: 1; border: 0;">
 
-            60KB component library based on the <strong>Web Components</strong> API.
+            Reactive component library based on the <strong>Web Components</strong> API.
         </h3>
         <v-grid class="pros">
             <div>
@@ -320,13 +320,12 @@ background: #333;
         The most important parts to know are:
         <ul>
             <li>The syntax is same as usual tags: <code>&lt;v-icon&gt;</code>, <code>&lt;somelibrary-blah&gt;</code> etc.</li>
-            <li>Some components have children and some don't.</li>
-            <li>All components need to have their tags closed (even empty ones like <code>&lt;v-icon&gt;&lt;/v-icon&gt;</code>)<br/>
+            <li>All components <strong>need to have their tags closed</strong> (even empty ones like <code>&lt;v-icon&gt;&lt;/v-icon&gt;</code>)<br/>
                 which is unlike <code>&lt;br/&gt;</code> or <code>&lt;link&gt;</code></li>
-            <li>The author of an Web Component can make them have them appear and behave the way he wants,
-                while the style of children and attributes are chosen by the user.</li>
-            <li>If JavaScript is disabled they will just display the standard HTML content without
-                dynamic events and interactions.
+            <li>The author of an Web Component can make them have them appear and behave the way they want.
+                However, the elements inside behave based on the page where they are included.</li>
+            <li>If JavaScript is disabled, the content inside a component stays visible and functional. All styles and form/link
+                behaviour remains the same, while the interactive events and dynamic interaction will stop working.
             </li>
         </ul>
 
@@ -443,16 +442,25 @@ background: #333;
     [...mainMenu.querySelectorAll("a")].map(x => x.addEventListener("click", (e) => {
         const D = document.getElementById(new URL(e.target.closest("a").href).hash.substring(1));
         const y = window.scrollY + D.getBoundingClientRect().top;
-        console.log(y)
+
         window.scrollTo(0, y)
         e.preventDefault()
+        mainMenu.classList.add('zero-op')
+        setTimeout(() => {
+            document.body.classList.add('N')
+            mainMenu.classList.remove('zero-op')
+        }, 100);
     }))
     document.addEventListener("click", (e) => {
         if(document.body.classList.contains("N")) return
         if(e.target == null || typeof e.target.tagName == 'undefined') return
         if(e.target.tagName.toLowerCase() === 'v-icon') return;
         if(mainMenu.contains(e.target)) return
-        document.body.classList.toggle('N')
+        mainMenu.classList.add('zero-op')
+        setTimeout(() => {
+            document.body.classList.add('N')
+            mainMenu.classList.remove('zero-op')
+        }, 100);
     })
 </script>
 <div style="background: #000; padding: 30px 0; color: #fff;">
