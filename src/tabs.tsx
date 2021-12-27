@@ -10,33 +10,15 @@ export class Tabs extends Transformable {
     }
     connectedCallback() {
         super.connectedCallback()
-        // window.addEventListener("hashchange", (e) => {
-        //     const id = new URL(e.newURL).hash.substring(1)
-        //     if(this.selectedId == id) return
-        //     const el = document.getElementById(id)
-        //     if(el && this.contains(el)) {
-        //         this.pickTab(el)
-        //     }
-        // });
-        // window.addEventListener("popstate", (e) => {
-        //     console.log(JSON.stringify(e.state))
-        // })
-
         this.firstCheck()
         document.addEventListener("DOMContentLoaded", () => this.firstCheck())
     }
     firstCheck() {
         if(this.selectedId !== "") return
-        // let currentURL = new URL(window.location);
-        // const _id = currentURL.hash.substring(1)
-        // const maybeEl = document.getElementById(_id)
-        // if(maybeEl && this.contains(maybeEl)) {
-        //     this.pickTab(maybeEl as HTMLAnchorElement)
-        // } else {
+
             if(history.state != null && Array.isArray(history.state["__veef_tabs"])) {
                 const candidate = history.state["__veef_tabs"].map(x => this.querySelector("#" + x)).find(x => x != null);
                 if(candidate) {
-                    console.log(candidate)
                     this.pickTab(candidate)
                     return
                 }
@@ -61,10 +43,13 @@ export class Tabs extends Transformable {
             const link = ([...el.parentElement!.children]).find(x => x instanceof HTMLAnchorElement && new URL(x.href).hash === "#" + el.id);
             if(link) {
                 link.classList.add("active")
+                link.dispatchEvent(new Event("click"))
             }
         } else {
             id = new URL(el.href).hash.substring(1)
-            document.getElementById(id)!.classList.add("active")
+            const link = document.getElementById(id)!;
+            link.classList.add("active")
+            // link.dispatchEvent(new MouseEvent("click"))
         }
 
         this.selectedId = id;
@@ -82,6 +67,8 @@ export class Tabs extends Transformable {
             if(!(e.target instanceof Element)) return;
             const el = e.target.closest("a");
             if(!el) return
+            e.preventDefault()
+
             let oldId = this.selectedId
             const id = new URL(el.href).hash.substring(1);
             if(id == this.selectedId) return;
@@ -94,7 +81,6 @@ export class Tabs extends Transformable {
 
             window.history.replaceState({...s, __veef_tabs: curTabs}, "", window.location)
             // window.history.pushState({id: this.selectedId}, "", el.href)
-            e.preventDefault()
             return
         }}
                       className="flex p-2 px-[1px] pb-0 space-x-1 border-b-1 border-[#ccc] rounded-t-xl" role="tablist"

@@ -903,12 +903,12 @@ function Component(props: { name: string, C: () => JSX.Element[], info?: string,
             <h2 style="color: #FF6325; margin-top: 1rem"><b>{'<' + props.name + '>'}</b> <span>{hinfo}</span>
             </h2>
             <v-tabs via="style">
-                <a role="tab" href={"#a_" + k}>
+                <a role="tab" href={"#a_" + k} onclick={"this.parentElement.parentElement.classList.remove('fullw')"}>
                     <v-icon name="Bolt"></v-icon>
                     Demo
                 </a>
                 {props.nocustom ? null :
-                    <a role="tab" href={"#b_" + k }>
+                    <a role="tab" href={"#b_" + k } onclick={"this.parentElement.parentElement.classList.add('fullw')"}>
                         <v-icon name="Code"></v-icon>
                         Code / sandbox
                         <template>
