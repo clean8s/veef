@@ -73,17 +73,11 @@ let preactAlias = {
     })
 
     build.onResolve({ filter: /^virtual:windi$/ }, (args: ResolveArgs) => {
-      // const srcJs = fs.readFileSync(args.importer as string, 'utf8')
-
       return {
         path: args.importer,
         namespace: 'windi',
       }
     })
-
-    // build.onLoad({filter: /veef.*?\.css/}, async (x: any) => {
-    //   return { contents: minifyCss(readFileSync(x.path, 'utf8')), loader: 'text' }
-    // });
 
     build.onResolve({ filter: /^base16/ }, (args: ResolveArgs) => {
       return {
@@ -93,7 +87,6 @@ let preactAlias = {
 
     build.onLoad({filter: /vendor\.css/}, async (x: any) => {
       const M = readFileSync(x.path, 'utf8');
-      const txt = await generateStyles(M, false) as string;
       const txt2 = await generateStyles(M, false, true) as StyleSheet;
 
 
@@ -154,21 +147,30 @@ let preactAlias = {
 const opts: Record<string, any> = {};
 const watchFlag = process.argv.findIndex(x => x === '--watch') > 0;
 
-import {spawn} from "child_process"
-if(watchFlag) {
-  opts['watch'] = true;
-  let attempt = 0;
-  async function buildDemo() {
-    spawn("node build.js", {cwd: "demos", shell: true, stdio: "inherit", }).on("close", () => {
+import {spawn, spawnSync} from "child_process"
+let attempt = 0;
+function buildDemo(retry: boolean) {
+  let args: [string, object] = ["node build.js" + (retry ? " --watch" : ""), {cwd: "demos", shell: true, stdio: "inherit", }];
+  if(!retry) {
+    spawnSync(...args)
+  } else {
+    spawn(...args).on("close", () => {
       let interval = 1000 * Math.pow(1.4, attempt + 1);
       setTimeout(() => {
-        buildDemo();
+        buildDemo(true);
         attempt++;
         attempt = attempt % 5;
-        }, interval);
+      }, interval);
     });
   }
-  buildDemo()
+}
+
+
+if(watchFlag) {
+  opts['watch'] = true;
+  buildDemo(true)
+} else {
+  buildDemo(false)
 }
 
 let outputDir = 'dist';

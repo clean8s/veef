@@ -12,7 +12,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link href="https://fonts.googleapis.com/css2?family=Fira+Code&amp;family=Inter:wght@200;400;500;600&amp;display=swap" rel="stylesheet">
 
-<script src="dist/index.js"></script>
+<script src="index.js"></script>
 <title>veef: 60KB Web Components </title>
 <style>
     /* You DON'T need this. This is the documentation CSS, not the components! */
@@ -28,7 +28,7 @@
         padding-left: var(--sidebar);
     }
     a.logolink { color: #fff; }
-    .container { width: 90%; max-width: 1000px; margin: 0 auto; } .showcase { clear: both; transition: max-width 0.3s; } .fullw { max-width: 100%; }
+    .container { width: 90%; max-width: 1000px; margin: 0 auto; } .showcase { clear: both; transition: max-width 0.3s; } .fullw { max-width: 1920px; }
     .element-docs { padding: 2.5rem 0 4rem; }
     .element-docs:nth-child(2n)>div>h2>span { color: #fff; }
     .element-docs>div>h2>span { color: #282C34; font-size: 1.3rem; display: block; border-radius: 10px; }
@@ -37,19 +37,20 @@
     .element-docs:nth-child(2n)>div>h2 { color: #fff; }
     .element-docs:nth-child(2n)>div>v-tabs { display: block; border-radius: 10px; }
     .showcase h2 { font-size: 2em; margin: 0px 0 15px; font-weight: 400; }
-    .showcase h3 { border-left: 4px solid #555; padding-left: 0.5em; font-size: 1.1em;font-weight: 500; margin: 5px 0 15px; color: #555; }
+    .showcase p { padding: 0.5rem; margin: 0; }
+    .showcase h3 { font-weight: 600; margin: 0 0.5rem; }
     main { display: flex; width: 100%; }
     main>*{ width: 50%; flex-basis: 50%; padding: 5px; }
     v-code { margin: 0 10px; }
     main>v-code[lang="html"]:before{ content: "SOURCE"; font-weight: 500; color: #fff; background:#333333; border-radius: 20px; padding: 3px 10px; }
     main>div:before,.demo:before { content: "DEMO"; font-weight: 500; color: #fff; background:#FB5012; border-radius: 20px; padding: 3px 10px;}
     h2>code{ color: #996699;  } h2>code:before{content:"<";}h2>code:after{content:">";}
-    nav { transition: opacity 0.3s; color: #888; position: fixed; top: 0px; bottom: 0; width: var(--sidebar); box-shadow: 0px 0px 10px rgba(0,0,0,0.2); left: 0px; padding: 20px; z-index: 40; background: #fff; }
+    nav { transition: transform 0.3s; color: #888; position: fixed; top: 0px; bottom: 0; width: var(--sidebar); box-shadow: 0px 0px 10px rgba(0,0,0,0.2); left: 0px; padding: 20px; z-index: 40; background: #fff; }
     nav>a{display: block; color: #FB5012; font-weight: 500; padding: 5px 0; }
     nav>a:hover { color: #000; }
     header .ptr { display: none; float: right; } nav .ptr { display: none; } sup { font-size: 0.8rem; }
     .ptr { cursor: pointer; }
-    @media screen and (max-width: 600px) { .nonmobile { display: none; } nav .ptr { display: block; } body{--sidebar:0; } nav{ width: 80vw; display: block;} .zero-op { opacity: 0; } .N nav { display: none; } header .ptr { display: inline-block; } main { flex-direction: column; max-height: none; } main>* { width: 100%; flex-basis: 100%; } }
+    @media screen and (max-width: 600px) { .nonmobile { display: none; } nav .ptr { display: block; } body{--sidebar:0; } nav{ width: 80vw; display: block;} .zero-op { transform: translateX(-100%); } .N nav { display: none; } header .ptr { display: inline-block; } main { flex-direction: column; max-height: none; } main>* { width: 100%; flex-basis: 100%; } }
     code { background: #282c34; padding: 3px 5px; color: #fff; border-radius: 5px;
         font-family: Consolas, Monaco, "Andale Mono", "Ubuntu Mono", monospace;
     } .text-center { text-align: center; } .pad { padding: var(--y, 0) var(--x, 0); } .x-1 { --x: 10px; } .x-2 { --x: 20px; } .y-1 { --y: 10px; } .y-2 { --y: 20px; }
@@ -441,9 +442,11 @@ background: #333;
 <script>
     [...mainMenu.querySelectorAll("a")].map(x => x.addEventListener("click", (e) => {
         const D = document.getElementById(new URL(e.target.closest("a").href).hash.substring(1));
-        const y = window.scrollY + D.getBoundingClientRect().top;
+        const DRect = D.getBoundingClientRect();
+        if(DRect.height < 1) return
+        const y = window.scrollY + DRect.top;
 
-        window.scrollTo(0, y)
+        window.scrollTo({left: 0, top: y, behavior: 'smooth'})
         e.preventDefault()
         mainMenu.classList.add('zero-op')
         setTimeout(() => {

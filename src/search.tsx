@@ -31,7 +31,7 @@ export class Search extends Transformable {
 
   _itemToString = ((i) => JSON.stringify(i)) as ItemToStr;
   _itemTransform = (i: Item[]) => i;
-  _itemRender = ((i: Item, hl: any) => this._searchKey != "" ? hl : (<span>{JSON.stringify(i)}</span>) ) as ItemRender;
+  _itemRender = ((i: Item, hl: any) => this._searchKey != "" ? hl : (<span>{this._itemToString(i)}</span>) ) as ItemRender;
   _data = [] as Item[];
   _placeholder = "Hello"
   _searchKey = ""
@@ -157,10 +157,6 @@ export class Search extends Transformable {
     if (idx >= this.filteredData.length) return
 
     const item = this.filteredData[idx]
-    // const inpText = this._itemToString(this.suggestions[idx]);
-    // if(!this.putSuggestionIntoField(item)) {
-    //
-    // }
 
     this._lastRealValue = this._itemToString(item)
     this.input.value = this._lastRealValue;
@@ -228,12 +224,11 @@ export class Search extends Transformable {
   }
 
   loadData() {
-    const data = [...this.querySelectorAll("template")];
+    const data = [...this.querySelectorAll("datalist")];
     if(data.length > 0) {
       let newdata: {label: string, value: string}[] = [];
       data.forEach(x => {
-        const fragment = x.content.cloneNode(true);
-        [...fragment.querySelectorAll("data")].map(x => {
+        [...x.querySelectorAll("option")].map(x => {
           newdata.push({
             label: x.innerText,
             value: x.getAttribute("value") || x.innerText

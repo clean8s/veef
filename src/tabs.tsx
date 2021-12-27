@@ -43,7 +43,7 @@ export class Tabs extends Transformable {
             const link = ([...el.parentElement!.children]).find(x => x instanceof HTMLAnchorElement && new URL(x.href).hash === "#" + el.id);
             if(link) {
                 link.classList.add("active")
-                link.dispatchEvent(new Event("click"))
+                // link.dispatchEvent(new Event("click"))
             }
         } else {
             id = new URL(el.href).hash.substring(1)
@@ -54,6 +54,7 @@ export class Tabs extends Transformable {
 
         this.selectedId = id;
         this.doRender()
+        this.dispatchEvent(new CustomEvent("tabselect", {detail: id}))
     }
     pickDefault() {
         if(this.querySelectorAll("a[href]").length > 0 && this.selectedId === "") {
@@ -92,104 +93,5 @@ export class Tabs extends Transformable {
                <slot name="content" />
             </div></>
     }
-    afterRender(childrenChanged: boolean) {
-        super.afterRender(childrenChanged);
-        // const theContent = this.root.querySelector("#__content")!;
-        // [this.querySelectorAll("a>template")].map(x => {
-        //
-        // })
-        // const M = this.querySelector("a.active>template") as HTMLTemplateElement | null;
-        // if(M == null) return;
-        // theContent.innerHTML = "";
-        // theContent.append(M.content.cloneNode(true));
-    }
 }
-
-export class Tabs2 extends Slottable {
-    root: HTMLElement
-    constructor() {
-        super()
-        this.root = this.attachShadow({ mode: 'open' }) as any as HTMLElement;
-        this.render()
-        this.slotSetup(this.root, () => this.onSlot())
-        this.addEventListener('click', (e) => {
-            const tgt = e.target as HTMLElement;
-            const btn = tgt.slot == 'tab' ? tgt : tgt.closest('*[slot="tab"]') as HTMLElement;
-            if(btn) {
-                if(typeof btn != 'undefined') {
-                    this.tabTargetToggle(btn as HTMLElement)
-                }
-            }
-        })
-    }
-
-    connectedCallback() {
-
-    }
-
-    onSlot() {
-        this.slottedAny("").filter(x => !x.hasAttribute("data-veef-active")).map(x => x.style.display = 'none')
-        if(!this.hadFirst) {
-            const content = this.slottedAny("");
-            const tabs = this.slottedAny("tab");
-            if(content.length > 0 && tabs.length > 0) {
-                this.tabTargetToggle(tabs[0])
-            }
-            // this.render()
-        }
-
-    }
-
-    render() {
-        renderWithCss(tabStyle)(
-            <>
-                <div part="tabwrap" id="#tabwrap" class="flex p-2 px-[1px] pb-0 space-x-1 border-b-1 border-[#ccc] rounded-t-xl" role="tablist" aria-orientation="horizontal">
-                    <slot name="tab"></slot>
-                </div>
-                <div part="around" class="mx-[1px] p-2 border-1 rounded-b">
-                    <slot name=""></slot>
-                </div>
-            </>,
-            this.root,
-        )
-    }
-    lastListeners: Map<HTMLElement, Function> = new Map();
-
-    hadFirst = false;
-
-    activeContentIdx = -1;
-
-    tabTargetToggle (tab: HTMLElement) {
-        const thisIdx = this.slottedAny("tab").findIndex(x => x === tab);
-        if(thisIdx === -1 )
-            return;
-        const els = this.slottedAny("");
-        // if(els.length < th)
-        if(thisIdx >= els.length) return;
-        const tgt = els[thisIdx]
-        this.activeContentIdx = thisIdx;
-        if(typeof tgt == 'undefined') return;
-        this.slottedAny("tab").map(x => x.classList.remove('active'))
-        this.slottedAny("").map(x => {
-            x.style.display = 'none';
-            x.removeAttribute("data-veef-active");
-        })
-
-        tab.classList.toggle("active", true)
-        this.hadFirst = true;
-        tgt.setAttribute("data-veef-active", "true");
-        tgt.style.display = 'block'
-
-        window.history.pushState({idx: thisIdx}, '', window.location);
-    }
-
-    attributeChangedCallback(key: string, _: any, newVal: string) {
-        this.render()
-    }
-
-    static get observedAttributes() {
-        return ['via']
-    }
-}
-  
   

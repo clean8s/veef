@@ -2,7 +2,7 @@ import {Fragment, FunctionComponent, h} from "preact"
 import {render} from "preact-render-to-string";
 import {readFileSync, writeFileSync} from "fs";
 //@ts-ignore
-import {App} from "./dist/main";
+import {App} from "./main";
 import nunjucks from "nunjucks";
 //@ts-ignore
 import prettyPrint from "pretty"
@@ -119,4 +119,4 @@ export function dedent(code: string): string {
     }).join("\n").trim()
 }
 
-write("../index.html")
+write("../dist/index.html")

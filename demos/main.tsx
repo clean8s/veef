@@ -12,7 +12,7 @@ globalThis["__internalFn"] = () => {
 
 function Dropdown() {
     return [
-        <div>
+        (<div>
             <Docs>
                 {/*@raw
             <div style="text-align: center">
@@ -100,7 +100,7 @@ function Dropdown() {
                 </v-grid>
             </div>*/}
             </Docs>
-        </div>,
+        </div>),
         <div>
             <Docs>
                 <h3>A basic example</h3>
@@ -141,7 +141,7 @@ function Dropdown() {
     ]
 }
 
-function Snippet(props: { code: string, width?: number, height?: number }) {
+function Snippet(props: { raw?: boolean, code: string, width?: number, height?: number }) {
     props.code = dedent(props.code.replaceAll("~", "`")).replaceAll(/h'(.*?)'/g, (...groups: string[]) => {
         return "h`" + groups[1].replaceAll("{", "${") + "`"
     });
@@ -151,14 +151,14 @@ function Snippet(props: { code: string, width?: number, height?: number }) {
 
     return <>
         <v-grid columns="3" style="align-items:start">
+            <v-item md-span-3 span-2>
+                <v-code language="html" style={S} value={props.code}
+                        onchange="this.parentElement.nextElementSibling.children[1].innerHTML = this.value"></v-code>
+            </v-item>
             <v-item md-span-3 style={typeof props.width == 'undefined' ? "" : "max-width:" + (props.width) + "px"}>
                 <span style="background:#eee; padding: 10px;margin: 0 auto 15px;display: block;"><v-icon
                     name="Preview"></v-icon> Sandbox preview:</span>
                 <div dangerouslySetInnerHTML={{__html: props.code}}/>
-            </v-item>
-            <v-item md-span-3 span-2>
-                <v-code language="html" style={S} value={props.code}
-                        onchange="this.previousElementSibling.children[1].innerHTML = this.value"></v-code>
             </v-item>
         </v-grid>
 
@@ -575,17 +575,21 @@ function Utilities() {
     </Docs>, <div/>]
 }
 
+const icons : Record<string, string> = {
+    "v-search": "Search",
+    "v-table": "Table",
+    "v-dialog": "Help",
+    "v-tree": "Tree",
+    'v-dropdown': 'DotsVertical',
+    "v-alert": "Warning",
+    "v-tabs": "Tabs",
+    'v-grid': 'Grid',
+    'v-code': 'Code',
+    'v-icon': 'Bolt'
+}
+
 export function App() {
-    const icons : Record<string, string> = {
-        "v-search": "Search",
-        "v-table": "Table",
-        "v-dialog": "Help",
-        "v-tree": "Tree",
-        "v-alert": "Warning",
-        "v-tabs": "Tabs",
-        'v-grid': 'Grid',
-        'v-code': 'Code'
-    }
+
     return <>
         <nav id={"mainMenu"}>
             <v-grid columns={"5"}>
@@ -595,7 +599,7 @@ export function App() {
                             style="color: #000; width: 20px; height: 20px;" name="Close"></v-icon>
                 </v-item>
             </v-grid>
-            {["v-search", "v-table", "v-dialog", "v-tree", "v-alert", "v-tabs", "v-icon", {"v-grid & form": "v-grid"}, "v-code"].map(x => {
+            {["v-search", "v-dropdown", "v-table", "v-dialog", "v-tree", "v-alert", "v-tabs", "v-icon", {"v-grid & form": "v-grid"}, "v-code"].map(x => {
                 let link = "", name = "";
                 if(typeof x == 'object') {
                     const [k, v] = Object.entries(x)[0]
@@ -687,11 +691,11 @@ function Tree() {
             </div>
             <br/>
             <main>
-                <v-tree dark id="tree3"></v-tree>
+                <v-tree style={"height: 200px; overflow: auto;"}dark id="tree3"></v-tree>
                 {/* <v-code id="jsonData" lang="js" style="max-height: 180px; overflow: auto;">
                  {require('./assets/demojson')}
              </v-code> */}
-                <v-tree id="tree5" initopen="(path,val)=> path.length < 3" style="display: block; max-width: 450px; overflow: hidden;
+                <v-tree id="tree5" initopen="(path,val)=> path.length < 3" style="display: block; height: 200px; overflow: auto;
          border-radius: 10px; margin: 20px auto;"></v-tree>
 
             </main>
@@ -865,24 +869,44 @@ function Search() {
             </div>
        ), (
         <div class="t2">
+            <style>{`#fruit_input{font-size: 0.9rem;}`}</style>
             <Docs>
-
+                <h3>Static datalist</h3>
                 <Snippet code={`
-                <v-alert tiny id="fruit_input">oninput: </v-alert>
+                <span id="fruit_input">oninput: </span>
+
                 <v-search>
-                    <input slot="input" oninput="fruit_input.innerText = 'oninput: ' + this.value" placeholder="Search fruits (try banana)" />
-                    <template>
-                        <data value="/banana-tips">Banana</data>
-                        <data value="/some-apple">Apple</data>
-                        <data value="/strw">Strawberry</data>
-                        <data value="/best-grapes">Grape</data>
-                        <data value="/orange">Orange</data>
-                        <data value="/wmelon">Watermelon</data>
-                        <data value="/bberry">Blueberry</data>
-                    </template>
+                    <input slot="input"
+                        oninput="fruit_input.innerText = 'oninput: ' + this.value"
+                        placeholder="Search fruits (try banana)" />
+                    <datalist>
+                        <option value="/banana-tips">Banana</option>
+                        <option value="/some-apple">Apple</option>
+                        <option value="/strw">Strawberry</option>
+                        <option value="/best-grapes">Grape</option>
+                        <option value="/orange">Orange</option>
+                        <option value="/wmelon">Watermelon</option>
+                        <option value="/bberry">Blueberry</option>
+                    </datalist>
                 </v-search>
-</script>
 `} />
+
+                <h3>Dynamic data</h3>
+                <raw>
+                    <v-search>
+                        <script slot="h">
+                        h => {
+                          let query = (x) => [{match: x}, {match: x + " demo123"}];
+                          
+                          this.data = [];
+                          this.input.addEventListener('input', () => {
+                              this.data = query(this.value);
+                          })
+                          this.itemToString = (item) => item.match;
+                        };
+                        </script>
+                    </v-search>
+                </raw>
 
             </Docs>
         </div>)];
@@ -900,9 +924,17 @@ function Component(props: { name: string, C: () => JSX.Element[], info?: string,
     const k = props.name;
     return <div class="element-docs" id={props.name}>
         <div class="container showcase">
-            <h2 style="color: #FF6325; margin-top: 1rem"><b>{'<' + props.name + '>'}</b> <span>{hinfo}</span>
+            <h2 style="color: #FF6325; margin-top: 1rem">
+                {icons[props.name] ? (<v-icon name={icons[props.name]} />) : null} {"\u00A0"}
+                <b>{'<' + props.name + '>'}</b>
+                <span>{hinfo}</span>
             </h2>
             <v-tabs via="style">
+                {/* @raw "script slot='h'" h => {
+                    this.addEventListener('tabselect', (x) => {
+                        if(x.detail[0] === 'b') this.closest('.showcase').classList.add('fullw');
+                    });
+                 }*/}
                 <a role="tab" href={"#a_" + k} onclick={"this.parentElement.parentElement.classList.remove('fullw')"}>
                     <v-icon name="Bolt"></v-icon>
                     Demo
@@ -910,7 +942,7 @@ function Component(props: { name: string, C: () => JSX.Element[], info?: string,
                 {props.nocustom ? null :
                     <a role="tab" href={"#b_" + k } onclick={"this.parentElement.parentElement.classList.add('fullw')"}>
                         <v-icon name="Code"></v-icon>
-                        {"\u00A0"} View Code / Pen
+                        {"\u00A0"} Try Code / Sandbox
                         <template>
                         </template>
                     </a>}

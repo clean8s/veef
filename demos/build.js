@@ -7,37 +7,34 @@ const fs = require("fs")
 const getEntries = () => {
     return ["writer.tsx", "main.tsx",  ...sync("*.{css,demo.js}"), ...sync("assets/*") ]
 }
+
 function buildSite() {
-    fs.statSync("./dist", {throwIfNoEntry: false}) || fs.mkdirSync("./dist");
-
-    const beforebuild = async () => {
-        const src = fs.readFileSync("./main.tsx", "utf8");
-
-        const C = src.replace(/{\s*\/\*\s*@raw\s*(".*?")?\s*(.*?)\*\/\s*}/gsm, (match, p1, p2) => {
-            return `<${p1 ? JSON.parse(p1) : "div"} dangerouslySetInnerHTML={{__html: ${JSON.stringify(dedent(p2))}}}/>`
-        });
-        fs.writeFileSync("./dist/main.tsx", C);
+    const afterbuild = () => {
+        console.log("Rebuilding")
+        console.log(require('child_process').execSync("node dist/writer.js"));
     }
-    const afterbuild = async () => {
-        beforebuild();
-        [...getEntries(), "dist/main.js"].map(x => {
-            try {
-                delete require.cache[require.resolve(`./dist/${x}`.replace(/\.\w{2,4}$/, ".js"))]
-            }catch(err) {
-                // console.log(err)
-            }
-        });
-        if(fs.statSync("./dist/dist/main.js", {throwIfNoEntry: false})) {
-            console.log("Loading..")
-
-            require("./dist/writer.js")
-
+    const rawStr = {
+        name: 'raw-str',
+        setup(build) {
+            build.onLoad({filter: /main\.tsx$/}, async (x) => {
+                let M = readFileSync(x.path, 'utf8');
+                M = M.replace(/{\s*\/\*\s*@raw\s*(".*?")?\s*(.*?)\*\/\s*}/gsm, (match, p1, p2) => {
+                    return `<${p1 ? JSON.parse(p1) : "div"} dangerouslySetInnerHTML={{__html: ${JSON.stringify(dedent(p2))}}} />`
+                });
+                M = M.replace(/<raw>(.*?)<\/raw>/gsm, (match, p1) => {
+                    return `<Snippet code={${JSON.stringify(p1)}}/>`
+                })
+                // console.log(M)
+                return {
+                    contents: M,
+                    loader: 'tsx'
+                }
+            })
         }
     }
-    beforebuild()
     build({
-        entryPoints: [...getEntries(), "./dist/main.tsx"],
-        watch: true,
+        entryPoints: [...getEntries()],
+        plugins: [rawStr],
         target: "node12",
         outdir: 'dist',
         minify: false,
@@ -53,10 +50,12 @@ function buildSite() {
         },
         jsxFactory: "h",
         jsxFragment: "Fragment",
-        watch: {
-            onRebuild: async function() { await afterbuild(); }
-        }
-    }).then(x => { afterbuild() }).catch(x => {
+        watch: process.argv.find(x => x === "--watch") ? {
+            onRebuild: function(err, res) {
+                console.log(err, res)
+                afterbuild(); }
+        } : false
+    }).then(x => afterbuild()).catch(x => {
         throw x;
     })
 }
