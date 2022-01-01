@@ -1,6 +1,6 @@
 import React from 'react'
 import '../demos/types.d.ts'
-import '../icons/el'
+import '../icons/customElement'
 
 
 export type Component<T> = React.ComponentType<T>

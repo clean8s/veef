@@ -14,91 +14,92 @@ function Dropdown() {
     return [
         (<div>
             <Docs>
-                {/*@raw
-            <div style="text-align: center">
-                This is a standard <code>&lt;select&gt;</code> wrapped in <code>&lt;v-dropdown&gt;</code>:
+                <raw div>
+                    <div style="text-align: center">
+                        This is a standard <code>&lt;select&gt;</code> wrapped in <code>&lt;v-dropdown&gt;</code>:
 
-                <div style="text-align: center; margin: 2rem 0;">
-                    <v-dropdown>
-                        <select>
-                            <option value="Cube">Select a cube?</option>
-                            <option value="Copy">Some copy operation</option>
-                            <option value="Bolt">A bolt</option>
-                            <option value="Key">And some key</option>
-                        </select>
-                        <script slot="h">
-                        h => {
-                            this.transform = (item) => h`<v-icon style='color: orange' name=${item.dom.value}/> ${item.dom.innerText}`
-                        }
-                        </script>
-                    </v-dropdown>
-                </div>
-
-                <div style="margin: 0 0 0.8em; padding: 0.8em 0 0; height: 0; border-bottom: 1px solid #cacaca;">
-                </div>
-
-                <v-grid cols="2">
-                    <div style="max-width: 300px">
-                        Enhance the component with <strong>custom rendering logic</strong> if JS is enabled:
-                        <style>
-                            .mid > v-dropdown{vertical - align: middle;}
-                        </style>
-                        <div style="text-align: center; margin: 2rem 0;" className="mid">
-                            <span id="dropdemo"></span>
-
+                        <div style="text-align: center; margin: 2rem 0;">
                             <v-dropdown>
                                 <select>
-                                    <option value="opt1">Even counter: 2</option>
-                                    <option value="opt2">Odd counter: 0</option>
+                                    <option value="Cube">Select a cube?</option>
+                                    <option value="Copy">Some copy operation</option>
+                                    <option value="Bolt">A bolt</option>
+                                    <option value="Key">And some key</option>
                                 </select>
                                 <script slot="h">
                                     h => {
-                                    let i = 2;
-                                    setInterval(() => {
-                                    this.transform = (item) => {
-                                        let even = item.idx == 0;
-                                        return h`<span style="color: #999; margin-right: 0.3rem;">${even ? "Even": "Odd"} counter</span>
-                                        <br/><strong> ${(i + item.idx).toString()}</strong>`
-                                    }
-
-                                    i %= 20;
-                                    i+= 2;
-                                }, 500);
+                                    this.transform = (item) => h`<v-icon style='color: orange' name=${item.dom.value}/> ${item.dom.innerText}`
                                 }
                                 </script>
                             </v-dropdown>
                         </div>
-                    </div>
-                    <div style="max-width: 300px; text-align: center;">
-                        You can style the Shadow DOM using the <code>::part</code> CSS selector:
-                        <div style="margin: 2rem auto">
-                            <v-dropdown id="styled">
-                                <select>
-                                    <option>Item number one</option>
-                                    <option>Item called item two</option>
-                                    <option>Item three</option>
-                                    <option>Lorem item</option>
-                                    <option>Item opsum</option>
-                                    <option>Another one</option>
-                                    <option>This is a long list</option>
-                                    <option>Or is it</option>
-                                    <option>Item pickers are cool</option>
-                                    <option>And so on</option>
-                                    <option>Something</option>
-                                </select>
-                            </v-dropdown>
-                            <style>
-                                #styled::part(select) {
-                                background: #FF6600;
-                                border-color: #BF4600;
-                                color: #fff;
-                            }
-                            </style>
 
+                        <div style="margin: 0 0 0.8em; padding: 0.8em 0 0; height: 0; border-bottom: 1px solid #cacaca;">
                         </div>
+
+                        <v-grid cols="2">
+                            <div style="max-width: 300px">
+                                Enhance the component with <strong>custom rendering logic</strong> if JS is enabled:
+                                <style>
+                                    .mid > v-dropdown{vertical - align: middle;}
+                                </style>
+                                <div style="text-align: center; margin: 2rem 0;" className="mid">
+                                    <span id="dropdemo"></span>
+
+                                    <v-dropdown>
+                                        <select>
+                                            <option value="opt1">Even counter: 2</option>
+                                            <option value="opt2">Odd counter: 0</option>
+                                        </select>
+                                        <script slot="h">
+                                            h => {
+                                            let i = 2;
+                                            setInterval(() => {
+                                            this.transform = (item) => {
+                                            let even = item.idx == 0;
+                                            return h`<span style="color: #999; margin-right: 0.3rem;">${even ? "Even": "Odd"} counter</span>
+                                        <br/><strong> ${(i + item.idx).toString()}</strong>`
+                                        }
+
+                                            i %= 20;
+                                            i+= 2;
+                                        }, 500);
+                                        }
+                                        </script>
+                                    </v-dropdown>
+                                </div>
+                            </div>
+                            <div style="max-width: 300px; text-align: center;">
+                                You can style the Shadow DOM using the <code>::part</code> CSS selector:
+                                <div style="margin: 2rem auto">
+                                    <v-dropdown id="styled">
+                                        <select>
+                                            <option>Item number one</option>
+                                            <option>Item called item two</option>
+                                            <option>Item three</option>
+                                            <option>Lorem item</option>
+                                            <option>Item opsum</option>
+                                            <option>Another one</option>
+                                            <option>This is a long list</option>
+                                            <option>Or is it</option>
+                                            <option>Item pickers are cool</option>
+                                            <option>And so on</option>
+                                            <option>Something</option>
+                                        </select>
+                                    </v-dropdown>
+                                    <style>
+                                        #styled::part(select) {
+                                        background: #FF6600;
+                                        border-color: #BF4600;
+                                        color: #fff;
+                                    }
+                                    </style>
+
+                                </div>
+                            </div>
+                        </v-grid>
                     </div>
-                </v-grid>
-            </div>*/}
+                </raw>
             </Docs>
         </div>),
         <div>
@@ -193,99 +194,99 @@ function Table() {
             </article>
             <v-grid columns={"2"} pad={"0"}>
                 <v-item md-span-2 style={"max-width: 300px !important;"}>
-                <v-table selectable sortable id="tbl" class="t1">
-                    <table>
-                        <tr>
-                            <td>Some num</td>
-                            <td>Some date</td>
-                            <td>Color</td>
-                        </tr>
-                        <tr>
-                            <td>3</td>
-                            <td>2020/01/20</td>
-                            <td data-sort="3">
-                                <v-icon style="color: #FF3333" name="CircleFilled"></v-icon>
-                            </td>
+                    <v-table selectable sortable id="tbl" class="t1">
+                        <table>
+                            <tr>
+                                <td>Some num</td>
+                                <td>Some date</td>
+                                <td>Color</td>
+                            </tr>
+                            <tr>
+                                <td>3</td>
+                                <td>2020/01/20</td>
+                                <td data-sort="3">
+                                    <v-icon style="color: #FF3333" name="CircleFilled"></v-icon>
+                                </td>
 
-                        </tr>
-                        <tr>
-                            <td>5367</td>
-                            <td>2020/10/01</td>
-                            <td data-sort="4">
-                                <v-icon style="color: #CC0000" name="CircleFilled"></v-icon>
-                            </td>
+                            </tr>
+                            <tr>
+                                <td>5367</td>
+                                <td>2020/10/01</td>
+                                <td data-sort="4">
+                                    <v-icon style="color: #CC0000" name="CircleFilled"></v-icon>
+                                </td>
 
-                        </tr>
-                        <tr>
-                            <td>251</td>
-                            <td>2022/05/05</td>
-                            <td data-sort="2">
-                                <v-icon style="color: #FF9999" name="CircleFilled"></v-icon>
-                            </td>
+                            </tr>
+                            <tr>
+                                <td>251</td>
+                                <td>2022/05/05</td>
+                                <td data-sort="2">
+                                    <v-icon style="color: #FF9999" name="CircleFilled"></v-icon>
+                                </td>
 
-                        </tr>
-                        <tr>
-                            <td>938141</td>
-                            <td>1999/01/01</td>
-                            <td data-sort="1">
-                                <v-icon style="color: #f5dada" name="CircleFilled"/>
-                            </td>
+                            </tr>
+                            <tr>
+                                <td>938141</td>
+                                <td>1999/01/01</td>
+                                <td data-sort="1">
+                                    <v-icon style="color: #f5dada" name="CircleFilled"/>
+                                </td>
 
-                        </tr>
-                    </table>
-                </v-table>
+                            </tr>
+                        </table>
+                    </v-table>
                 </v-item>
                 <v-item md-span-2>
-                <v-table class="tiny">
-                    <table>
-                        <tr>
-                            <td>tiny table</td>
-                        </tr>
-                        <tr>
-                            <td>this is some row</td>
-                        </tr>
-                        <tr>
-                            <td>another one</td>
-                        </tr>
-                        <tr>
-                            <td>bites the dust</td>
-                        </tr>
-                    </table>
-                </v-table>
+                    <v-table class="tiny">
+                        <table>
+                            <tr>
+                                <td>tiny table</td>
+                            </tr>
+                            <tr>
+                                <td>this is some row</td>
+                            </tr>
+                            <tr>
+                                <td>another one</td>
+                            </tr>
+                            <tr>
+                                <td>bites the dust</td>
+                            </tr>
+                        </table>
+                    </v-table>
                 </v-item>
             </v-grid>
-            {/* @raw
-<style>
-v-table.tiny {
-    display: flex;
-    max-width: 300px;
-    margin: 0 auto;
-}
-v-table.tiny::part(row):hover {
-    background: #666;
-}
-v-table.tiny::part(row) {
-    background: #444;
-}
-v-table.tiny::part(cell) {
-    font-size: 0.85rem;
-    padding-top: 0.13em;
-    padding-bottom: 0.13em;
-    border-color: #555;
-    color: #ccc;
-}
-v-table.tiny::part(cell-header) {
-    background: #222;
-    color: #fff;
-    font-weight: 400;
-    border-color: #555;
-}
-v-table.tiny::part(cell-active) {
-    background: #00000010;
-    border-color: #00000010;
-    font-weight: normal;
-}
-</style> */}
+
+            <raw style>
+                v-table.tiny {
+                display: flex;
+                max-width: 300px;
+                margin: 0 auto;
+            }
+                v-table.tiny::part(row):hover {
+                background: #666;
+            }
+                v-table.tiny::part(row) {
+                background: #444;
+            }
+                v-table.tiny::part(cell) {
+                font-size: 0.85rem;
+                padding-top: 0.13em;
+                padding-bottom: 0.13em;
+                border-color: #555;
+                color: #ccc;
+            }
+                v-table.tiny::part(cell-header) {
+                background: #222;
+                color: #fff;
+                font-weight: 400;
+                border-color: #555;
+            }
+                v-table.tiny::part(cell-active) {
+                background: #00000010;
+                border-color: #00000010;
+                font-weight: normal;
+            }
+            </raw>
             <script dangerouslySetInnerHTML={{
                 __html: `
 tbl.addEventListener('rowselect', (e) => {
@@ -375,30 +376,28 @@ function Tabs() {
                     </p>
                 </div>
             </v-tabs>
-            {/* @raw
-            <script>
-document.addEventListener("DOMContentLoaded", () => {
-    createTab.addEventListener('click', () => {
-        const btn = document.createElement("a");
+            <raw script>
+                document.addEventListener("DOMContentLoaded", () => {
+                createTab.addEventListener('click', () => {
+                    const btn = document.createElement("a");
 
-        const vtabs = createTab.nextElementSibling;
-        const i = Array.from(vtabs.querySelectorAll('a')).length + 1;
-        btn.textContent = "Tab";
-        let bq = Array.from(tabDemo.querySelectorAll("a"))
-        bq[bq.length - 1].after(btn)
+                    const vtabs = createTab.nextElementSibling;
+                    const i = Array.from(vtabs.querySelectorAll('a')).length + 1;
+                    btn.textContent = "Tab";
+                    let bq = Array.from(tabDemo.querySelectorAll("a"))
+                    bq[bq.length - 1].after(btn)
 
-        const tab = document.createElement("div");
-        tab.id = `t-${i}`
-        tab.slot = "content"
-        tab.innerHTML = `<h1 style="text-align: center">This is tab #${i}</h1>`
-        tabDemo.append(tab)
+                    const tab = document.createElement("div");
+                    tab.id = `t-${i}`
+                    tab.slot = "content"
+                    tab.innerHTML = `<h1 style="text-align: center">This is tab #${i}</h1>`
+                    tabDemo.append(tab)
 
-        btn.href = `#${tab.id}`
-    })
+                    btn.href = `#${tab.id}`
+                })
 
-})
-</script>
-            */}
+            })
+            </raw>
         </div>,
         <div>
             <Docs>
@@ -425,59 +424,59 @@ document.addEventListener("DOMContentLoaded", () => {
 
 function Alert() {
     return [
-            <v-grid columns="2">
-                <v-item md-span-2>
-                    <div class='t1'></div>
-                    <v-alert error>This is an error message. You can put <strong>whatever HTML</strong> you like.</v-alert>
-                    <v-alert warning>This is a warning. It means something, I think ...</v-alert>
-                    <v-alert success>This is a success!</v-alert>
-                    <v-grid columns={"2"} pad={"1"}>
-                        <v-item md-span-2>
-                            <v-alert info>This is an info box.</v-alert>
+        <v-grid columns="2">
+            <v-item md-span-2>
+                <div class='t1'></div>
+                <v-alert error>This is an error message. You can put <strong>whatever HTML</strong> you like.</v-alert>
+                <v-alert warning>This is a warning. It means something, I think ...</v-alert>
+                <v-alert success>This is a success!</v-alert>
+                <v-grid columns={"2"} pad={"1"}>
+                    <v-item md-span-2>
+                        <v-alert info>This is an info box.</v-alert>
+                    </v-item>
+                    <v-item md-span-2>
+                        <v-alert info text>This is an icon-less info.</v-alert>
+                    </v-item>
+                </v-grid>
+
+                <v-alert tiny error>tiny error</v-alert>
+                <v-alert tiny info>tiny info</v-alert>
+                <v-alert tiny success>tiny success</v-alert>
+                <v-alert tiny warning>tiny warning</v-alert>
+                <v-alert tiny simple>tiny simple</v-alert>
+            </v-item>
+            <v-item md-span-2>
+                <form id="toasty">
+                    <v-grid form columns="2">
+                        <v-item>
+                            <label>Message</label>
+                            <input type="text" id="toastMsg" value="Some message"/>
                         </v-item>
-                        <v-item md-span-2>
-                            <v-alert info text>This is an icon-less info.</v-alert>
+                        <v-item>
+                            <label>Duration</label>
+                            <v-grid columns="3" center>
+                                <v-item md-span-2>
+                                    <input  style="max-width: 120px" type="range" id="toastRange" min="300"
+                                            max="10000" step="100" value="1500"></input>
+                                </v-item>
+                                <v-item md-span-1>
+                                    <span md-span-1 id="toastRangeLabel"/>
+                                </v-item>
+                            </v-grid>
+                        </v-item>
+                        <v-item span-2>
+                            <button is="v-primary" type="submit" style="width: 100%">Create toast</button>
                         </v-item>
                     </v-grid>
-
-                    <v-alert tiny error>tiny error</v-alert>
-                    <v-alert tiny info>tiny info</v-alert>
-                    <v-alert tiny success>tiny success</v-alert>
-                    <v-alert tiny warning>tiny warning</v-alert>
-                    <v-alert tiny simple>tiny simple</v-alert>
-                </v-item>
-                <v-item md-span-2>
-                    <form id="toasty">
-                        <v-grid form columns="2">
-                            <v-item>
-                                <label>Message</label>
-                                <input type="text" id="toastMsg" value="Some message"/>
-                            </v-item>
-                            <v-item>
-                                <label>Duration</label>
-                                <v-grid columns="3" center>
-                                    <v-item md-span-2>
-                                    <input  style="max-width: 120px" type="range" id="toastRange" min="300"
-                                           max="10000" step="100" value="1500"></input>
-                                    </v-item>
-                                    <v-item md-span-1>
-                                        <span md-span-1 id="toastRangeLabel"/>
-                                    </v-item>
-                                </v-grid>
-                            </v-item>
-                            <v-item span-2>
-                                <button is="v-primary" type="submit" style="width: 100%">Create toast</button>
-                            </v-item>
-                        </v-grid>
-                    </form>
-                </v-item>
-                {/* <v-code lang="html">{`
+                </form>
+            </v-item>
+            {/* <v-code lang="html">{`
             ~v-alert success~Put any HTML here.~/v-alert~
             ~v-alert warning~Put any HTML here.~/v-alert~
             ~v-alert error~Put any HTML here.~/v-alert~
             ~v-alert info~Put any HTML here.~/v-alert~
         `}</v-code> */}
-            </v-grid>,
+        </v-grid>,
         <div>
             <Docs>
                 <Snippet code={`
@@ -506,19 +505,18 @@ function Alert() {
 function Utilities() {
     return [<Docs>
 
-        {/* @raw "style"
+        <raw style>
             .grid-demo v-item > div {
-                background: #262D35;
-                color: #fff;
-                padding: 2rem;
-                margin: 0;
-                display: block;
-                width: 100%;
-                font-size: 1.8rem;
-                text-align: center;
-            }
-            
-            */}
+            background: #262D35;
+            color: #fff;
+            padding: 2rem;
+            margin: 0;
+            display: block;
+            width: 100%;
+            font-size: 1.8rem;
+            text-align: center;
+        }
+        </raw>
 
         Grid with <code>columns="4"</code> and D with <code>span="2"</code> <br/><br/>
         <v-grid columns="3" className="grid-demo">
@@ -543,14 +541,14 @@ function Utilities() {
                 </div>
             </v-item>
             <v-item span-2>
-            <v-card>
-                <strong>Some card</strong>
-                <hr/>
-                This is a card and it contains something.
-                <div>
-                    <img style="height: 50px; margin: 1rem 0 0;" src="https://raw.githubusercontent.com/neutraltone/awesome-stock-resources/master/img/splash.jpg" />
-                </div>
-            </v-card>
+                <v-card>
+                    <strong>Some card</strong>
+                    <hr/>
+                    This is a card and it contains something.
+                    <div>
+                        <img style="height: 50px; margin: 1rem 0 0;" src="https://raw.githubusercontent.com/neutraltone/awesome-stock-resources/master/img/splash.jpg" />
+                    </div>
+                </v-card>
             </v-item>
         </v-grid>
         <v-grid form columns="2">
@@ -816,31 +814,31 @@ function Search() {
         ["searchRender", "(item: object) => htm", "renders a single item"]
     ]
     return [(
-            <div style="margin: 50px auto; max-width: 500px; font-size: 1.2rem;">
-                You can type <strong>bo<span style="color: red">eh</span>man</strong> and you'll
-                still find <strong>Bohemian Rhapsody</strong>!
-                <v-search placeholder={"Search Queen songs..."}>
+        <div style="margin: 50px auto; max-width: 500px; font-size: 1.2rem;">
+            You can type <strong>bo<span style="color: red">eh</span>man</strong> and you'll
+            still find <strong>Bohemian Rhapsody</strong>!
+            <v-search placeholder={"Search Queen songs..."}>
 
-                    {
-                        /* @raw "script slot='h'"
-                            h => {
-                            this.data = "queen-json"
-                            this.searchKey = "name"
-                            this.itemRender = (item, hl) => {
-                                return h`<span><v-icon name="Headset" /> ${hl}</span>`
-                            }
-                            this.itemToString = (item) => {
-                                return item.name
-                            }
+                {
+                    /* @raw "script slot='h'"
+                        h => {
+                        this.data = "queen-json"
+                        this.searchKey = "name"
+                        this.itemRender = (item, hl) => {
+                            return h`<span><v-icon name="Headset" /> ${hl}</span>`
                         }
-                         */
+                        this.itemToString = (item) => {
+                            return item.name
+                        }
                     }
-                </v-search>
-                <br/><br/>
-                You can customize the style and write your own filter and rendering logic.
-                <v-search class="dark-input">
-                    <style>
-                        {`
+                     */
+                }
+            </v-search>
+            <br/><br/>
+            You can customize the style and write your own filter and rendering logic.
+            <v-search class="dark-input">
+                <style>
+                    {`
 .dark-input input { background: #333; font-size: 1rem; color: #fff; font-family: Inter; }
 .dark-input input::placeholder { color: #aaa; }
 .input-wrapper { background: #333; }
@@ -849,25 +847,25 @@ function Search() {
     background: #333;
 }
                 `}
-                    </style>
-                    <input class="main-input" type="text"
-                           slot="input" placeholder="Enter something here..."/>
-                    <v-icon style="color:#FF6666" slot="icon" name="Heart"></v-icon>
-                    {/*                 @raw "template slot='script'"
-                <script>
-                    this.data = [];
-                   this.addEventListener('input', (e) => {
-                    this.data = [this.value, "fake item 1", "fake item 2"];
-                });
+                </style>
+                <input class="main-input" type="text"
+                       slot="input" placeholder="Enter something here..."/>
+                <v-icon style="color:#FF6666" slot="icon" name="Heart"></v-icon>
+                <raw template slot='script'>
+                    <script>
+                        this.data = [];
+                        this.addEventListener('input', (e) => {
+                        this.data = [{label: this.value}];
+                    });
 
                         this.itemRender = (item, hl) => {
-                            return h`<span>${item}</span>`
-                        }
-                </script>
-                */}
-                </v-search>
-            </div>
-       ), (
+                        return h`<span>You entered: ${item.label}</span>`
+                    }
+                    </script>
+                </raw>
+            </v-search>
+        </div>
+    ), (
         <div class="t2">
             <style>{`#fruit_input{font-size: 0.9rem;}`}</style>
             <Docs>
@@ -892,21 +890,21 @@ function Search() {
 `} />
 
                 <h3>Dynamic data</h3>
-                <raw>
+                <raw-snippet>
                     <v-search>
                         <script slot="h">
-                        h => {
-                          let query = (x) => [{match: x}, {match: x + " demo123"}];
-                          
-                          this.data = [];
-                          this.input.addEventListener('input', () => {
-                              this.data = query(this.value);
-                          })
-                          this.itemToString = (item) => item.match;
+                            h => {
+                            let query = (x) => [{match: x}, {match: x + " demo123"}];
+
+                            this.data = [];
+                            this.input.addEventListener('input', () => {
+                            this.data = query(this.value);
+                        })
+                            this.itemToString = (item) => item.match;
                         };
                         </script>
                     </v-search>
-                </raw>
+                </raw-snippet>
 
             </Docs>
         </div>)];
@@ -930,11 +928,13 @@ function Component(props: { name: string, C: () => JSX.Element[], info?: string,
                 <span>{hinfo}</span>
             </h2>
             <v-tabs via="style">
-                {/* @raw "script slot='h'" h => {
-                    this.addEventListener('tabselect', (x) => {
-                        if(x.detail[0] === 'b') this.closest('.showcase').classList.add('fullw');
-                    });
-                 }*/}
+                 <raw script slot='h'>
+                     h => {
+                        this.addEventListener('tabselect', (x) => {
+                            if(x.detail[0] === 'b') this.closest('.showcase').classList.add('fullw');
+                        });
+                    }
+                 </raw>
                 <a role="tab" href={"#a_" + k} onclick={"this.parentElement.parentElement.classList.remove('fullw')"}>
                     <v-icon name="Bolt"></v-icon>
                     Demo

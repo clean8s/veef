@@ -53,7 +53,8 @@ import CloudLine from '@material-design-icons/svg/filled/cloud.svg'
 import Sun from '@material-design-icons/svg/filled/light_mode.svg'
 import Brush from '@material-design-icons/svg/filled/brush.svg'
 import Verified from '@material-design-icons/svg/filled/verified.svg'
-import matIcons from 'virtual:material-icons'
+
+import * as material  from "../material"
 
 import BrandSvgStrings from './brands'
 import HeroIconStrings from './heroicons'
@@ -68,7 +69,7 @@ export function sized(icon: string, extra?: object): IconComponent {
     extra = {}
   }
 
-  const component = (props: {}): React.ReactElement => {
+  const component = (): React.ReactElement => {
     return CreateSvgElement(icon, { style: 'width: 100%; height: 100%; fill: currentColor;', ...extra })
   }
 
@@ -78,10 +79,10 @@ export function sized(icon: string, extra?: object): IconComponent {
 export type IconComponent = FunctionComponent<{}>
 
 const heroIcons: { [k in keyof typeof HeroIconStrings]: IconComponent } = Object.fromEntries(
-  Object.entries(HeroIconStrings).map(([k, v]) => [k, sized(v)]),
+    Object.entries(HeroIconStrings).map(([k, v]) => [k, sized(v)]),
 ) as any
 const brandIcons: { [k in keyof typeof BrandSvgStrings]: IconComponent } = Object.fromEntries(
-  Object.entries(BrandSvgStrings).map(([k, v]) => [k, sized(v)]),
+    Object.entries(BrandSvgStrings).map(([k, v]) => [k, sized(v)]),
 ) as any
 
 import Repeat from '@material-design-icons/svg/filled/repeat.svg'
@@ -102,33 +103,33 @@ const LibraryUnordered = {
   'TeamGroup': sized(TeamGroup),
   'Job': sized(Job),
   'Person': sized(Person),
-  'Accessibility': sized(matIcons.icon_accessible),
+  'Accessibility': sized(material.filled_accessible),
   'Calendar': sized(Calendar),
   'Notification': sized(Notification),
   'Cloud': sized(CloudLine),
   'Email': sized(Email),
-  'Watch': sized(matIcons.icon_watch),
-  'Laptop': sized(matIcons.icon_laptop),
+  'Watch': sized(material.filled_watch),
+  'Laptop': sized(material.filled_laptop),
   'Phone': sized(Phone),
   'Close': sized(Close),
   'Menu': sized(Menu),
-  'Table': sized(matIcons.icon_table_view),
-  'Form': sized(matIcons.icon_input),
-  'Tree': sized(matIcons.icon_account_tree),
-  'Grid': sized(matIcons.icon_grid_4x4),
-  'Tabs': sized(matIcons.icon_tab),
-  'Array': sized(matIcons.icon_data_array),
+  'Table': sized(material.filled_table_view),
+  'Form': sized(material.filled_input),
+  'Tree': sized(material.filled_account_tree),
+  'Grid': sized(material.filled_grid_4x4),
+  'Tabs': sized(material.filled_tab),
+  'Array': sized(material.filled_data_array),
   'Expand': sized(Expand),
   'Collapse': sized(Collapse),
   'LeftChevron': sized(LeftChevron),
   'RightChevron': sized(RightChevron),
   'Logout': sized(Logout),
   'Login': sized(Login),
-  'Password': sized(matIcons.icon_password),
+  'Password': sized(material.filled_password),
   'List': sized(List),
   'Bold': sized(Bold),
   'Italic': sized(Italic),
-  'Checkmark': sized(matIcons.icon_check),
+  'Checkmark': sized(material.filled_check),
   'Circle': sized(Circle),
   'CircleFilled': sized(CircleFilled),
   'Pause': sized(Pause),
@@ -142,8 +143,8 @@ const LibraryUnordered = {
   'Help': sized(Help),
   'Error': sized(Error),
   'Disabled': sized(Disabled),
-  'Preview': sized(matIcons.icon_visibility),
-  'Fingerprint': sized(matIcons.icon_fingerprint),
+  'Preview': sized(material.filled_visibility),
+  'Fingerprint': sized(material.filled_fingerprint),
   'CreditCard': sized(CreditCard),
   'Key': sized(Key),
   'Lock': sized(Lock),
@@ -174,7 +175,7 @@ function reorder() {
   positions["DotsVertical"] = positions["Close"]
   positions["Dots"] = positions["Close"]
   positions["Delete"] = positions["Save"]
-  positions["Github"] = positions["Php"] 
+  positions["Github"] = positions["Php"]
   positions["Chat"]  = positions["Phone"]
   positions["Video"] = positions["Chat"]
   positions["Photo"] = positions["Chat"]
@@ -199,3 +200,4 @@ export const CreateSvgElement = (svgString: any, wantedProps: object): ReactElem
 }
 
 export type IconKey = keyof typeof IconLibrary
+

@@ -21,7 +21,10 @@ function buildSite() {
                 M = M.replace(/{\s*\/\*\s*@raw\s*(".*?")?\s*(.*?)\*\/\s*}/gsm, (match, p1, p2) => {
                     return `<${p1 ? JSON.parse(p1) : "div"} dangerouslySetInnerHTML={{__html: ${JSON.stringify(dedent(p2))}}} />`
                 });
-                M = M.replace(/<raw>(.*?)<\/raw>/gsm, (match, p1) => {
+                M = M.replace(/<raw\s+(.*?)\s*(.*?)>(.*?)<\/raw>/gsm, (match, tagName, attrs, content) => {
+                    return `<${tagName} ${attrs} dangerouslySetInnerHTML={{__html: ${JSON.stringify(content)}}}/>`
+                })
+                M = M.replace(/<raw-snippet>(.*?)<\/raw-snippet>/gsm, (match, p1) => {
                     return `<Snippet code={${JSON.stringify(p1)}}/>`
                 })
                 // console.log(M)

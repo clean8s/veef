@@ -3,6 +3,14 @@ const fs = require('fs')
 const path = require('path')
 import { createUtils, UserOptions } from '@windicss/plugin-utils'
 
+export function generateWindi(classes: string, wantedSelector: string) {
+  const P = new Processor({});
+  const cstm = P.compile(classes, "");
+
+  const fullResp = cstm.styleSheet.build(false);
+  return fullResp.replaceAll(`.${cstm.className}`, wantedSelector)
+}
+
 async function generateStyles(html: string, preflight?: boolean, asSheet?: boolean) {
   let K = createUtils()
   await K.ensureInit()
@@ -58,19 +66,6 @@ let preactAlias = {
       nodir: true,
       ignore: ['.git/*', 'node_modules/**/*'],
     })
-    
-    build.onResolve({ filter: /^virtual:material-icons$/ }, (args: ResolveArgs) => {
-      const script: string = fs.readFileSync(args.importer as string, 'utf8');
-      const iconList = Array.from(script.matchAll(/icon_[a-zA-Z0-9_-]+/g)).map((match: string[]) => {
-        return match[0].replace('icon_', '')
-      })
-
-      return {
-        path: args.path.replace('virtual:', ''),
-        namespace: 'material-icons',
-        pluginData: iconList
-      }
-    })
 
     build.onResolve({ filter: /^virtual:windi$/ }, (args: ResolveArgs) => {
       return {
@@ -92,34 +87,16 @@ let preactAlias = {
 
       let newCss = '';
       M.replaceAll(/\/\*\s*@windi\s*(.*?)\s*\*\/\s*(.*?) {/gms, (...groups: string[]) => {
-        const origSel = groups[2];
-
-        const selectors = groups[1].trim().split(" ");
-        newCss += selectors.map(sel => {
-          if(sel.trim().length === 0) return;
-          return (txt2.children.filter(x => {
-            if(x.selector!.replaceAll("\\", "").indexOf(sel) == -1) return false;
-            return true;
-          }).map(x => {
-            x.selector = origSel;
-            return x.build(false, false);
-          }).join("\n"))
-        }).join("\n");
+        const windiCls = groups[1];
+        const wantedSel = groups[2];
+        wantedSel.split(",").map(x => {
+          newCss += generateWindi(windiCls, x);
+        });
         return groups[0];
-      })
+      });
       return { contents: minifyCss(readFileSync(x.path, 'utf8')) + newCss, loader: 'text' }
     })
 
-    build.onLoad({ filter: /.*/, namespace: 'material-icons' }, async (x: {pluginData: string[]}) => {
-      let icons: Record<string, string> = {};
-      const imps = x.pluginData.map(icon => {
-        const content = fs.readFileSync(`node_modules/@material-design-icons/svg/filled/${icon}.svg`, 'utf8');
-        icons["icon_" + icon] = content;
-      });
-      return {
-        contents:       `export default icons = ${JSON.stringify(icons)}`,
-      }
-    })
     build.onLoad({ filter: /.*/, namespace: 'windi' }, async (args: { path: string }) => {
       console.log(`Putting styles...`)
       const srcjs = jsfiles.map(x => {
