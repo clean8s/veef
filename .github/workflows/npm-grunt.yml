@@ -31,7 +31,6 @@ jobs:
         ls | grep -v -E "(dist|CNAME|png|html)" | xargs rm -rf
         mv -t . dist/*
         touch .nojekyll
-        sed -i 's/dist\///g' index.html
         git add -A
         git commit -m "Deploy web"
         git push -u --force origin gh-pages 
