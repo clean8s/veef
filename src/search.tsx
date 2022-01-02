@@ -4,6 +4,7 @@ import {Component, VNode} from "./index";
 import FuzzyHighlighter, {Highlighter} from "react-fuzzy-highlighter";
 import {Attrs, OnAttr, Props} from "./slottable";
 import Fuse from "fuse.js";
+import {createRef} from "preact/compat";
 
 type Item = object;
 type ItemToStr = (item: Item) => string | null;
@@ -25,19 +26,19 @@ function fuzzy(data: object[], keys: any, query: string, maxResults?: number) {
   return fuse.search(query).slice(0, maxResults || 5);
 }
 
-@Props(["itemToString", "itemTransform", "itemRender", "data", "placeholder", "searchKey"], "doRender")
+@Props(["itemToText", "itemTransform", "itemRender", "data", "placeholder", "itemKey"], "doRender")
 @OnAttr(["placeholder"], (t, k, v) => {t._placeholder = v; t.doRender(); })
 export class Search extends Transformable {
 
-  _itemToString = ((i) => JSON.stringify(i)) as ItemToStr;
+  _itemToText = ((i) => JSON.stringify(i)) as ItemToStr;
   _itemTransform = (i: Item[]) => i;
-  _itemRender = ((i: Item, hl: any) => this._searchKey != "" ? hl : (<span>{this._itemToString(i)}</span>) ) as ItemRender;
+  _itemRender = ((i: Item, hl: any) => this._itemKey != "" ? hl : (<span>{this._itemToText(i)}</span>) ) as ItemRender;
   _data = [] as Item[];
   _placeholder = "Hello"
-  _searchKey = ""
+  _itemKey = ""
 
   private fuzzyRenderer(WindiItem: Component<WindiProps>): any {
-    if (this._searchKey == "") return
+    if (this._itemKey == "") return
 
     return (<FuzzyHighlighter
         query={this._lastRealValue}
@@ -49,7 +50,7 @@ export class Search extends Transformable {
           location: 0,
           distance: 100,
           minMatchCharLength: 1,
-          keys: [this._searchKey],
+          keys: [this._itemKey],
         }}
     >
       {props => {
@@ -59,9 +60,9 @@ export class Search extends Transformable {
         }
 
         return (formattedResults.map((opt, idx) => {
-          const row = this._itemRender(opt.item, <Highlighter text={opt.formatted[this._searchKey]} />)
+          const row = this._itemRender(opt.item, <Highlighter text={opt.formatted[this._itemKey]} />)
           return (
-              <WindiItem idx={idx}>{row}</WindiItem>
+              <WindiItem last={idx + 1 == formattedResults.length} idx={idx}>{row}</WindiItem>
           )
         }))
       }}
@@ -69,13 +70,13 @@ export class Search extends Transformable {
   }
 
   myFuzzy() : ItemTransform {
-    return (x) => fuzzy(x, [this._searchKey], this._lastRealValue).map(x => x.item)
+    return (x) => fuzzy(x, [this._itemKey], this._lastRealValue).map(x => x.item)
   }
 
   private transformChain() : ItemTransform[] {
     let all: ItemTransform[] = [];
     all.push(this._itemTransform);
-    if(this._searchKey) {
+    if(this._itemKey) {
       all.push(this.myFuzzy())
     }
     return all;
@@ -100,11 +101,13 @@ export class Search extends Transformable {
       return
     }
     if (e.type === 'blur') {
+      if(this.rightButton.current) this.rightButton.current.setAttribute("part", "right-button");
       this.hideSuggestions = true
       this.value = this._lastRealValue
       this.doRender()
     }
     if (e.type === 'focus') {
+      if(this.rightButton.current) this.rightButton.current.setAttribute("part", "right-button right-button-active");
       this.hideSuggestions = false
       if(window.innerWidth < 600) {
         // this.input.scrollIntoView();
@@ -143,7 +146,7 @@ export class Search extends Transformable {
   // is defined. if not, it returns false
   private putSuggestionIntoField(item: Item): boolean {
     return true
-    const maybeStr = this._itemToString(item);
+    const maybeStr = this._itemToText(item);
     if(maybeStr === null) {
       // the item cannot be put into text fields
       return false
@@ -158,12 +161,18 @@ export class Search extends Transformable {
 
     const item = this.filteredData[idx]
 
-    this._lastRealValue = this._itemToString(item)
+    this._lastRealValue = this._itemToText(item)
     this.input.value = this._lastRealValue;
-        this.hideSuggestions = true
+    this.hideSuggestions = true;
+    this.selectedIndex = -1;
     this.input.dispatchEvent(new InputEvent("change"))
     this.input.dispatchEvent(new InputEvent("input"))
     this.dispatchEvent(
+        new CustomEvent('pick', {
+          detail: this.filteredData[idx],
+        }),
+    )
+    this.input.dispatchEvent(
         new CustomEvent('pick', {
           detail: this.filteredData[idx],
         }),
@@ -209,8 +218,11 @@ export class Search extends Transformable {
     }
   }
 
+  rightButton = createRef<HTMLButtonElement>();
+
   afterRender(childrenChanged: boolean) {
     super.afterRender(childrenChanged);
+
     if(!this.input.hasAttribute("data-veef-search")) {
       Object.entries(this.getHandlers()).map(([k, v]) => {
         this.input.addEventListener(k.toLowerCase().substring(2), v)
@@ -236,8 +248,8 @@ export class Search extends Transformable {
         })
       })
       this._data = newdata
-      this._searchKey = "label"
-      this._itemToString = (o: object) => (o as {label: string}).label
+      this._itemKey = "label"
+      this._itemToText = (o: object) => (o as {label: string}).label
     }
   }
 
@@ -253,11 +265,12 @@ export class Search extends Transformable {
     return (
         <div className='flex flex-col relative input-wrapper-root'>
           <div part="input-wrapper" className='flex input-wrapper imp'>
+
             <slot name={"input"} id={"__veef_search_input"}>
               <input {...this.getHandlers()} data-veef-search={"1"} placeholder={this._placeholder} />
             </slot>
 
-            <button part="right-button"
+            <button ref={this.rightButton} part="right-button"
                     className='cursor-pointer w-auto flex rounded-r justify-end items-center text-blue-500 p-2 hover:text-blue-400 right-button'>
               <slot name="icon">
                 <v-icon className='text-blue-500' name='Search'></v-icon>
@@ -281,6 +294,7 @@ export class Search extends Transformable {
       return <li
           onMouseDown={e => click(props.idx)}
           role='option'
+          part={"complete-list-item" + (active ? " complete-item-active" : "") + (props.last ? " complete-item-last" : "")}
           class={'suggestion cursor-pointer text-gray-900 select-none relative py-2 pr-9 ' + extraCls}
       >
         <div class='flex items-center'>
@@ -294,21 +308,22 @@ export class Search extends Transformable {
     let optList: VNode = []
     if(this.filteredData.length === 0 || this.hideSuggestions) return <></>;
 
-    if(this._searchKey) {
+    if(this._itemKey) {
       optList = this.fuzzyRenderer(WindiItem)
     } else {
       optList = this.filteredData.map((x, idx) => {
-        return <WindiItem idx={idx}>{this._itemRender(x, <></>)}</WindiItem>
+        return <WindiItem last={idx + 1 == this.filteredData.length} idx={idx}>{this._itemRender(x, <></>)}</WindiItem>
       })
       // optList = this._itemRender(this.filteredData, null)
     }
 
     return <div
-        id='autolist' style="z-index: 35"
+        id='autolist' part="complete-list-wrapper" style="z-index: 35"
         class='absolute top-9 w-full border-t-1 border-gray-300 border-solid bg-white shadow-lg'
     >
       <ul
           role='listbox'
+          part={"complete-list"}
           aria-labelledby='listbox-label'
           aria-activedescendant='listbox-item-3'
           class='suggestion-list max-h-56 rounded-b-md text-base ring-1 ring-black ring-opacity-5 overflow-auto focus:outline-none sm:text-sm'

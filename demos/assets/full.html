@@ -128,6 +128,16 @@
     body[data-theme="dark"] input.my-input {
         background: #999;
     }
+    .indocs p {
+        max-width: 800px; font-size: 1rem;
+    }
+    .indocs > v-card {
+        margin: 1rem;
+    }
+    .indocs > v-card > strong {
+        display: block;
+    }
+    .indocs p > code {font-size: 0.8rem;}
 </style>
 <body class="N">
 <header>
@@ -172,144 +182,6 @@
     </div>
 </div>
 
-{% endtpl %}
-
-{% tpl "dropdemo" %}
-<div style="text-align: center">
-    This is a standard <code>&lt;select&gt;</code> wrapped in <code>&lt;v-dropdown&gt;</code>:
-
-    <div style="text-align: center; margin: 2rem 0;">
-        <v-dropdown>
-            <select onchange="curval.innerText = '\'' + this.value + '\''">
-                <option value="copy">Some copy operation</option>
-                <option value="bolt">A bolt</option>
-            </select>
-            <script slot="h">
-                h => {
-                    this.transform = (x, idx) => h`<v-icon style='color: orange' name=${idx > 0 ? 'Bolt' : 'Copy'}/> ${x}`
-                }
-            </script>
-        </v-dropdown>
-    </div>
-
-    <div style="margin: 0 0 0.8em; padding: 0.8em 0 0; height: 0; border-bottom: 1px solid #cacaca;">
-    </div>
-
-    <v-grid cols="2">
-        <div style="max-width: 300px">
-            Enhance the component with <strong>custom rendering logic</strong> if JS is enabled:
-            <style>
-                .mid > v-dropdown{ vertical-align: middle; }
-            </style>
-            <div style="text-align: center; margin: 2rem 0;" class="mid">
-                <span id="dropdemo"></span>
-
-                <v-dropdown>
-                    <select>
-                        <option value="opt1">Some counter: 0</option>
-                        <option value="opt2">Some counter: 0</option>
-                        <option value="opt2">Some counter: 0</option>
-                    </select>
-                    <script slot="h">
-                        h => {
-                            let i = 1;
-                            setInterval(() => {
-                                this.transform = (x, idx) => h`<span style="color: #999; margin-right: 0.3rem;">Pick counter</span><br/><strong> ${(i * (idx + 1)).toString()}</strong>`
-                                i++;
-                                i %= 20;
-                            }, 500);
-                        }
-                    </script>
-                </v-dropdown>
-            </div>
-        </div>
-        <div style="max-width: 300px; text-align: center;">
-            You can style the Shadow DOM using the <code>::part</code> CSS selector:
-            <div style="margin: 2rem auto">
-                <v-dropdown id="styled">
-                    <select>
-                        <option>Item number one</option>
-                        <option>Item called item two</option>
-                        <option>Item three</option>
-                        <option>Lorem item</option>
-                        <option>Item opsum</option>
-                        <option>Another one</option>
-                        <option>This is a long list</option>
-                        <option>Or is it</option>
-                        <option>Item pickers are cool</option>
-                        <option>And so on</option>
-                        <option>Something</option>
-                    </select>
-                </v-dropdown>
-                <style>
-                    #styled::part(select) {
-                        background: #FF6600;
-                        border-color: #BF4600;
-                        color: #fff;
-                    }
-                </style>
-
-            </div>
-        </div>
-    </v-grid>
-</div>
-{% endtpl %}
-
-{% tpl "queen" %}
-<script>
-    this.data = "queen-json"
-    this.searchKey = "name"
-    this.itemRender = (item, hl) => {
-        return h`<span><v-icon name="Headset" /> ${hl}</span>`
-    }
-    this.itemToString = (item) => {
-        return item.name
-    }
-</script>
-{% endtpl %}
-
-{% tpl "customSearch" %}
-<script>
-    this.data = [];
-    this.addEventListener('input', (e) => {
-        this.data = [this.value, "fake item 1", "fake item 2"];
-    });
-    this.itemRender = (i) => i.indexOf("fake") != -1 ? h`<i>${i}</i>` : h`You typed: <strong>${i}</strong>`;
-</script>
-{% endtpl %}
-
-{% tpl "tabDemo" %}
-<script>
-    document.addEventListener("DOMContentLoaded", () => {
-        createTab.addEventListener('click', () => {
-            const btn = document.createElement("button");
-            btn.slot = "tab";
-
-            const vtabs = createTab.nextElementSibling;
-            const i = Array.from(vtabs.querySelectorAll('button')).length + 1;
-            btn.textContent = "Tab";
-            let bq = Array.from(tabDemo.querySelectorAll("button"))
-            bq[bq.length - 1].after(btn)
-
-            const tab = document.createElement("div");
-            // tab.style.display = 'none'
-            tab.innerHTML = `<h1>This is tab #${i}</h1>`
-            tab.style.display = 'none'
-            tabDemo.append(tab)
-        })
-
-    })
-</script>
-{% endtpl %}
-
-{% tpl "searchStyle" %}
-.dark-input input { background: #333; font-size: 1rem; color: #fff; font-family: Inter; }
-.dark-input input::placeholder { color: #aaa; }
-.input-wrapper { background: #333; }
-.suggestion span { color: #333; }
-.dark-input::part(right-button), .dark-input::part(input-wrapper) {
-background: #333;
-}
 {% endtpl %}
 
 {% tpl "footer" %}

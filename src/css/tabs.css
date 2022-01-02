@@ -1,0 +1,53 @@
+::slotted([slot="content"]) {
+    display: none;
+}
+::slotted([slot="content"].active) {
+    display: block;
+}
+::slotted(a) {
+    display: block;
+    --tw-bg-opacity: 1;
+    background-color: rgba(227,227,227, var(--tw-bg-opacity));
+    border-top-left-radius: 0.5rem;
+    border-top-right-radius: 0.5rem;
+    font-weight: 500;
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+    line-height: 1.25rem;
+    margin-right: 6px;
+    padding-top: 0.625rem;
+    padding-bottom: 0.625rem;
+    --tw-ring-offset-opacity: 1;
+    --tw-ring-offset-color: rgba(96, 165, 250, var(--tw-ring-offset-opacity));
+    --tw-ring-offset-width: 2px;
+    --tw-ring-opacity: 1;
+    --tw-ring-color: rgba(255, 255, 255, var(--tw-ring-opacity));
+    --tw-ring-opacity: 0.6;
+    --tw-text-opacity: 1;
+    --tw-text-opacity: 1;
+    color: rgba(70, 70, 70, var(--tw-text-opacity)) !important;
+    width: 100%;
+    text-align: center;
+    transition: border 0.2s, background-color 0.2s, color 0.2s, box-shadow 0.2s;
+    cursor: pointer;
+    border: 0px solid transparent;
+    border-bottom-width: 2px;
+    user-select: none;
+}
+
+::slotted(a:hover) {
+    background: #fff;
+    color: var(--color);
+    box-shadow: rgba(0, 0, 0, 0.1) 0px 10px 15px -3px, rgba(0, 0, 0, 0.05) 0px 4px 6px -2px, #00000010 0 -10px 15px -3px;
+}
+::slotted(a:last-of-type) {
+    margin-right: 0;
+}
+::slotted(a.active) {
+    --tw-bg-opacity: 1;
+    font-weight: 600;
+    background-color: rgba(255, 255, 255, var(--tw-bg-opacity));
+    border-bottom-color: var(--color, rgb(37, 99, 235));
+    color: rgba(0, 0, 0, var(--tw-text-opacity));
+    box-shadow: rgba(0, 0, 0, 0.1) 0px 10px 15px -3px, rgba(0, 0, 0, 0.05) 0px 4px 6px -2px, #00000010 0 -10px 15px -3px;
+}

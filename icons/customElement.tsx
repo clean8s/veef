@@ -12,9 +12,7 @@ customElements.define(
       this.root = this.attachShadow({ mode: 'open' })
       this.render()
     }
-    // connectedCallback() {
-    //   this.render()
-    // }
+
     render() {
       let SingleIcon: IconComponent
       let n = this.internalName

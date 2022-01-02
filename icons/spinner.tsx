@@ -1,10 +1,6 @@
 import React from 'react'
 import { sized } from './lib/icons'
 
-export const extraIcons = {
-  'Spinner': SpinComponent,
-}
-
 export function SpinComponent(props: {}) {
   let SpinIcon = sized(spinnerSvg, { class: 'spinner', 'part': 'spinner' })
   return <>

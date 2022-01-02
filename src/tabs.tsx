@@ -1,7 +1,7 @@
 import React from 'react'
 import { render, renderWithCss } from './style'
 import { Slottable, TmSlot } from './slottable'
-import tabStyle from '../icons/tabs.css';
+import tabStyle from './css/tabs.css';
 import {strToNode, Transformable} from "./transformable";
 
 export class Tabs extends Transformable {

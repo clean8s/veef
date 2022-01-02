@@ -1,7 +1,7 @@
 import React from 'react'
 import windiCss from 'virtual:windi'
-import vendorCss from '../icons/vendor.css'
-import alertCss from '../icons/alert.css'
+import vendorCss from './css/vendor.css'
+import alertCss from './css/alert.css'
 
 export {vendorCss, alertCss, windiCss};
 
@@ -18,31 +18,31 @@ if(typeof window["globalSlotReady"] == "undefined") {
 
 const renderChain: typeof preactRender = (x, y) => {
   preactRender(<>
-  {x}
-  <slot name="script"></slot>
-  <slot name="h"></slot>
+    {x}
+    <slot name="script"></slot>
+    <slot name="h"></slot>
   </>, y);
   const thisBind = (y as ShadowRoot).host;
   const scriptSlot = y.querySelector(`slot[name="script"]`) as HTMLSlotElement;
   const hSlot = y.querySelector(`slot[name="h"]`) as HTMLSlotElement;
-  
+
 
   let lastTimeout: null | NodeJS.Timeout = null;
   if(!globalSlotReady.has(thisBind)) {
-  hSlot.addEventListener("slotchange", (e) => {
-    hSlot.assignedElements().map(x => {
-      const src = x.textContent.trim();
-      if(src?.endsWith("<") || src.endsWith("/") || src.endsWith(">")) {
-        return;
-      }
-      fnCallSetup(thisBind, src)
-      // }
+    hSlot.addEventListener("slotchange", (e) => {
+      hSlot.assignedElements().map(x => {
+        const src = x.textContent.trim();
+        if(src?.endsWith("<") || src.endsWith("/") || src.endsWith(">")) {
+          return;
+        }
+        fnCallSetup(thisBind, src)
+        // }
+      })
+      // fnCallSetup()
     })
-    // fnCallSetup()
-  })
-  globalSlotReady.set(thisBind, true);
+    globalSlotReady.set(thisBind, true);
   }
-  
+
 
   scriptSlot.addEventListener('slotchange', (e) => {
     const slotEls = scriptSlot.assignedNodes();
@@ -59,23 +59,20 @@ const renderChain: typeof preactRender = (x, y) => {
         });
         mut.observe(x.content, {attributes: true, characterDataOldValue: true, characterData: true, childList: true, subtree: true});
       } else {
-          const newInstance = x.content.cloneNode(true) as HTMLElement;
-          if(newInstance.textContent != null && newInstance.textContent.trim().length > 0) {
-            fnCallSetup(thisBind, '(() => {' + newInstance.textContent.trim() + '})')
-          }
+        const newInstance = x.content.cloneNode(true) as HTMLElement;
+        if(newInstance.textContent != null && newInstance.textContent.trim().length > 0) {
+          fnCallSetup(thisBind, '(() => {' + newInstance.textContent.trim() + '})')
         }
+      }
     })
   })
 }
 
-function genSpan() {
-  Array.from(Array(9)).map((_, idx) => `*[is~="md-span-${idx}"] { --v-span: ${idx}; }`);
-}
 export const objCss = windiCss + vendorCss
 
 function supportsStyles() {
   return 'adoptedStyleSheets' in Document.prototype &&
-  'replace' in CSSStyleSheet.prototype;
+      'replace' in CSSStyleSheet.prototype;
 }
 
 let adoptedSheets: null | CSSStyleSheet[] = null;
@@ -107,18 +104,18 @@ export const renderWithCss: ((css: string) => typeof preactRender) = (cssStr: st
   }
 
   renderChain(
-    <>
-      <style>{objCss}</style>
-      <style>{cssStr}</style>
-      {x}
-    </>,
-    y,
+      <>
+        <style>{objCss}</style>
+        <style>{cssStr}</style>
+        {x}
+      </>,
+      y,
   )
 }
 
 /**Renders a component together with a stylesheet.
- * TODO: Use the Stylesheet API to prevent duplication. 
+ * TODO: Use the Stylesheet API to prevent duplication.
  */
- export const render: typeof preactRender = (x, y) => {
+export const render: typeof preactRender = (x, y) => {
   renderWithCss("")(x, y)
 }

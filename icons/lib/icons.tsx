@@ -60,7 +60,7 @@ import BrandSvgStrings from './brands'
 import HeroIconStrings from './heroicons'
 
 import { VNode } from 'preact'
-import { extraIcons } from '../spinner'
+import { SpinComponent } from '../spinner'
 
 export type Icon = React.FunctionComponent<{ size: number, className?: string }>
 
@@ -78,92 +78,82 @@ export function sized(icon: string, extra?: object): IconComponent {
 
 export type IconComponent = FunctionComponent<{}>
 
-const heroIcons: { [k in keyof typeof HeroIconStrings]: IconComponent } = Object.fromEntries(
-    Object.entries(HeroIconStrings).map(([k, v]) => [k, sized(v)]),
-) as any
-const brandIcons: { [k in keyof typeof BrandSvgStrings]: IconComponent } = Object.fromEntries(
-    Object.entries(BrandSvgStrings).map(([k, v]) => [k, sized(v)]),
-) as any
+import { ProgSvgStrings } from './programmingIcons'
 
-import Repeat from '@material-design-icons/svg/filled/repeat.svg'
-import Headset from '@material-design-icons/svg/filled/headset.svg'
-import MusicNote from '@material-design-icons/svg/filled/audiotrack.svg'
-import { progIcons } from './programmingIcons'
+const UnorderedSvgStrings: Record<string, string> = {
+  'Home': Home,
+  'Add': Add,
+  'Search': Search,
+  'Bolt': Bolt,
+  'Code': Code,
+  'Edit': Edit,
+  'Save': Save,
+  'Pin': Pin,
+  'TeamGroup': TeamGroup,
+  'Job': Job,
+  'Person': Person,
+  'Accessibility': material.filled_accessible,
+  'Calendar': Calendar,
+  'Notification': Notification,
+  'Cloud': CloudLine,
+  'Email': Email,
+  'Watch': material.filled_watch,
+  'Laptop': material.filled_laptop,
+  'Phone': Phone,
+  'Close': Close,
+  'Menu': Menu,
+  'Table': material.filled_table_view,
+  'Form': material.filled_input,
+  'Tree': material.filled_account_tree,
+  'Grid': material.filled_grid_4x4,
+  'Tabs': material.filled_tab,
+  'Array': material.filled_data_array,
+  'Expand': Expand,
+  'Collapse': Collapse,
+  'LeftChevron': LeftChevron,
+  'RightChevron': RightChevron,
+  'Logout': Logout,
+  'Login': Login,
+  'Password': material.filled_password,
+  'List': List,
+  'Bold': Bold,
+  'Italic': Italic,
+  'Checkmark': material.filled_check,
+  'Circle': Circle,
+  'CircleFilled': CircleFilled,
+  'Pause': Pause,
+  'Stop': Stop,
+  'Start': Start,
+  'Repeat': material.filled_repeat,
+  'Headset': material.filled_headset,
+  'MusicNote': material.filled_audiotrack,
+  'Brush': Brush,
+  'Delete': Delete,
+  'Help': Help,
+  'Error': Error,
+  'Disabled': Disabled,
+  'Preview': material.filled_visibility,
+  'Fingerprint': material.filled_fingerprint,
+  'CreditCard': CreditCard,
+  'Key': Key,
+  'Lock': Lock,
+  'Speaker': Speaker,
+  'SpeakerOff': SpeakerOff,
+  'Sun': Sun,
 
-const LibraryUnordered = {
-  ...extraIcons,
-  'Home': sized(Home),
-  'Add': sized(Add),
-  'Search': sized(Search),
-  'Bolt': sized(Bolt),
-  'Code': sized(Code),
-  'Edit': sized(Edit),
-  'Save': sized(Save),
-  'Pin': sized(Pin),
-  'TeamGroup': sized(TeamGroup),
-  'Job': sized(Job),
-  'Person': sized(Person),
-  'Accessibility': sized(material.filled_accessible),
-  'Calendar': sized(Calendar),
-  'Notification': sized(Notification),
-  'Cloud': sized(CloudLine),
-  'Email': sized(Email),
-  'Watch': sized(material.filled_watch),
-  'Laptop': sized(material.filled_laptop),
-  'Phone': sized(Phone),
-  'Close': sized(Close),
-  'Menu': sized(Menu),
-  'Table': sized(material.filled_table_view),
-  'Form': sized(material.filled_input),
-  'Tree': sized(material.filled_account_tree),
-  'Grid': sized(material.filled_grid_4x4),
-  'Tabs': sized(material.filled_tab),
-  'Array': sized(material.filled_data_array),
-  'Expand': sized(Expand),
-  'Collapse': sized(Collapse),
-  'LeftChevron': sized(LeftChevron),
-  'RightChevron': sized(RightChevron),
-  'Logout': sized(Logout),
-  'Login': sized(Login),
-  'Password': sized(material.filled_password),
-  'List': sized(List),
-  'Bold': sized(Bold),
-  'Italic': sized(Italic),
-  'Checkmark': sized(material.filled_check),
-  'Circle': sized(Circle),
-  'CircleFilled': sized(CircleFilled),
-  'Pause': sized(Pause),
-  'Stop': sized(Stop),
-  'Start': sized(Start),
-  'Repeat': sized(Repeat),
-  'Headset': sized(Headset),
-  'MusicNote': sized(MusicNote),
-  'Brush': sized(Brush),
-  'Delete': sized(Delete),
-  'Help': sized(Help),
-  'Error': sized(Error),
-  'Disabled': sized(Disabled),
-  'Preview': sized(material.filled_visibility),
-  'Fingerprint': sized(material.filled_fingerprint),
-  'CreditCard': sized(CreditCard),
-  'Key': sized(Key),
-  'Lock': sized(Lock),
-  'Speaker': sized(Speaker),
-  'SpeakerOff': sized(SpeakerOff),
-  'Sun': sized(Sun),
-
-  ...heroIcons,
-  ...brandIcons,
-  'Verified': sized(Verified),
-  'Heart': sized(Favorite),
-  'Like': sized(Like),
-  'Dislike': sized(Dislike),
-  'Star': sized(Star),
-  ...progIcons,
+  ...HeroIconStrings,
+  ...BrandSvgStrings,
+  'Verified': Verified,
+  'Heart': Favorite,
+  'Like': Like,
+  'Dislike': Dislike,
+  'Star': Star,
+  ...ProgSvgStrings,
 }
-function reorder() {
-  let IconLibraryEntries = Object.entries(LibraryUnordered);
-  let positions = Object.fromEntries(Object.keys(LibraryUnordered).map((k, idx) => [k, idx]))
+
+function reorder() : Record<string, IconComponent> {
+  let IconLibraryEntries: [string, IconComponent][] = Object.entries(UnorderedSvgStrings).map(([k, v]) => [k, sized(v)]);
+  let positions = Object.fromEntries(Object.keys(UnorderedSvgStrings).map((k, idx) => [k, idx]))
   positions["Moon"] = positions["Sun"];
   ["Left", "Right", "Down", "Up"].map(x => {
     positions[x] = positions["RightChevron"];
@@ -184,7 +174,7 @@ function reorder() {
     const k2 = b[0];
     return  positions[k1] - positions[k2];
   })
-  return Object.fromEntries(IconLibraryEntries) as { [k in keyof typeof LibraryUnordered]: IconComponent }
+  return {Spinner: SpinComponent, ...Object.fromEntries(IconLibraryEntries)};
 }
 
 const IconLibrary = reorder()

@@ -168,7 +168,7 @@ function Snippet(props: { raw?: boolean, code: string, width?: number, height?: 
 
 function Docs(props: { children?: any }) {
     return <>
-        <div style={"padding: 1rem 0; font-size: 1.1em;"}>
+        <div style={"padding: 1rem 0; font-size: 1.1em;"} className={"indocs"}>
             {props.children}
         </div>
     </>
@@ -443,7 +443,6 @@ function Alert() {
                 <v-alert tiny info>tiny info</v-alert>
                 <v-alert tiny success>tiny success</v-alert>
                 <v-alert tiny warning>tiny warning</v-alert>
-                <v-alert tiny simple>tiny simple</v-alert>
             </v-item>
             <v-item md-span-2>
                 <form id="toasty">
@@ -618,7 +617,7 @@ export function App() {
 
         </nav>
 
-        <Component name="v-search" C={Search} info="put smart autocomplete to your <input>" />
+        <Component name="v-search" C={Search} css info="put smart autocomplete to your <input>" />
         <Component name="v-dropdown" C={Dropdown} info="enhance your <select>"/>
         <Component name="v-table" C={Table} info="sortable and checkable datatable" rawinfo={true}/>
         <Component name="v-dialog" C={Dialog} info="modals over the screen"/>
@@ -819,64 +818,74 @@ function Search() {
             still find <strong>Bohemian Rhapsody</strong>!
             <v-search placeholder={"Search Queen songs..."}>
 
-                {
-                    /* @raw "script slot='h'"
+                <raw script slot='h'>
                         h => {
                         this.data = "queen-json"
-                        this.searchKey = "name"
+                        this.itemKey = "name"
                         this.itemRender = (item, hl) => {
                             return h`<span><v-icon name="Headset" /> ${hl}</span>`
                         }
-                        this.itemToString = (item) => {
+                        this.itemToText = (item) => {
                             return item.name
                         }
                     }
-                     */
-                }
+                </raw>
             </v-search>
             <br/><br/>
             You can customize the style and write your own filter and rendering logic.
             <v-search class="dark-input">
                 <style>
                     {`
-.dark-input input { background: #333; font-size: 1rem; color: #fff; font-family: Inter; }
+.dark-input::part(complete-list-wrapper) { backdrop-filter: blur(5px); border-radius: 5px; padding: 5px 0; background: #231E28d0; border: 1px solid #7C828B; }
+.dark-input::part(complete-list-item) { font-size: 13px; color: #F3E8FF; margin: 0px 4px; padding: 3px 0; border-bottom: 1px solid #7C828B; }
+.dark-input::part(complete-list-item):hover { background: red; }
+.dark-input::part(complete-item-last) { border-color: transparent; }
+.dark-input::part(complete-item-active), .dark-input::part(complete-list-item):hover  { background: #568CEBF0; border-radius: 10px; }
+.dark-input { --v-ring: transparent;  }
+.dark-input input { background: #231E28; font-size: 1rem; color: #fff; font-family: Inter; }
 .dark-input input::placeholder { color: #aaa; }
 .input-wrapper { background: #333; }
 .suggestion span { color: #333; }
 .dark-input::part(right-button), .dark-input::part(input-wrapper) {
-    background: #333;
+    background: #231E28;
 }
                 `}
                 </style>
                 <input class="main-input" type="text"
                        slot="input" placeholder="Enter something here..."/>
                 <v-icon style="color:#FF6666" slot="icon" name="Heart"></v-icon>
-                <raw template slot='script'>
-                    <script>
-                        this.data = [];
-                        this.addEventListener('input', (e) => {
-                        this.data = [{label: this.value}];
+                <raw script slot='h'>
+                h => {
+                    this.data = [];
+                    this.addEventListener('input', (e) => {
+                        this.data = [
+                            {msg: "You typed", label: this.value},
+                            {msg: "Uppercase", label: this.value.toUpperCase()}
+                        ];
                     });
-
-                        this.itemRender = (item, hl) => {
-                        return h`<span>You entered: ${item.label}</span>`
+                    this.itemToText = (item) => "[selected: " + item.label + "]";
+                    this.itemRender = (item, hl) => {
+                        return h`<span>${item.msg}: <strong>${item.label}</strong></span>`
                     }
-                    </script>
+                }
                 </raw>
             </v-search>
         </div>
     ), (
         <div class="t2">
-            <style>{`#fruit_input{font-size: 0.9rem;}`}</style>
+            <style>{`#fruit_oninput, #fruit_onpick{display: block; font-size: 0.9rem;}`}</style>
             <Docs>
                 <h3>Static datalist</h3>
+                <p>
+                If you add a <code>&lt;datalist&gt;</code> with options as a child, veef will filter and autocomplete those
+                options automatically. This makes it useful as a searching feature in statically generated websites.
+                </p>
                 <Snippet code={`
-                <span id="fruit_input">oninput: </span>
+                <span id="fruit_oninput">oninput: []</span>
+                <span id="fruit_onpick">onpick: []</span>
 
                 <v-search>
-                    <input slot="input"
-                        oninput="fruit_input.innerText = 'oninput: ' + this.value"
-                        placeholder="Search fruits (try banana)" />
+                    <input slot="input" id="fruit_field" placeholder="Search fruits 🍓 (try banana)" />
                     <datalist>
                         <option value="/banana-tips">Banana</option>
                         <option value="/some-apple">Apple</option>
@@ -887,37 +896,112 @@ function Search() {
                         <option value="/bberry">Blueberry</option>
                     </datalist>
                 </v-search>
+                
+                <script>
+                fruit_field.addEventListener('pick', (e) => {
+                    fruit_onpick.innerText = "onpick: " + JSON.stringify(e.detail);
+                })
+                fruit_field.addEventListener('input', (e) => {
+                    fruit_oninput.innerText = "oninput: " + e.target.value;
+                })
+                </script>
 `} />
 
                 <h3>Dynamic data</h3>
+                <p>
+                Here we load data from an API whose result is of type <code>{'Array[title: string, body: string]'}</code>
+                    and we use the 'body' key to search & highlight. We use the <code>.data</code> property to dynamically load
+                    a list of items and
+                    the <code>.itemKey</code> property to tell
+                    veef which key is used to filtering in the data array.
+                </p>
                 <raw-snippet>
                     <v-search>
                         <script slot="h">
                             h => {
-                            let query = (x) => [{match: x}, {match: x + " demo123"}];
-
-                            this.data = [];
-                            this.input.addEventListener('input', () => {
-                            this.data = query(this.value);
-                        })
-                            this.itemToString = (item) => item.match;
+                            this.itemRender = (item, highlight) => h`<v-icon name="Bolt"/>${highlight}`
+                            this.itemToText = (i) => i.title;
+                            this.itemKey = "body"
+                            fetch("https://jsonplaceholder.typicode.com/posts")
+                            .then(x => x.json())
+                            .then(x => this.data = x);
                         };
                         </script>
                     </v-search>
                 </raw-snippet>
-
+                <p>
+                    Note: when you pick an item by pressing ⏎ Enter, the field will be set to the 'title'
+                    because we set the <code>itemToText</code> property.
+                </p>
+                <h3>Custom filtering without fuzzying</h3>
+                <p>If you put items inside <code>.data</code> without an <code>.itemKey</code> you can do the filtering
+                    by yourself. The filtering can happen after the change/input event, but it's not limited: you
+                    can trigger an autocomplete display at any point.</p>
+                <raw-snippet>
+                    <v-search>
+                        <input slot="input "/>
+                        <script slot="h">
+                        h => {
+                            this.data = [];
+                            this.addEventListener('input', (e) => {
+                                this.data = [
+                                    {msg: "You typed", label: this.value},
+                                    {msg: "Uppercase", label: this.value.toUpperCase()}
+                                ];
+                            });
+                            this.itemToText = (item) => "[selected: " + item.label + "]";
+                            this.itemRender = (item, hl) => {
+                                return h`<span>${item.msg}: <strong>${item.label}</strong></span>`
+                            }
+                        }
+                        </script>
+                    </v-search>
+                </raw-snippet>
             </Docs>
-        </div>)];
+        </div>),
+        (
+
+            <Docs>
+                <h3>CSS selectors</h3>
+                <v-card>
+                    <strong>v-search::part(input-wrapper) </strong>
+                    The box around the input.
+                    <hr/>
+                    <strong>v-search::part(right-button) </strong>
+                    The right icon/button.
+                    <hr/>
+                    <strong>v-search::part(complete-list-wrapper) </strong>
+                    The autocomplete list wrapper.
+                    <hr/>
+                    <strong>v-search::part(complete-list-item) </strong>
+                    A single autocomplete item.
+                    <hr/>
+                    <strong>v-search::part(complete-item-active) </strong>
+                    The active autocomplete item.
+                </v-card>
+                <h3>Slots</h3>
+                <v-card>
+                    <strong>script slot="h" </strong>
+                    JavaScript that executes once the input is set up.
+                    <hr/>
+                    <strong>input slot="input"</strong>
+                    The input field.
+                    <hr/>
+                    <strong>v-icon slot="icon"</strong>
+                    The icon on the right.
+                </v-card>
+            </Docs>
+        )];
 }
 import { toChildArray } from 'preact';
 import {ReactNode} from "react";
-function Component(props: { name: string, C: () => JSX.Element[], info?: string, nocustom?: boolean, rawinfo?: boolean }) {
+function Component(props: { name: string, C: () => JSX.Element[], info?: string, css?: boolean, nocustom?: boolean, rawinfo?: boolean }) {
     let hinfo = props.info || ""
     if (props.rawinfo === true) {
         //@ts-ignore
         hinfo = <span dangerouslySetInnerHTML={{__html: props.info}}></span>;
     }
-    const [partA, partB] = props.C()
+    const [partA, partB, partC] = props.C()
     // console.log(PartA, PartB)
     const k = props.name;
     return <div class="element-docs" id={props.name}>
@@ -942,15 +1026,21 @@ function Component(props: { name: string, C: () => JSX.Element[], info?: string,
                 {props.nocustom ? null :
                     <a role="tab" href={"#b_" + k } onclick={"this.parentElement.parentElement.classList.add('fullw')"}>
                         <v-icon name="Code"></v-icon>
-                        {"\u00A0"} Try Code / Sandbox
-                        <template>
-                        </template>
+                        {"\u00A0"} Code Docs / Sandbox
+                    </a>}
+                {!props.css ? null :
+                    <a role="tab" href={"#c_" + k } onclick={"this.parentElement.parentElement.classList.remove('fullw')"}>
+                        <v-icon name="Brush"></v-icon>
+                        {"\u00A0"} CSS selectors & slots
                     </a>}
                 <div id={"a_" + k} slot={"content"}>
                     {partA}
                 </div>
                 <div id={"b_" + k} slot={"content"}>
                     {partB}
+                </div>
+                <div id={"c_" + k} slot={"content"}>
+                    {partC}
                 </div>
 
             </v-tabs>
