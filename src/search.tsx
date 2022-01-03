@@ -291,10 +291,10 @@ export class Search extends Transformable {
     const WindiItem = (props: WindiProps) => {
       const active = this.selectedIndex === props.idx
       let extraCls = active ? 'active bg-indigo-500 !text-white' : 'hover:bg-[#3366CC20]'
-      return <li
+      return <><li
           onMouseDown={e => click(props.idx)}
           role='option'
-          part={"complete-list-item" + (active ? " complete-item-active" : "") + (props.last ? " complete-item-last" : "")}
+          part={"complete-list-item" + (active ? " complete-item-active" : "")}
           class={'suggestion cursor-pointer text-gray-900 select-none relative py-2 pr-9 ' + extraCls}
       >
         <div class='flex items-center'>
@@ -303,6 +303,8 @@ export class Search extends Transformable {
           </span>
         </div>
       </li>
+        {props.last ? null : <li part="complete-list-divide"></li> }
+      </>
     }
 
     let optList: VNode = []

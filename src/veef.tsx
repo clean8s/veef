@@ -46,11 +46,9 @@ class Reveal extends HTMLElement {
 
         this.parentElement.removeAttribute("closed")
         this.stateSet("1")
-        this.innerText = "Close"
       } else {
         this.parentElement.setAttribute("closed", "true")
         this.stateSet("0")
-        this.innerText = "Open"
 
         this.getBoundingClientRect()
         window.scrollTo(0, this.lastPos)

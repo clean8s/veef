@@ -115,12 +115,13 @@ function Dropdown() {
                     <div id="selectedInfo">onchange will appear here</div>
             `} />
                 <h3>Custom rendering</h3>
+                <p>
                 To modify how an option is rendered, you need to define the <code>.transform(option,
                 idx)</code> function.
                 <br/>
                 This react(ive) function should return a node using the <code>h`{"<b>${1+1}</b>"}`</code> <strong>literal
                 syntax</strong>.
-                <br/>
+                </p>
 
                 <Snippet width={170} code={`
             <v-dropdown>
@@ -614,6 +615,9 @@ export function App() {
             <a href="#guide-web-components">
                 <v-icon name="Tutorial"/> {"\u00A0"}
                 Guide to Web Components</a>
+            <a href="#guide-h-functions">
+                <v-icon name="Tutorial"/> {"\u00A0"}
+                h-functions</a>
 
         </nav>
 
@@ -683,10 +687,9 @@ function Editor() {
 function Tree() {
     return [
         <div class="t1">
-            <div class="pad y-2 text-center">
+            <div class="text-center" style={"margin-top:1rem"}>
                 Show <strong>JSON structures</strong> & API responses in tree structures.
             </div>
-            <br/>
             <main>
                 <v-tree style={"height: 200px; overflow: auto;"}dark id="tree3"></v-tree>
                 {/* <v-code id="jsonData" lang="js" style="max-height: 180px; overflow: auto;">
@@ -837,9 +840,8 @@ function Search() {
                 <style>
                     {`
 .dark-input::part(complete-list-wrapper) { backdrop-filter: blur(5px); border-radius: 5px; padding: 5px 0; background: #231E28d0; border: 1px solid #7C828B; }
-.dark-input::part(complete-list-item) { font-size: 13px; color: #F3E8FF; margin: 0px 4px; padding: 3px 0; border-bottom: 1px solid #7C828B; }
-.dark-input::part(complete-list-item):hover { background: red; }
-.dark-input::part(complete-item-last) { border-color: transparent; }
+.dark-input::part(complete-list-item) { font-size: 13px; color: #fff; margin: 5px 4px; padding: 0 0; }
+.dark-input::part(complete-list-divide) { border-bottom: 1px solid #7C828B; width: 95%; margin: 0 auto; }
 .dark-input::part(complete-item-active), .dark-input::part(complete-list-item):hover  { background: #568CEBF0; border-radius: 10px; }
 .dark-input { --v-ring: transparent;  }
 .dark-input input { background: #231E28; font-size: 1rem; color: #fff; font-family: Inter; }
@@ -860,7 +862,8 @@ function Search() {
                     this.addEventListener('input', (e) => {
                         this.data = [
                             {msg: "You typed", label: this.value},
-                            {msg: "Uppercase", label: this.value.toUpperCase()}
+                            {msg: "Uppercase", label: this.value.toUpperCase()},
+                            {msg: "Lowercase", label: this.value.toLowerCase()},
                         ];
                     });
                     this.itemToText = (item) => "[selected: " + item.label + "]";
@@ -916,18 +919,15 @@ function Search() {
                     veef which key is used to filtering in the data array.
                 </p>
                 <raw-snippet>
-                    <v-search>
-                        <script slot="h">
-                            h => {
-                            this.itemRender = (item, highlight) => h`<v-icon name="Bolt"/>${highlight}`
-                            this.itemToText = (i) => i.title;
-                            this.itemKey = "body"
-                            fetch("https://jsonplaceholder.typicode.com/posts")
-                            .then(x => x.json())
-                            .then(x => this.data = x);
-                        };
-                        </script>
+                    <v-search id="example_search">
+                        <input slot="input" placeholder="Enter something"/>
                     </v-search>
+                    <script>
+                        example_search.itemKey = "body"
+                        fetch("https://jsonplaceholder.typicode.com/posts")
+                        .then(x => x.json())
+                        .then(x => example_search.data = x);
+                    </script>
                 </raw-snippet>
                 <p>
                     Note: when you pick an item by pressing ⏎ Enter, the field will be set to the 'title'
@@ -939,7 +939,7 @@ function Search() {
                     can trigger an autocomplete display at any point.</p>
                 <raw-snippet>
                     <v-search>
-                        <input slot="input "/>
+                        <input slot="input" placeholder="Type something" />
                         <script slot="h">
                         h => {
                             this.data = [];
@@ -981,13 +981,13 @@ function Search() {
                 </v-card>
                 <h3>Slots</h3>
                 <v-card>
-                    <strong>script slot="h" </strong>
-                    JavaScript that executes once the input is set up.
+                    <strong>&lt;script slot="h"&gt;</strong>
+                    JavaScript h-function that executes once the input is set up.
                     <hr/>
-                    <strong>input slot="input"</strong>
+                    <strong>&lt;input slot="input"&gt;</strong>
                     The input field.
                     <hr/>
-                    <strong>v-icon slot="icon"</strong>
+                    <strong>&lt;v-icon slot="icon"&gt;</strong>
                     The icon on the right.
                 </v-card>
             </Docs>
@@ -1026,7 +1026,7 @@ function Component(props: { name: string, C: () => JSX.Element[], info?: string,
                 {props.nocustom ? null :
                     <a role="tab" href={"#b_" + k } onclick={"this.parentElement.parentElement.classList.add('fullw')"}>
                         <v-icon name="Code"></v-icon>
-                        {"\u00A0"} Code Docs / Sandbox
+                        {"\u00A0"} Code Sandbox
                     </a>}
                 {!props.css ? null :
                     <a role="tab" href={"#c_" + k } onclick={"this.parentElement.parentElement.classList.remove('fullw')"}>
@@ -1057,7 +1057,7 @@ function Icons() {
                     href="#icon-notice">[1]</a></sup></strong>
             </div>
             <v-reveal>
-                <v-reveal-btn is={"v-toggle"}>Open</v-reveal-btn>
+                <v-reveal-btn is={"v-toggle"}>Show all</v-reveal-btn>
                 <v-icon all></v-icon>
             </v-reveal>
 

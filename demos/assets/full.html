@@ -186,7 +186,7 @@
 
 {% tpl "footer" %}
 <div class="container">
-    <div class="guide" style="font-size: 1.2em">
+    <div class="guide" style="font-size: 1rem">
         <h2 id="guide-web-components">Web Components and preact</h2>
         Web Components are a suite of APIs that let you create elements that behave like usual HTML. You can read the specification <a href="https://developer.mozilla.org/en-US/docs/Web/Web_Components">here</a>.
 
@@ -206,13 +206,6 @@
         A single component can contain children that are placed at different places. For example,
         you could program a dialog component can have a title part, a content part and action buttons:
         <br/><br/>
-        <pre>
-    <code id="htmlViewer" style="color:rgb(171, 178, 191); font-weight:400;background-color:rgb(40, 44, 52);background:rgb(40, 44, 52);display:block;padding: .5em;"><span style="color:rgb(171, 178, 191); font-weight:400;">&lt;<span style="color:rgb(224, 108, 117); font-weight:400;">script</span>&gt;</span><span style="color:rgb(171, 178, 191); font-weight:400;">
-   (x) =&gt; {
-     <span style="color:rgb(198, 120, 221); font-weight:400;">let</span> y = <span style="color:rgb(209, 154, 102); font-weight:400;">3</span>;
-   };
-   </span><span style="color:rgb(171, 178, 191); font-weight:400;">&lt;/<span style="color:rgb(224, 108, 117); font-weight:400;">script</span>&gt;</span></code></pre>
-        <br/>
         To specify where you want to put a child, you use the <code>slot=""</code> attribute. That
         attribute is supported on all tags in the browser.
         By default, all elements in a page have an empty string <code>""</code> as the default slot.
@@ -222,7 +215,7 @@
                 in the final product.</li>
         </ul>
 
-        <h3>preact <code>h``</code> syntax</h3>
+        <h2>h-functions and preact</h2>
         <strong>Some of the slots in veef</strong> accept preact code. <a href="https://preactjs.com/">preact</a> is a 3KB library based around the React API
         for building user interfaces.
         <br/><br/>
@@ -230,12 +223,6 @@
         <a href="https://preactjs.com/guide/v10/getting-started/#alternatives-to-jsx">described in their tutorials</a>.
         For example, if you want to render a list of strings in your browser using preact + htm, they suggest using this:
         <br/><br/>
-        <pre>
-    <code id="htmlViewer" style="color:rgb(171, 178, 191); font-weight:400;background-color:rgb(40, 44, 52);background:rgb(40, 44, 52);display:block;padding: .5em;"><span style="color:rgb(171, 178, 191); font-weight:400;">&lt;<span style="color:rgb(224, 108, 117); font-weight:400;">script</span>&gt;</span><span style="color:rgb(171, 178, 191); font-weight:400;">
-   (x) =&gt; {
-     <span style="color:rgb(198, 120, 221); font-weight:400;">let</span> y = <span style="color:rgb(209, 154, 102); font-weight:400;">3</span>;
-   };
-   </span><span style="color:rgb(171, 178, 191); font-weight:400;">&lt;/<span style="color:rgb(224, 108, 117); font-weight:400;">script</span>&gt;</span></code></pre>
         <br/>
         Notes about preact and HTM syntax:
         <ul>

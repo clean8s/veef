@@ -123,7 +123,7 @@ v-search:focus {
 	outline: none;
 }
 
-/* @windi ring-1 ring-$v-ring */
+/* @windi ring-1 ring-inset ring-$v-ring */
 v-search::part(right-button-active) {
 
 }
