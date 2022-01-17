@@ -16,17 +16,18 @@ export class Tabs extends Transformable {
     firstCheck() {
         if(this.selectedId !== "") return
 
-            if(history.state != null && Array.isArray(history.state["__veef_tabs"])) {
-                const candidate = history.state["__veef_tabs"].map(x => this.querySelector("#" + x)).find(x => x != null);
-                if(candidate) {
-                    this.pickTab(candidate)
-                    return
-                }
+        if(history.state != null && Array.isArray(history.state["__veef_tabs"])) {
+            const candidate = history.state["__veef_tabs"].map(x => this.querySelector("#" + x)).find(x => x != null && x.parentElement == this);
+            if(candidate) {
+                this.pickTab(candidate)
+                return
             }
-            const el = this.querySelector("*[id]")
-            if(el) {
-                this.pickTab(el)
-            }
+        }
+
+        const el = this.querySelector("*[id]")
+        if(el) {
+            this.pickTab(el)
+        }
         // }
     }
 
@@ -90,7 +91,7 @@ export class Tabs extends Transformable {
         </div>
             <style dangerouslySetInnerHTML={{__html: tabStyle}}></style>
             <div part="around" id="__content" className="mx-[1px] p-2 border-1 rounded-b">
-               <slot name="content" />
+                <slot name="content" />
             </div></>
     }
 }

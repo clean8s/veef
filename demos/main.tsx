@@ -612,10 +612,11 @@ export function App() {
                     {name}</a>
             })
             }
-            <a href="#guide-web-components">
+            <hr/>
+            <a href="#guide-web-components" class={"guidenav"}>
                 <v-icon name="Tutorial"/> {"\u00A0"}
                 Guide to Web Components</a>
-            <a href="#guide-h-functions">
+            <a href="#guide-h-functions" class={"guidenav"}>
                 <v-icon name="Tutorial"/> {"\u00A0"}
                 h-functions</a>
 
@@ -840,8 +841,7 @@ function Search() {
                 <style>
                     {`
 .dark-input::part(complete-list-wrapper) { backdrop-filter: blur(5px); border-radius: 5px; padding: 5px 0; background: #231E28d0; border: 1px solid #7C828B; }
-.dark-input::part(complete-list-item) { font-size: 13px; color: #fff; margin: 5px 4px; padding: 0 0; }
-.dark-input::part(complete-list-divide) { border-bottom: 1px solid #7C828B; width: 95%; margin: 0 auto; }
+.dark-input::part(complete-list-item) { font-size: 13px; color: #fff; margin: 3px 4px; padding: 2px 0; }
 .dark-input::part(complete-item-active), .dark-input::part(complete-list-item):hover  { background: #568CEBF0; border-radius: 10px; }
 .dark-input { --v-ring: transparent;  }
 .dark-input input { background: #231E28; font-size: 1rem; color: #fff; font-family: Inter; }

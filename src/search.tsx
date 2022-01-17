@@ -259,6 +259,7 @@ export class Search extends Transformable {
           return [ev, (e: Event) => this.handleNativeInput(e)]
         }));
   }
+
   public hideSuggestions = false
   render() {
     this.loadData()
@@ -291,7 +292,7 @@ export class Search extends Transformable {
     const WindiItem = (props: WindiProps) => {
       const active = this.selectedIndex === props.idx
       let extraCls = active ? 'active bg-indigo-500 !text-white' : 'hover:bg-[#3366CC20]'
-      return <><li
+      return <li
           onMouseDown={e => click(props.idx)}
           role='option'
           part={"complete-list-item" + (active ? " complete-item-active" : "")}
@@ -303,8 +304,6 @@ export class Search extends Transformable {
           </span>
         </div>
       </li>
-        {props.last ? null : <li part="complete-list-divide"></li> }
-      </>
     }
 
     let optList: VNode = []
